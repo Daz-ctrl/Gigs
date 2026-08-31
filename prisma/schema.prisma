@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Federation {
+  id              String       @id @default(cuid())
+  name            String       // e.g. "National Labour Cooperative Federation of India (NLCF)"
+  code            String       @unique // e.g. "NLCF-DELHI"
+  state           String
+  minWageFloor    Float        @default(450.0) // Federation policy wage floor (INR/hr)
+  platformCommPct Float        @default(3.0)   // 3% tech/ops
+  welfareCommPct  Float        @default(7.0)   // 7% social welfare fund
+  societies       Society[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Society {
+  id             String     @id @default(cuid())
+  federationId   String
+  federation     Federation @relation(fields: [federationId], references: [id], onDelete: Cascade)
+  name           String     // e.g. "Delhi West Skilled Workers Cooperative Society Ltd."
+  registrationNo String     @unique
+  district       String
+  zone           String     // "Zone 1 - South Delhi", "Zone 2 - West Delhi", etc.
+  latitude       Float
+  longitude      Float
+  workers        Worker[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Worker {
+  id             String          @id @default(cuid())
+  societyId      String
+  society        Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  name           String
+  phone          String          @unique
+  aadhaarMasked  String          // "XXXX-XXXX-4821"
+  avatar         String?
+  skills         String          // "Electrician,Solar Technician"
+  experienceYrs  Int
+  hourlyRate     Float
+  rating         Float           @default(5.0)
+  totalJobs      Int             @default(0)
+  status         String          @default("VERIFIED") // PENDING, VERIFIED, REJECTED, SUSPENDED
+  isAvailable    Boolean         @default(true)
+  latitude       Float
+  longitude      Float
+  digitalIdCard  String          // Unique verifiable credential hash
+  welfareRecord  WelfareRecord?
+  certifications Certification[]
+  bookings       Booking[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Certification {
+  id          String   @id @default(cuid())
+  workerId    String
+  worker      Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  title       String   // e.g. "NSDC Level 4 Electrician Certification"
+  issuer      String   // e.g. "National Skill Development Corporation (NSDC)"
+  certNumber  String
+  issuedYear  Int
+  verified    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Customer {
+  id        String    @id @default(cuid())
+  name      String
+  phone     String    @unique
+  email     String?
+  address   String
+  zone      String
+  latitude  Float
+  longitude Float
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Booking {
+  id            String    @id @default(cuid())
+  customerId    String
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  workerId      String?
+  worker        Worker?   @relation(fields: [workerId], references: [id], onDelete: SetNull)
+  serviceType   String    // "Electrician", "Plumber", "Caregiver", etc.
+  description   String
+  status        String    @default("ACCEPTED") // PENDING, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED
+  isEmergency   Boolean   @default(false)
+  startWorkOtp  String    @default("8341") // 4-digit customer security handshake OTP
+  startedAt     DateTime?
+  completedAt   DateTime?
+  scheduledAt   DateTime
+  basePrice     Float     // Base service fee (includes 1st 60 mins)
+  workerPayout  Float     // 90%
+  welfareFee    Float     // 7%
+  platformFee   Float     // 3%
+  paymentStatus String    @default("PAID") // PENDING, PAID, REFUNDED
+  paymentMethod String    @default("UPI_SANDBOX")
+  latitude      Float
+  longitude     Float
+  rating        Rating?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Rating {
+  id                 String    @id @default(cuid())
+  bookingId          String    @unique
+  booking            Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  score              Int       // 1 to 5
+  feedback           String?
+  tags               String?   // "Punctual,Professional,Fair Price"
+  flagged            Boolean   @default(false)
+  noticeSent         Boolean   @default(false)
+  noticeSentAt       DateTime?
+  workerAcknowledged Boolean   @default(false)
+  acknowledgedAt     DateTime?
+  adminStatus        String    @default("PENDING") // PENDING, NOTICE_SENT, ACKNOWLEDGED, RESOLVED
+  createdAt          DateTime  @default(now())
+}
+
+model WelfareRecord {
+  id              String   @id @default(cuid())
+  workerId        String   @unique
+  worker          Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  insuranceStatus String   @default("ACTIVE") // ACTIVE, PENDING, EXPIRED
+  insurancePlan   String   @default("Pradhan Mantri Suraksha Bima Yojana (Cooperative Group)")
+  policyNumber    String   @default("PMSBY-COOP-8849102")
+  fundBalance     Float    @default(4850.0) // In-house cooperative emergency welfare fund
+  earningsYTD     Float    @default(64200.0)
+  updatedAt       DateTime @updatedAt
+}
+
+model DemandForecastLog {
+  id              String   @id @default(cuid())
+  zone            String
+  serviceType     String
+  predictedDemand Int
+  availableSupply Int
+  deficitSurplus  Int
+  confidenceScore Float
+  recommendation  String
+  createdAt       DateTime @default(now())
+}
