@@ -236,7 +236,7 @@ VALUES (
   3.0,
   7.0
 )
-ON CONFLICT ("code") DO NOTHING;
+ON CONFLICT ("id") DO NOTHING;
 
 -- 5b. Societies (Visakhapatnam Primary Cooperative Societies)
 INSERT INTO public."Society" ("id", "federationId", "name", "registrationNo", "district", "zone", "latitude", "longitude")
@@ -244,7 +244,7 @@ VALUES
   ('soc-mvp', 'fed-ap-nlcf', 'Ward Sachivalayam #18 Labour Co-op Society Ltd.', 'AP/VSP/COOP/2023/1802', 'Visakhapatnam', 'Zone 1 - MVP Colony & Beach Road', 17.7400, 83.3350),
   ('soc-gajuwaka', 'fed-ap-nlcf', 'Gajuwaka Industrial Corridor Artisans Co-op Society', 'AP/VSP/COOP/2022/0941', 'Visakhapatnam', 'Zone 2 - Gajuwaka & Steel Plant', 17.6850, 83.2100),
   ('soc-madhurawada', 'fed-ap-nlcf', 'Madhurawada IT & Tech Services Cooperative Ltd.', 'AP/VSP/COOP/2024/3104', 'Visakhapatnam', 'Zone 3 - Madhurawada & IT SEZ', 17.8050, 83.3550)
-ON CONFLICT ("registrationNo") DO NOTHING;
+ON CONFLICT ("id") DO NOTHING;
 
 -- 5c. Verified Workers
 INSERT INTO public."Worker" ("id", "societyId", "name", "phone", "aadhaarMasked", "avatar", "skills", "experienceYrs", "hourlyRate", "rating", "totalJobs", "status", "isAvailable", "latitude", "longitude", "digitalIdCard")
@@ -253,7 +253,7 @@ VALUES
   ('w-priya', 'soc-mvp', 'Priya Sharma (Certified Caregiver)', '+91 98480 33445', 'XXXX-XXXX-7712', 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80', 'Caregiver,Elderly Support,Post-Operative Care', 6, 480, 4.98, 89, 'VERIFIED', true, 17.7410, 83.3395, 'COOP-ID-PRIYA-SHARMA-7712'),
   ('w-ramesh', 'soc-gajuwaka', 'Ramesh Chandra (Lead Plumber)', '+91 98480 44556', 'XXXX-XXXX-3349', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80', 'Plumber,Hydro-Jetting,Pipe Fittings', 10, 600, 4.88, 215, 'VERIFIED', true, 17.6890, 83.2140, 'COOP-ID-RAMESH-CHANDRA-3349'),
   ('w-sunita', 'soc-madhurawada', 'Sunita Rao (HVAC Specialist)', '+91 98480 55667', 'XXXX-XXXX-9921', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80', 'AC Technician,HVAC Inverter,Refrigeration', 5, 520, 4.92, 76, 'VERIFIED', true, 17.8080, 83.3590, 'COOP-ID-SUNITA-RAO-9921')
-ON CONFLICT ("phone") DO NOTHING;
+ON CONFLICT ("id") DO NOTHING;
 
 -- 5d. Certifications
 INSERT INTO public."Certification" ("id", "workerId", "title", "issuer", "certNumber", "issuedYear", "verified")
@@ -285,11 +285,12 @@ VALUES (
   17.7410,
   83.3390
 )
-ON CONFLICT ("phone") DO NOTHING;
+ON CONFLICT ("id") DO NOTHING;
 
 -- 5g. Demand Forecast Logs
 INSERT INTO public."DemandForecastLog" ("id", "zone", "serviceType", "predictedDemand", "availableSupply", "deficitSurplus", "confidenceScore", "recommendation")
 VALUES
   ('df-1', 'Zone 1 - MVP Colony & Beach Road', 'AC Technician', 42, 18, -24, 0.94, 'High AC servicing demand expected due to coastal humidity surge. Mobilize 6 reserve artisans.'),
   ('df-2', 'Zone 1 - MVP Colony & Beach Road', 'Electrician', 35, 30, -5, 0.91, 'Steady demand in MVP Colony sector. Balanced supply.'),
-  ('df-3', 'Zone 2 - Gajuwaka & Steel Plant', 'Plumber', 28, 14, -14, 0.88, 'Industrial township piping maintenance peak detected. Issue temporary surge incentive.');
+  ('df-3', 'Zone 2 - Gajuwaka & Steel Plant', 'Plumber', 28, 14, -14, 0.88, 'Industrial township piping maintenance peak detected. Issue temporary surge incentive.')
+ON CONFLICT ("id") DO NOTHING;
