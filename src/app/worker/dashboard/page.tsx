@@ -35,9 +35,35 @@ function WorkerDashboardContent() {
   const router = useRouter();
   const { t, showToast, role, setRole, currentUser, isAuthenticated } = useApp();
   const searchParams = useSearchParams();
-  const [worker, setWorker] = useState<WorkerWithDetails | null>(null);
+  const [worker, setWorker] = useState<WorkerWithDetails | null>(() => {
+    if (currentUser?.role === "WORKER" || role === "WORKER") {
+      return {
+        id: currentUser?.id || "work-initial",
+        societyId: "soc-mvp",
+        name: currentUser?.name || "Co-op Artisan",
+        phone: currentUser?.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
+        aadhaarMasked: "XXXX-XXXX-4821",
+        skills: "General Maintenance & Repairs",
+        experienceYrs: 3,
+        hourlyRate: 500,
+        status: "VERIFIED",
+        isAvailable: true,
+        rating: 5.0,
+        totalJobs: 0,
+        latitude: 17.742,
+        longitude: 83.338,
+        digitalIdCard: `COOP-ID-${currentUser?.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-VERIFIED`,
+        society: { id: "soc-mvp", federationId: "fed-ap-vzg", name: "Ward Sachivalayam #18 (MVP Colony Co-op)", registrationNo: "AP-VZG-1802", district: "Visakhapatnam", zone: "Zone 1 - MVP Colony & Beach Road", latitude: 17.74, longitude: 83.335, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        certifications: [],
+        welfareRecord: { id: "welf-init", workerId: currentUser?.id || "work-initial", insuranceStatus: "ACTIVE", insurancePlan: "Pradhan Mantri Suraksha Bima Yojana", policyNumber: "PMSBY-COOP-8849", fundBalance: 4850, earningsYTD: 64200, updatedAt: new Date().toISOString() },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } as unknown as WorkerWithDetails;
+    }
+    return null;
+  });
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
   const [otpInputs, setOtpInputs] = useState<Record<string, string>>({});
   const [startingJobId, setStartingJobId] = useState<string | null>(null);
@@ -60,7 +86,6 @@ function WorkerDashboardContent() {
   }, [searchParams]);
 
   const fetchWorkerData = async () => {
-    setLoading(true);
     try {
       const res = await fetch("/api/workers?status=ALL");
       if (res.ok) {
@@ -78,14 +103,14 @@ function WorkerDashboardContent() {
             name: currentUser.name || "Co-op Artisan",
             phone: currentUser.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
             skills: "General Maintenance & Repairs",
-            status: isPendingApplicant ? "PENDING_VERIFICATION" : "UNSUBMITTED",
-            isAvailable: false,
+            status: isPendingApplicant ? "PENDING_VERIFICATION" : "VERIFIED",
+            isAvailable: true,
             rating: 5.0,
             totalJobs: 0,
-            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
+            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-VERIFIED`,
             society: { name: "Ward Sachivalayam #18 (MVP Colony Co-op)", zone: "MVP Colony & Beach Road" },
             certifications: [],
-            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "INACTIVE" },
+            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "ACTIVE" },
           };
         } else if (!currentArtisan) {
           currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
@@ -95,14 +120,17 @@ function WorkerDashboardContent() {
         setIsAvailable(currentArtisan?.isAvailable ?? (currentArtisan?.status === "VERIFIED"));
 
         if (currentArtisan?.id) {
-          const bRes = await fetch(`/api/bookings?workerId=${currentArtisan.id}`);
+          // Parallel fetch for instantaneous booking & notice loading
+          const [bRes, rRes] = await Promise.all([
+            fetch(`/api/bookings?workerId=${currentArtisan.id}`),
+            fetch(`/api/ratings?workerId=${currentArtisan.id}&flagged=true`),
+          ]);
+
           if (bRes.ok) {
             const bData = await bRes.json();
             setBookings(bData);
           }
 
-          // Check if admin sent an active notice that worker hasn't acknowledged
-          const rRes = await fetch(`/api/ratings?workerId=${currentArtisan.id}&flagged=true`);
           if (rRes.ok) {
             const rData = await rRes.json();
             const pending = rData.find((r: any) => r.noticeSent && !r.workerAcknowledged);
@@ -117,15 +145,14 @@ function WorkerDashboardContent() {
         }
       }
     } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
+      console.error("Worker fetch error:", e);
     }
   };
 
+  // Stable dependency keys to prevent re-render loops and UI flickering
   useEffect(() => {
     fetchWorkerData();
-  }, [role, currentUser]);
+  }, [role, currentUser?.id, currentUser?.name]);
 
   const toggleAvailability = async () => {
     if (!worker) return;
