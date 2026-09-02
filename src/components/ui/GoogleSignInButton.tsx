@@ -20,8 +20,12 @@ export function GoogleSignInButton({
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
-      const redirectUrl = `${origin}/auth/callback`;
+      let origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+      // 0.0.0.0 is an invalid hostname for client browsers - normalize to localhost
+      if (origin.includes("0.0.0.0")) {
+        origin = origin.replace("0.0.0.0", "localhost");
+      }
+      const redirectUrl = `${origin}/auth/select-role`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

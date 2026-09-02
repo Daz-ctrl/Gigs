@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { useApp } from "@/context/AppContext";
 import { UserRole } from "@/types";
-import { User, Wrench, ArrowRight, ShieldCheck, CheckCircle2, Sparkles, Loader2 } from "lucide-react";
+import { User, Wrench, ArrowRight, CheckCircle2, Sparkles, Loader2 } from "lucide-react";
 import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
@@ -23,50 +23,60 @@ export default function SelectRolePage() {
   } | null>(null);
 
   useEffect(() => {
-    async function loadUser() {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        const u = data.user;
-        const name =
-          u.user_metadata?.full_name ||
-          u.user_metadata?.name ||
-          u.email?.split("@")[0] ||
-          "User";
-        const avatar =
-          u.user_metadata?.avatar_url ||
-          u.user_metadata?.picture ||
-          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80";
+    // 0. Auto-redirect from 0.0.0.0 to localhost if ever visited via 0.0.0.0
+    if (typeof window !== "undefined" && window.location.hostname === "0.0.0.0") {
+      window.location.href = window.location.href.replace("0.0.0.0", "localhost");
+      return;
+    }
 
-        setGoogleUser({
-          name,
-          email: u.email || "",
-          avatar,
-          id: u.id,
-        });
+    const updateUserState = (u: any) => {
+      const name =
+        u.user_metadata?.full_name ||
+        u.user_metadata?.name ||
+        u.email?.split("@")[0] ||
+        "Member";
+      const avatar =
+        u.user_metadata?.avatar_url ||
+        u.user_metadata?.picture ||
+        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80";
 
-        // If they already had a stored persona, default to it
-        if (u.user_metadata?.role) {
-          setSelectedRole(u.user_metadata.role as UserRole);
-        }
-      } else {
-        // Fallback for demo or non-supabase session
-        const savedCustom = localStorage.getItem("coopserve_custom_user");
-        if (savedCustom) {
-          try {
-            const parsed = JSON.parse(savedCustom);
-            setGoogleUser({
-              name: parsed.name,
-              email: parsed.subtext?.split(" · ")[0] || "user@example.com",
-              avatar: parsed.avatar,
-              id: parsed.id,
-            });
-          } catch (e) {
-            console.error(e);
-          }
+      setGoogleUser({
+        name,
+        email: u.email || "",
+        avatar,
+        id: u.id,
+      });
+
+      if (u.user_metadata?.role) {
+        setSelectedRole(u.user_metadata.role as UserRole);
+      }
+    };
+
+    // 1. Listen for Supabase auth state changes (hash fragment token processing)
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          updateUserState(session.user);
         }
       }
-    }
-    loadUser();
+    );
+
+    // 2. Direct session check
+    supabase.auth.getSession().then(({ data }) => {
+      if (data?.session?.user) {
+        updateUserState(data.session.user);
+      } else {
+        supabase.auth.getUser().then(({ data: userData }) => {
+          if (userData?.user) {
+            updateUserState(userData.user);
+          }
+        });
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
   }, []);
 
   const handleConfirmRole = async () => {

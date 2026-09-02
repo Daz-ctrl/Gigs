@@ -61,6 +61,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hostname === "0.0.0.0") {
+      window.location.href = window.location.href.replace("0.0.0.0", "localhost");
+      return;
+    }
+
     const savedAuth = localStorage.getItem("coopserve_auth");
     if (savedAuth !== null) {
       setIsAuthenticated(savedAuth === "true");
