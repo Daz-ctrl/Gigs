@@ -3,19 +3,16 @@
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useApp } from "@/context/AppContext";
-import { UserRole } from "@/types";
 import { Loader2 } from "lucide-react";
 
 interface GoogleSignInButtonProps {
   text?: string;
   className?: string;
-  role?: "CUSTOMER" | "WORKER";
 }
 
 export function GoogleSignInButton({
-  text,
+  text = "Continue with Google",
   className = "",
-  role,
 }: GoogleSignInButtonProps) {
   const { showToast } = useApp();
   const [isLoading, setIsLoading] = useState(false);
@@ -23,11 +20,8 @@ export function GoogleSignInButton({
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      const selectedRole: UserRole = role || (localStorage.getItem("coopserve_role") as UserRole) || "CUSTOMER";
-      localStorage.setItem("coopserve_role", selectedRole);
-
       const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
-      const redirectUrl = `${origin}/auth/callback?role=${selectedRole}`;
+      const redirectUrl = `${origin}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -49,8 +43,6 @@ export function GoogleSignInButton({
       setIsLoading(false);
     }
   };
-
-  const buttonText = text || (role === "WORKER" ? "Continue with Google as Worker" : "Continue with Google as Customer");
 
   return (
     <button
@@ -82,7 +74,7 @@ export function GoogleSignInButton({
           />
         </svg>
       )}
-      <span>{isLoading ? "Connecting to Google..." : buttonText}</span>
+      <span>{isLoading ? "Connecting to Google..." : text}</span>
     </button>
   );
 }

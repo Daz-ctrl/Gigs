@@ -4,18 +4,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  User,
   ArrowRight,
   Mail,
   Lock,
   ExternalLink,
   KeyRound,
-  Wrench,
-  ShieldCheck,
-  CheckCircle2,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { UserRole } from "@/types";
 import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
@@ -26,7 +21,6 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, showToast } = useApp();
 
-  const [selectedRole, setSelectedRole] = useState<"CUSTOMER" | "WORKER">("CUSTOMER");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Email & Password state
@@ -59,7 +53,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. Check if it matches an admin or registered system account
+      // Check if it matches an admin or registered account
       const matched = findSystemAccount(emailInput);
       if (matched) {
         if (passwordInput !== matched.password && passwordInput !== "FDH12345") {
@@ -81,28 +75,19 @@ export default function LoginPage() {
         return;
       }
 
-      // 2. Fallback general login
+      // If new email, route to select-role page after creating local session
       const fallbackUser = {
-        role: selectedRole,
+        role: "CUSTOMER" as const,
         name: emailInput.split("@")[0].replace(/\./g, " "),
-        badge: selectedRole === "WORKER" ? "Co-op Worker" : "Resident Customer",
+        badge: "Resident Customer",
         subtext: `${emailInput} · Sahakar Karmakar`,
-        avatar:
-          selectedRole === "WORKER"
-            ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-            : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
         id: `user-${Date.now().toString().slice(-4)}`,
         zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
       };
 
       login(fallbackUser);
-      showToast(`Signed in as ${fallbackUser.name}!`);
-
-      if (selectedRole === "WORKER") {
-        router.push("/worker/dashboard");
-      } else {
-        router.push("/customer/book");
-      }
+      router.push("/auth/select-role");
     } catch (err: any) {
       setAuthError(err.message || "An error occurred during authentication.");
     } finally {
@@ -181,26 +166,17 @@ export default function LoginPage() {
         }
 
         const otpUser = {
-          role: selectedRole,
+          role: "CUSTOMER" as const,
           name: emailInput.split("@")[0].replace(/\./g, " "),
-          badge: selectedRole === "WORKER" ? "Verified Worker" : "Verified Resident",
+          badge: "Verified Member",
           subtext: `${emailInput} · Sahakar Karmakar`,
-          avatar:
-            selectedRole === "WORKER"
-              ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-              : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+          avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
           id: `otp-${Date.now().toString().slice(-4)}`,
           zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
         };
 
         login(otpUser);
-        showToast("Email verified successfully!");
-
-        if (selectedRole === "WORKER") {
-          router.push("/worker/dashboard");
-        } else {
-          router.push("/customer/book");
-        }
+        router.push("/auth/select-role");
       } else {
         setAuthError(data.error || "Invalid OTP code.");
       }
@@ -212,11 +188,11 @@ export default function LoginPage() {
   };
 
   return (
-    <BackgroundGrid className="min-h-screen flex flex-col items-center justify-start pt-24 sm:pt-28 pb-16 px-4">
-      <div className="w-full max-w-[440px] mx-auto">
+    <BackgroundGrid className="min-h-screen flex flex-col items-center justify-center py-20 px-4">
+      <div className="w-full max-w-[420px] mx-auto">
         <SpotlightCard
           spotlightColor="rgba(16, 185, 129, 0.12)"
-          className="p-6 sm:p-7 relative overflow-hidden rounded-[26px] border border-slate-200/90 dark:border-white/[0.1] bg-white/95 dark:bg-[#070c16]/95 backdrop-blur-2xl shadow-xl"
+          className="p-6 sm:p-8 relative overflow-hidden rounded-[28px] border border-slate-200/90 dark:border-white/[0.1] bg-white/95 dark:bg-[#070c16]/95 backdrop-blur-2xl shadow-xl"
         >
           <BorderBeam duration={8} colorFrom="#10b981" colorTo="#06b6d4" />
 
@@ -225,7 +201,7 @@ export default function LoginPage() {
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-emerald-500/20 mx-auto mb-3">
               SK
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Sign In to Sahakar Karmakar
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -233,69 +209,9 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Step 1: Choose Persona */}
-          <div className="mb-5 relative z-10">
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-              1. Choose Your Account Type
-            </label>
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => setSelectedRole("CUSTOMER")}
-                className={`p-3.5 rounded-2xl border text-left transition cursor-pointer relative ${
-                  selectedRole === "CUSTOMER"
-                    ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 dark:text-white shadow-sm"
-                    : "bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <User className={`w-5 h-5 ${selectedRole === "CUSTOMER" ? "text-emerald-500" : "text-slate-400"}`} />
-                  {selectedRole === "CUSTOMER" && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  )}
-                </div>
-                <span className="block font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
-                  Citizen Customer
-                </span>
-                <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  Book verified workers
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSelectedRole("WORKER")}
-                className={`p-3.5 rounded-2xl border text-left transition cursor-pointer relative ${
-                  selectedRole === "WORKER"
-                    ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 dark:text-white shadow-sm"
-                    : "bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <Wrench className={`w-5 h-5 ${selectedRole === "WORKER" ? "text-emerald-500" : "text-slate-400"}`} />
-                  {selectedRole === "WORKER" && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  )}
-                </div>
-                <span className="block font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
-                  Co-op Worker
-                </span>
-                <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  Accept gigs & virtual ID
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* Step 2: Continue with Google OAuth */}
+          {/* Primary Action: Continue with Google */}
           <div className="relative z-10 mb-5">
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-              2. One-Tap Google Sign-In
-            </label>
-            <GoogleSignInButton
-              role={selectedRole}
-              text={`Continue with Google as ${selectedRole === "CUSTOMER" ? "Customer" : "Worker"}`}
-            />
+            <GoogleSignInButton text="Continue with Google" />
 
             <div className="relative my-4 text-center">
               <div className="absolute inset-0 flex items-center">
@@ -303,7 +219,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
                 <span className="bg-white dark:bg-[#070c16] px-2.5 text-slate-400 font-bold">
-                  Or Administrator / Password Login
+                  Or Password / OTP
                 </span>
               </div>
             </div>
@@ -399,7 +315,7 @@ export default function LoginPage() {
                     <span>Authenticating...</span>
                   ) : (
                     <>
-                      <span>Sign In with Password</span>
+                      <span>Sign In</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
