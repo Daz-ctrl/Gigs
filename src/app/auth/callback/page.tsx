@@ -11,46 +11,118 @@ function AuthCallbackContent() {
   const [statusText, setStatusText] = useState("Verifying your Google session...");
 
   useEffect(() => {
+    let isMounted = true;
+
+    async function handleUserRouting(user: any) {
+      if (!isMounted) return;
+
+      // 1. Check user_metadata
+      let role = user.user_metadata?.role;
+
+      // 2. Check Supabase public.profiles table if exists
+      if (!role) {
+        try {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", user.id)
+            .maybeSingle();
+          if (profile?.role) {
+            role = profile.role;
+          }
+        } catch (e) {
+          // profiles table might not exist yet; safe to ignore
+        }
+      }
+
+      // 3. Check local storage
+      if (!role && typeof window !== "undefined") {
+        role = localStorage.getItem("coopserve_role");
+      }
+
+      if (role === "WORKER") {
+        setStatusText("Welcome back! Opening Worker Portal...");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("coopserve_role", "WORKER");
+          localStorage.setItem("coopserve_auth", "true");
+        }
+        router.replace("/worker/dashboard");
+        return;
+      } else if (role === "CUSTOMER") {
+        setStatusText("Welcome back! Opening Citizen Services...");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("coopserve_role", "CUSTOMER");
+          localStorage.setItem("coopserve_auth", "true");
+        }
+        router.replace("/customer/book");
+        return;
+      }
+
+      // If brand new user with no role assigned anywhere
+      setStatusText("Welcome! Please select your account type...");
+      router.replace("/auth/select-role");
+    }
+
     async function handleAuth() {
       try {
         const code = searchParams.get("code");
 
-        if (code) {
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) {
-            console.error("Error exchanging code:", error);
+        // 1. Check if session already exists (auto-detected by Supabase client)
+        const { data: sessionData } = await supabase.auth.getSession();
+        let user = sessionData?.session?.user;
+
+        // 2. If no session yet, attempt exchange without throwing unhandled error
+        if (!user && code) {
+          try {
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+            if (!error && data?.session?.user) {
+              user = data.session.user;
+            }
+          } catch (codeErr) {
+            // Already exchanged by detectSessionInUrl in background
+            console.warn("Exchange note (handled):", codeErr);
           }
         }
-
-        // Fetch current session after exchange
-        const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData?.session?.user;
 
         if (user) {
-          // Check if persona already chosen in metadata or localStorage
-          const savedRole = user.user_metadata?.role || localStorage.getItem("coopserve_role");
-
-          if (savedRole === "WORKER") {
-            setStatusText("Welcome back! Loading Worker Dashboard...");
-            router.replace("/worker/dashboard");
-            return;
-          } else if (savedRole === "CUSTOMER") {
-            setStatusText("Welcome back! Loading Customer Services...");
-            router.replace("/customer/book");
-            return;
-          }
+          await handleUserRouting(user);
+          return;
         }
 
-        // Brand new account without a saved role -> ask once
-        setStatusText("Welcome! Please choose your account type...");
-        router.replace("/auth/select-role");
+        // 3. Fallback: Wait for onAuthStateChange
+        const { data: authListener } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            if (session?.user && isMounted) {
+              authListener.subscription.unsubscribe();
+              await handleUserRouting(session.user);
+            }
+          }
+        );
+
+        // Safety timeout in case no session is found after 3 seconds
+        setTimeout(() => {
+          if (isMounted) {
+            const savedRole = localStorage.getItem("coopserve_role");
+            if (savedRole === "WORKER") {
+              router.replace("/worker/dashboard");
+            } else if (savedRole === "CUSTOMER") {
+              router.replace("/customer/book");
+            } else {
+              router.replace("/auth/select-role");
+            }
+          }
+        }, 3000);
       } catch (e) {
         console.error("Auth callback error:", e);
-        router.replace("/login");
+        router.replace("/auth/select-role");
       }
     }
 
     handleAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [router, searchParams]);
 
   return (

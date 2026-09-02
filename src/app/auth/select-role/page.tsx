@@ -96,6 +96,22 @@ export default function SelectRolePage() {
         },
       });
 
+      // 1b. Upsert into Supabase public.profiles table
+      if (googleUser?.id) {
+        try {
+          await supabase.from("profiles").upsert({
+            id: googleUser.id,
+            email: googleUser.email,
+            name: googleUser.name,
+            avatar_url: googleUser.avatar,
+            role: selectedRole,
+            updated_at: new Date().toISOString(),
+          });
+        } catch (e) {
+          // profiles table is optional
+        }
+      }
+
       // 2. Persist in local storage
       localStorage.setItem("coopserve_role", selectedRole);
       localStorage.setItem("coopserve_auth", "true");
