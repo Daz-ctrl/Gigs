@@ -16,7 +16,7 @@ function AuthCallbackContent() {
     async function handleUserRouting(user: any) {
       if (!isMounted) return;
 
-      // 1. Check user_metadata
+      // 1. Check user_metadata (the primary source of truth)
       let role = user.user_metadata?.role;
 
       // 2. Check Supabase public.profiles table if exists
@@ -27,23 +27,25 @@ function AuthCallbackContent() {
             .select("role")
             .eq("id", user.id)
             .maybeSingle();
-          if (profile?.role) {
+          if (profile?.role && profile.role !== "UNASSIGNED") {
             role = profile.role;
           }
         } catch (e) {
-          // profiles table might not exist yet; safe to ignore
+          // profiles check safe fallback
         }
       }
 
-      // 3. Check local storage
-      if (!role && typeof window !== "undefined") {
-        role = localStorage.getItem("coopserve_role");
+      // 3. Check user-specific localStorage key (scoped by user ID to prevent cross-account leaks)
+      if (!role && typeof window !== "undefined" && user?.id) {
+        role = localStorage.getItem(`coopserve_role_${user.id}`);
       }
 
+      // If user has a verified role saved:
       if (role === "WORKER") {
         setStatusText("Welcome back! Opening Worker Portal...");
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_role", "WORKER");
+          if (user?.id) localStorage.setItem(`coopserve_role_${user.id}`, "WORKER");
           localStorage.setItem("coopserve_auth", "true");
         }
         router.replace("/worker/dashboard");
@@ -52,14 +54,21 @@ function AuthCallbackContent() {
         setStatusText("Welcome back! Opening Citizen Services...");
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_role", "CUSTOMER");
+          if (user?.id) localStorage.setItem(`coopserve_role_${user.id}`, "CUSTOMER");
           localStorage.setItem("coopserve_auth", "true");
         }
         router.replace("/customer/book");
         return;
       }
 
-      // If brand new user with no role assigned anywhere
-      setStatusText("Welcome! Please select your account type...");
+      // If user is brand new and has NO role chosen yet:
+      // Clear any stale global persona in localStorage so it doesn't leak from a deleted account
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("coopserve_role");
+        localStorage.removeItem("coopserve_custom_user");
+      }
+
+      setStatusText("Welcome! Please choose how you want to use the platform...");
       router.replace("/auth/select-role");
     }
 
@@ -71,7 +80,7 @@ function AuthCallbackContent() {
         const { data: sessionData } = await supabase.auth.getSession();
         let user = sessionData?.session?.user;
 
-        // 2. If no session yet, attempt exchange without throwing unhandled error
+        // 2. If no session yet and code is present, attempt exchange safely
         if (!user && code) {
           try {
             const { data, error } = await supabase.auth.exchangeCodeForSession(code);
@@ -79,7 +88,6 @@ function AuthCallbackContent() {
               user = data.session.user;
             }
           } catch (codeErr) {
-            // Already exchanged by detectSessionInUrl in background
             console.warn("Exchange note (handled):", codeErr);
           }
         }
@@ -99,17 +107,10 @@ function AuthCallbackContent() {
           }
         );
 
-        // Safety timeout in case no session is found after 3 seconds
+        // Safety timeout
         setTimeout(() => {
           if (isMounted) {
-            const savedRole = localStorage.getItem("coopserve_role");
-            if (savedRole === "WORKER") {
-              router.replace("/worker/dashboard");
-            } else if (savedRole === "CUSTOMER") {
-              router.replace("/customer/book");
-            } else {
-              router.replace("/auth/select-role");
-            }
+            router.replace("/auth/select-role");
           }
         }, 3000);
       } catch (e) {

@@ -47,8 +47,8 @@ export default function SelectRolePage() {
         id: u.id,
       });
 
-      // If user already chose a role in the past, skip this screen and route immediately!
-      const existingRole = u.user_metadata?.role || localStorage.getItem("coopserve_role");
+      // If this specific user already chose a role in the past, skip this screen and route immediately!
+      const existingRole = u.user_metadata?.role;
       if (existingRole === "WORKER") {
         router.replace("/worker/dashboard");
         return;
@@ -114,6 +114,9 @@ export default function SelectRolePage() {
 
       // 2. Persist in local storage
       localStorage.setItem("coopserve_role", selectedRole);
+      if (googleUser?.id) {
+        localStorage.setItem(`coopserve_role_${googleUser.id}`, selectedRole);
+      }
       localStorage.setItem("coopserve_auth", "true");
 
       const isWorker = selectedRole === "WORKER";
