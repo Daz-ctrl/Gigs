@@ -49,7 +49,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-2xl mx-auto my-10">
         <SpotlightCard
           spotlightColor="rgba(16, 185, 129, 0.16)"
-          className="p-6 sm:p-10 relative overflow-hidden border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-950/85 backdrop-blur-2xl shadow-2xl"
+          className="p-6 sm:p-10 relative overflow-hidden rounded-[32px] border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-950/85 backdrop-blur-2xl shadow-2xl"
         >
           <BorderBeam duration={7} colorFrom="#10b981" colorTo="#06b6d4" />
 

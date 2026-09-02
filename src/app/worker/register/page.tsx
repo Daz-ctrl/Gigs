@@ -322,7 +322,7 @@ export default function WorkerRegisterPage() {
 
             {isKycVerified ? (
               /* Verified Success State with BorderBeam */
-              <div className="relative overflow-hidden p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/40 flex items-center justify-between gap-4 shadow-xl">
+              <div className="relative overflow-hidden p-5 rounded-3xl bg-slate-900/90 border border-emerald-500/40 flex items-center justify-between gap-4 shadow-xl">
                 <BorderBeam colorFrom="#10b981" colorTo="#06b6d4" duration={4} />
                 <div className="relative z-10 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/30">
