@@ -28,33 +28,40 @@ export function BorderBeam({
   return (
     <div
       aria-hidden="true"
-      style={{ borderRadius }}
+      style={{
+        borderRadius,
+        contain: "paint layout", // Hardware isolate rendering so scrolling never repaints parent DOM
+      }}
       className={cn(
         "pointer-events-none absolute inset-0 rounded-[inherit] overflow-hidden z-0",
         className
       )}
     >
-      {/* 1. Large Vibrant LED Beam Rotating Around Perimeter */}
+      {/* 1. Large Vibrant LED Beam (GPU-accelerated with translateZ) */}
       <div
         style={{
           animationDuration: `${duration}s`,
           animationDelay: `-${delay}s`,
           background: `conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 20deg, ${colorFrom} 60deg, ${colorTo} 115deg, transparent 155deg, transparent 360deg)`,
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
         }}
-        className="absolute -inset-[150%] animate-spin will-change-transform rounded-full filter blur-[1px]"
+        className="absolute -inset-[150%] animate-spin will-change-transform rounded-full"
       />
 
-      {/* 2. Wide Soft Ambient Neon Glow Trace */}
+      {/* 2. Soft Ambient Neon Glow Trace (Active on Desktop/Tablet, off on mobile to prevent scroll lag) */}
       <div
         style={{
           animationDuration: `${duration}s`,
           animationDelay: `-${delay}s`,
           background: `conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 15deg, ${colorFrom} 60deg, ${colorTo} 115deg, transparent 160deg, transparent 360deg)`,
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
         }}
-        className="absolute -inset-[150%] animate-spin will-change-transform rounded-full filter blur-[5px] opacity-75"
+        className="hidden sm:block absolute -inset-[150%] animate-spin will-change-transform rounded-full filter blur-[4px] opacity-60"
       />
 
-      {/* 3. SOLID INNER SHIELD: Covers 100% of the inside content so the beam NEVER passes through the interior! */}
+      {/* 3. SOLID INNER SHIELD */}
       <div
         style={{
           top: `${borderWidth}px`,
@@ -63,7 +70,7 @@ export function BorderBeam({
           bottom: `${borderWidth}px`,
           borderRadius: innerRadius,
         }}
-        className="absolute bg-white/95 dark:bg-slate-900/95 z-10 backdrop-blur-2xl"
+        className="absolute bg-white/95 dark:bg-[#070c16] z-10"
       />
     </div>
   );
