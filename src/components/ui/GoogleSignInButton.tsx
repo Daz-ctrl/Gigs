@@ -20,23 +20,19 @@ export function GoogleSignInButton({
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      // If user is on 0.0.0.0, redirect to localhost first to prevent PKCE state domain mismatch
       if (typeof window !== "undefined" && window.location.hostname === "0.0.0.0") {
         window.location.href = window.location.href.replace("0.0.0.0", "localhost");
         return;
       }
 
       const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
-      const redirectUrl = `${origin}/auth/select-role`;
+      const redirectUrl = `${origin}/auth/callback`;
 
+      // Notice: Removed prompt: "consent" so Google does not ask permissions every single time
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: redirectUrl,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
         },
       });
 

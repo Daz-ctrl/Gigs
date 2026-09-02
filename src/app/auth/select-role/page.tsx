@@ -47,8 +47,14 @@ export default function SelectRolePage() {
         id: u.id,
       });
 
-      if (u.user_metadata?.role) {
-        setSelectedRole(u.user_metadata.role as UserRole);
+      // If user already chose a role in the past, skip this screen and route immediately!
+      const existingRole = u.user_metadata?.role || localStorage.getItem("coopserve_role");
+      if (existingRole === "WORKER") {
+        router.replace("/worker/dashboard");
+        return;
+      } else if (existingRole === "CUSTOMER") {
+        router.replace("/customer/book");
+        return;
       }
     };
 
