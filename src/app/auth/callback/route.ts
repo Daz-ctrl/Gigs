@@ -6,11 +6,30 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
+  const role = requestUrl.searchParams.get("role") || "CUSTOMER";
 
   if (code) {
-    await supabase.auth.exchangeCodeForSession(code);
+    try {
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      if (data?.session?.user) {
+        // Persist the chosen persona in Supabase user metadata
+        await supabase.auth.updateUser({
+          data: {
+            role: role,
+            persona: role,
+          },
+        });
+      }
+    } catch (e) {
+      console.error("Auth callback exchange error:", e);
+    }
   }
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(new URL("/customer/book", request.url));
+  // Redirect to the appropriate portal according to the chosen persona
+  const targetPath = role === "WORKER" ? "/worker/dashboard" : "/customer/book";
+  const redirectUrl = new URL(targetPath, request.url);
+  redirectUrl.searchParams.set("login", "success");
+  redirectUrl.searchParams.set("role", role);
+
+  return NextResponse.redirect(redirectUrl);
 }

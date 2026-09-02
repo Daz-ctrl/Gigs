@@ -100,30 +100,42 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             return;
           }
 
+          const userRole: UserRole =
+            (u.user_metadata?.role as UserRole) ||
+            (localStorage.getItem("coopserve_role") as UserRole) ||
+            "CUSTOMER";
+
           const fullName =
             u.user_metadata?.full_name ||
             u.user_metadata?.name ||
             u.email?.split("@")[0] ||
-            "Resident";
+            (userRole === "WORKER" ? "Co-op Worker" : "Resident Customer");
+
           const avatarUrl =
             u.user_metadata?.avatar_url ||
             u.user_metadata?.picture ||
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80";
+            (userRole === "WORKER"
+              ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+              : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80");
 
+          const isWorker = userRole === "WORKER";
           const supabaseUser: DemoUser = {
-            role: "CUSTOMER",
+            role: userRole,
             name: fullName,
-            badge: "Google Verified Resident",
-            subtext: `${u.email} · MVP Colony, Vizag`,
+            badge: isWorker ? "Google Verified Worker" : "Google Verified Resident",
+            subtext: isWorker
+              ? `${u.email} · Registered Co-op Member`
+              : `${u.email} · MVP Colony, Vizag`,
             avatar: avatarUrl,
-            id: `sb-${u.id.slice(-4)}`,
+            id: `sb-${u.id.slice(-6)}`,
             zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
           };
 
-          setRoleState("CUSTOMER");
+          setRoleState(userRole);
           setCustomUser(supabaseUser);
           setIsAuthenticated(true);
           localStorage.setItem("coopserve_auth", "true");
+          localStorage.setItem("coopserve_role", userRole);
           localStorage.setItem("coopserve_custom_user", JSON.stringify(supabaseUser));
         }
       }

@@ -44,6 +44,9 @@ export async function PATCH(
       updateData.status = status;
       if (status === "VERIFIED") {
         updateData.digitalIdCard = `COOP-ID-VERIFIED-${Date.now().toString().slice(-6)}`;
+        if (isAvailable === undefined) {
+          updateData.isAvailable = true;
+        }
       }
     }
     if (isAvailable !== undefined) {

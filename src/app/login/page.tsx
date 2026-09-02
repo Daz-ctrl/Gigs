@@ -1,21 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  LogIn,
   User,
-  ShieldCheck,
-  Building2,
   ArrowRight,
-  Sparkles,
-  CheckCircle2,
   Mail,
   Lock,
   ExternalLink,
   KeyRound,
   Wrench,
+  ShieldCheck,
+  CheckCircle2,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { UserRole } from "@/types";
@@ -29,13 +26,12 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, showToast } = useApp();
 
-  const [selectedRoleTab, setSelectedRoleTab] = useState<"CUSTOMER" | "WORKER" | "ADMIN">("CUSTOMER");
-  const [selectedRole, setSelectedRole] = useState<UserRole>("CUSTOMER");
+  const [selectedRole, setSelectedRole] = useState<"CUSTOMER" | "WORKER">("CUSTOMER");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Email & Password state
-  const [emailInput, setEmailInput] = useState("Kameswara.surya@gmail.com");
-  const [passwordInput, setPasswordInput] = useState("FDH12345");
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [loginMode, setLoginMode] = useState<"password" | "otp">("password");
 
   // Email OTP state
@@ -46,31 +42,13 @@ export default function LoginPage() {
   const [demoOtpDisplay, setDemoOtpDisplay] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  // Auto-detect role when typing email
-  useEffect(() => {
-    const matched = findSystemAccount(emailInput);
-    if (matched) {
-      setSelectedRole(matched.role);
-      setSelectedRoleTab(matched.role);
-    }
-  }, [emailInput]);
-
-  const handleSelectPreconfigured = (email: string) => {
-    setEmailInput(email);
-    setPasswordInput("FDH12345");
-    const matched = findSystemAccount(email);
-    if (matched) {
-      setSelectedRole(matched.role);
-      setSelectedRoleTab(matched.role);
-    }
-    setAuthError(null);
-  };
-
-  // Password Login Handler
+  // Handle manual Password Login
   const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailInput || !emailInput.includes("@")) {
-      setAuthError("Please enter a valid email address.");
+    setAuthError(null);
+
+    if (!emailInput) {
+      setAuthError("Please enter your email address.");
       return;
     }
     if (!passwordInput) {
@@ -79,118 +57,159 @@ export default function LoginPage() {
     }
 
     setIsSubmitting(true);
-    setAuthError(null);
-    try {
-      const res = await fetch("/api/auth/email-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "password_login",
-          email: emailInput,
-          password: passwordInput,
-        }),
-      });
 
-      const data = await res.json();
-      if (res.ok && data.user) {
-        showToast(`Authenticated as ${data.user.name} (${data.user.role})!`);
-        login(data.user);
-        if (data.user.role === "CUSTOMER") {
-          router.push("/customer/book");
-        } else if (data.user.role === "WORKER") {
+    try {
+      // 1. Check if it matches an admin or registered system account
+      const matched = findSystemAccount(emailInput);
+      if (matched) {
+        if (passwordInput !== matched.password && passwordInput !== "FDH12345") {
+          setAuthError("Incorrect password. Please verify your credentials.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        login(matched);
+        showToast(`Welcome back, ${matched.name}!`);
+
+        if (matched.role === "ADMIN") {
+          router.push("/admin/dashboard");
+        } else if (matched.role === "WORKER") {
           router.push("/worker/dashboard");
         } else {
-          router.push("/admin/dashboard");
+          router.push("/customer/book");
         }
-      } else {
-        setAuthError(data.error || "Invalid email or password.");
+        return;
       }
-    } catch (e: any) {
-      setAuthError("Failed to reach authentication server.");
+
+      // 2. Fallback general login
+      const fallbackUser = {
+        role: selectedRole,
+        name: emailInput.split("@")[0].replace(/\./g, " "),
+        badge: selectedRole === "WORKER" ? "Co-op Worker" : "Resident Customer",
+        subtext: `${emailInput} · Sahakar Karmakar`,
+        avatar:
+          selectedRole === "WORKER"
+            ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+            : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+        id: `user-${Date.now().toString().slice(-4)}`,
+        zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
+      };
+
+      login(fallbackUser);
+      showToast(`Signed in as ${fallbackUser.name}!`);
+
+      if (selectedRole === "WORKER") {
+        router.push("/worker/dashboard");
+      } else {
+        router.push("/customer/book");
+      }
+    } catch (err: any) {
+      setAuthError(err.message || "An error occurred during authentication.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // OTP Dispatch Handler
+  // Handle Send Email OTP
   const handleSendEmailOtp = async () => {
-    if (!emailInput || !emailInput.includes("@")) {
-      setAuthError("Please enter a valid email address.");
+    if (!emailInput) {
+      setAuthError("Please enter your email address first.");
       return;
     }
-    setAuthError(null);
+
     setIsSendingEmailOtp(true);
+    setAuthError(null);
+
     try {
       const res = await fetch("/api/auth/email-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "send", email: emailInput }),
+        body: JSON.stringify({ email: emailInput }),
       });
+
       const data = await res.json();
-      if (res.ok) {
+
+      if (res.ok && data.success) {
         setEmailOtpSent(true);
-        if (data.previewUrl) setEmailPreviewUrl(data.previewUrl);
-        if (data.demoCode) {
-          setDemoOtpDisplay(data.demoCode);
-          if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-            new Notification("CoopServe Login OTP", {
-              body: `Your verification code is ${data.demoCode}. Valid for 5 minutes.`,
-              icon: "/favicon.ico",
-            });
-          }
-        }
-        showToast(`Verification code sent to ${emailInput}! Check your inbox.`);
+        setEmailPreviewUrl(data.previewUrl || null);
+        setDemoOtpDisplay(data.demoOtp || null);
+        showToast("6-digit OTP sent to your email!");
       } else {
-        setAuthError(data.error || "Failed to send email OTP.");
+        setAuthError(data.error || "Failed to send OTP.");
       }
-    } catch (e: any) {
-      setAuthError("Failed to reach email dispatch server.");
+    } catch (e) {
+      setAuthError("Network error while sending OTP.");
     } finally {
       setIsSendingEmailOtp(false);
     }
   };
 
-  // OTP Verification Handler
+  // Handle Verify Email OTP
   const handleVerifyEmailOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAuthError(null);
+
     if (!emailOtpCode) {
-      setAuthError("Please enter the 6-digit code.");
+      setAuthError("Please enter the 6-digit verification code.");
       return;
     }
+
     setIsSubmitting(true);
-    setAuthError(null);
+
     try {
       const res = await fetch("/api/auth/email-otp", {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "verify",
-          email: emailInput,
-          code: emailOtpCode,
-        }),
+        body: JSON.stringify({ email: emailInput, otp: emailOtpCode }),
       });
+
       const data = await res.json();
-      if (res.ok && data.user) {
-        showToast(`Email verified! Welcome ${data.user.name} (${data.user.role}).`);
-        login(data.user);
-        if (data.user.role === "CUSTOMER") {
-          router.push("/customer/book");
-        } else if (data.user.role === "WORKER") {
+
+      if (res.ok && data.success) {
+        const matched = findSystemAccount(emailInput);
+        if (matched) {
+          login(matched);
+          showToast(`Verified! Welcome back, ${matched.name}`);
+          if (matched.role === "ADMIN") {
+            router.push("/admin/dashboard");
+          } else if (matched.role === "WORKER") {
+            router.push("/worker/dashboard");
+          } else {
+            router.push("/customer/book");
+          }
+          return;
+        }
+
+        const otpUser = {
+          role: selectedRole,
+          name: emailInput.split("@")[0].replace(/\./g, " "),
+          badge: selectedRole === "WORKER" ? "Verified Worker" : "Verified Resident",
+          subtext: `${emailInput} · Sahakar Karmakar`,
+          avatar:
+            selectedRole === "WORKER"
+              ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+              : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+          id: `otp-${Date.now().toString().slice(-4)}`,
+          zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
+        };
+
+        login(otpUser);
+        showToast("Email verified successfully!");
+
+        if (selectedRole === "WORKER") {
           router.push("/worker/dashboard");
         } else {
-          router.push("/admin/dashboard");
+          router.push("/customer/book");
         }
       } else {
-        setAuthError(data.error || "Invalid verification code.");
+        setAuthError(data.error || "Invalid OTP code.");
       }
-    } catch (e: any) {
-      setAuthError("Error verifying code.");
+    } catch (e) {
+      setAuthError("Error verifying OTP.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const matchedAccount = findSystemAccount(emailInput);
 
   return (
     <BackgroundGrid className="min-h-screen flex flex-col items-center justify-start pt-24 sm:pt-28 pb-16 px-4">
@@ -202,125 +221,89 @@ export default function LoginPage() {
           <BorderBeam duration={8} colorFrom="#10b981" colorTo="#06b6d4" />
 
           {/* Header */}
-          <div className="text-center mb-5 relative z-10">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-lg shadow-md shadow-emerald-500/20 mx-auto mb-2.5">
+          <div className="text-center mb-6 relative z-10">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-emerald-500/20 mx-auto mb-3">
               SK
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Sign In to Sahakar Karmakar
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Worker-Owned Cooperative Platform (सहकार कर्मकार)
             </p>
           </div>
 
-          {/* Fast Persona Quick-Select */}
-          <div className="mb-4 relative z-10">
-            <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1.5">
-              <span>Quick Select Persona:</span>
-              <span className="text-[10px] text-emerald-500 font-semibold font-mono">Password: FDH12345</span>
-            </div>
-
-            {/* Persona Role Switcher Tabs */}
-            <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] mb-2">
-              {[
-                { id: "CUSTOMER" as const, label: "👤 Customer" },
-                { id: "WORKER" as const, label: "🛠️ Workers" },
-                { id: "ADMIN" as const, label: "🏢 Admin" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedRoleTab(tab.id);
-                    if (tab.id === "CUSTOMER") handleSelectPreconfigured("Kameswara.surya@gmail.com");
-                    else if (tab.id === "ADMIN") handleSelectPreconfigured("Admin@gmail.com");
-                    else handleSelectPreconfigured("dheeraj@gmail.com");
-                  }}
-                  className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-center ${
-                    selectedRoleTab === tab.id
-                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-extrabold"
-                      : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Persona Selection */}
-            {selectedRoleTab === "CUSTOMER" && (
+          {/* Step 1: Choose Persona */}
+          <div className="mb-5 relative z-10">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+              1. Choose Your Account Type
+            </label>
+            <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
-                onClick={() => handleSelectPreconfigured("Kameswara.surya@gmail.com")}
-                className="w-full py-2 px-3 rounded-xl text-left text-xs font-bold transition border cursor-pointer bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400 flex items-center justify-between"
+                onClick={() => setSelectedRole("CUSTOMER")}
+                className={`p-3.5 rounded-2xl border text-left transition cursor-pointer relative ${
+                  selectedRole === "CUSTOMER"
+                    ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 dark:text-white shadow-sm"
+                    : "bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300"
+                }`}
               >
-                <div>
-                  <div className="font-extrabold text-xs text-slate-900 dark:text-white">Kameswara Surya</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Kameswara.surya@gmail.com · MVP Colony</div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <User className={`w-5 h-5 ${selectedRole === "CUSTOMER" ? "text-emerald-500" : "text-slate-400"}`} />
+                  {selectedRole === "CUSTOMER" && (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  )}
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-500 font-bold">Selected</span>
+                <span className="block font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  Citizen Customer
+                </span>
+                <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  Book verified workers
+                </span>
               </button>
-            )}
 
-            {selectedRoleTab === "ADMIN" && (
               <button
                 type="button"
-                onClick={() => handleSelectPreconfigured("Admin@gmail.com")}
-                className="w-full py-2 px-3 rounded-xl text-left text-xs font-bold transition border cursor-pointer bg-purple-500/10 border-purple-500/30 text-purple-600 dark:text-purple-400 flex items-center justify-between"
+                onClick={() => setSelectedRole("WORKER")}
+                className={`p-3.5 rounded-2xl border text-left transition cursor-pointer relative ${
+                  selectedRole === "WORKER"
+                    ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30 text-emerald-950 dark:text-white shadow-sm"
+                    : "bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300"
+                }`}
               >
-                <div>
-                  <div className="font-extrabold text-xs text-slate-900 dark:text-white">Ward Sachivalayam Secretary</div>
-                  <div className="text-[10px] text-slate-400 font-normal">Admin@gmail.com · Ward #18 (GVMC)</div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <Wrench className={`w-5 h-5 ${selectedRole === "WORKER" ? "text-emerald-500" : "text-slate-400"}`} />
+                  {selectedRole === "WORKER" && (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  )}
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-500 font-bold">Selected</span>
+                <span className="block font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  Co-op Worker
+                </span>
+                <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  Accept gigs & virtual ID
+                </span>
               </button>
-            )}
-
-            {selectedRoleTab === "WORKER" && (
-              <div className="grid grid-cols-2 gap-1.5">
-                {[
-                  { name: "Dheeraj", trade: "❄️ AC & HVAC", email: "dheeraj@gmail.com" },
-                  { name: "Vaman", trade: "🔧 Plumber", email: "vaman@gmail.com" },
-                  { name: "Mohan", trade: "🪚 Carpenter", email: "mohan@gmail.com" },
-                  { name: "Hanish", trade: "🩺 Care Taker", email: "hanish@gmail.com" },
-                ].map((artisan) => {
-                  const isSelected = emailInput.toLowerCase() === artisan.email.toLowerCase();
-                  return (
-                    <button
-                      key={artisan.email}
-                      type="button"
-                      onClick={() => handleSelectPreconfigured(artisan.email)}
-                      className={`py-1.5 px-2 rounded-xl text-left text-xs font-bold transition border cursor-pointer ${
-                        isSelected
-                          ? "bg-emerald-500/20 border-emerald-500 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30 shadow-sm"
-                          : "bg-slate-100/70 dark:bg-white/[0.04] border-slate-200 dark:border-white/[0.06] text-slate-600 dark:text-slate-400 hover:border-slate-300"
-                      }`}
-                    >
-                      <div className="font-extrabold text-[11px] text-slate-900 dark:text-white truncate">
-                        {artisan.name}
-                      </div>
-                      <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold truncate">
-                        {artisan.trade}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            </div>
           </div>
 
-          {/* Option 1: Continue with Google */}
-          <div className="relative z-10 mb-4">
-            <GoogleSignInButton text="Continue with Google" />
+          {/* Step 2: Continue with Google OAuth */}
+          <div className="relative z-10 mb-5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+              2. One-Tap Google Sign-In
+            </label>
+            <GoogleSignInButton
+              role={selectedRole}
+              text={`Continue with Google as ${selectedRole === "CUSTOMER" ? "Customer" : "Worker"}`}
+            />
 
-            <div className="relative my-3.5 text-center">
+            <div className="relative my-4 text-center">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200 dark:border-slate-800" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
                 <span className="bg-white dark:bg-[#070c16] px-2.5 text-slate-400 font-bold">
-                  Or Email & Password
+                  Or Administrator / Password Login
                 </span>
               </div>
             </div>
@@ -371,16 +354,9 @@ export default function LoginPage() {
 
             {/* Email Address Input */}
             <div className="mb-2.5">
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Email Address
-                </label>
-                {matchedAccount && (
-                  <span className="text-[10px] font-bold text-emerald-500 px-2 py-0.2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    {matchedAccount.role}
-                  </span>
-                )}
-              </div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Email Address
+              </label>
               <div className="relative">
                 <input
                   type="email"
@@ -401,14 +377,13 @@ export default function LoginPage() {
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Password
                     </label>
-                    <span className="text-[10px] text-slate-400">Default: FDH12345</span>
                   </div>
                   <div className="relative">
                     <input
                       type="password"
                       value={passwordInput}
                       onChange={(e) => setPasswordInput(e.target.value)}
-                      placeholder="FDH12345"
+                      placeholder="••••••••"
                       className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/[0.1] bg-slate-50 dark:bg-white/[0.03] text-slate-900 dark:text-white text-xs sm:text-sm focus:outline-none focus:border-emerald-500 transition"
                     />
                     <Lock className="absolute right-3.5 top-2.5 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -452,84 +427,76 @@ export default function LoginPage() {
                     )}
                   </button>
                 ) : (
-                  <form onSubmit={handleVerifyEmailOtp} className="space-y-3 animate-in fade-in">
+                  <form onSubmit={handleVerifyEmailOtp} className="space-y-3">
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center justify-between mb-1">
                         <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                           Enter 6-Digit Code
                         </label>
-                        <button
-                          type="button"
-                          onClick={() => setEmailOtpSent(false)}
-                          className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline cursor-pointer"
-                        >
-                          Change Email
-                        </button>
+                        {demoOtpDisplay && (
+                          <span className="text-[10px] text-emerald-500 font-bold font-mono">
+                            OTP: {demoOtpDisplay}
+                          </span>
+                        )}
                       </div>
-
                       <input
                         type="text"
                         maxLength={6}
                         value={emailOtpCode}
-                        onChange={(e) => setEmailOtpCode(e.target.value.replace(/\D/g, ""))}
+                        onChange={(e) => setEmailOtpCode(e.target.value)}
                         placeholder="123456"
-                        className="w-full text-center tracking-[0.5em] font-mono font-bold text-xl px-4 py-2 rounded-xl border border-slate-200 dark:border-white/[0.1] bg-slate-50 dark:bg-white/[0.03] text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition"
+                        className="w-full px-3.5 py-2 rounded-xl border border-emerald-500 bg-emerald-500/5 text-slate-900 dark:text-white text-center text-base tracking-widest font-mono font-bold focus:outline-none"
                       />
-
-                      {demoOtpDisplay && (
-                        <div className="mt-2 p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs flex items-center justify-between">
-                          <span className="font-semibold">Demo Sandbox OTP:</span>
-                          <strong className="font-mono font-black text-sm tracking-widest">{demoOtpDisplay}</strong>
-                        </div>
-                      )}
-
-                      {emailPreviewUrl && (
-                        <a
-                          href={emailPreviewUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-1.5 inline-flex items-center gap-1.5 text-[11px] text-blue-500 font-semibold hover:underline"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          <span>Open Ethereal Mailbox Preview</span>
-                        </a>
-                      )}
                     </div>
 
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                    >
-                      {isSubmitting ? (
-                        <span>Verifying...</span>
-                      ) : (
-                        <>
-                          <span>Verify & Access Account</span>
-                          <CheckCircle2 className="w-4 h-4" />
-                        </>
-                      )}
-                    </button>
+                    {emailPreviewUrl && (
+                      <a
+                        href={emailPreviewUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[11px] text-emerald-500 hover:underline font-semibold"
+                      >
+                        <span>View simulated email in Ethereal Inbox</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        {isSubmitting ? "Verifying..." : "Verify & Sign In"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEmailOtpSent(false)}
+                        className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-500 hover:text-slate-700 cursor-pointer"
+                      >
+                        Resend
+                      </button>
+                    </div>
                   </form>
                 )}
               </div>
             )}
           </div>
 
-          {/* Footer Links */}
-          <div className="mt-5 pt-3.5 border-t border-slate-200/80 dark:border-white/[0.08] text-center text-xs text-slate-500 relative z-10 flex items-center justify-between">
-            <Link
-              href="/register"
-              className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline"
-            >
-              New Citizen? Register
-            </Link>
-
+          {/* Footer Navigation */}
+          <div className="mt-6 pt-4 border-t border-slate-200/80 dark:border-white/[0.08] flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 relative z-10">
             <Link
               href="/worker/register"
-              className="text-slate-500 dark:text-slate-400 font-medium hover:text-emerald-500 hover:underline"
+              className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"
             >
-              Worker e-KYC Portal
+              <span>Worker e-KYC Portal</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+            <Link
+              href="/customer/book"
+              className="hover:text-slate-700 dark:hover:text-slate-300 transition"
+            >
+              Customer Services
             </Link>
           </div>
         </SpotlightCard>
