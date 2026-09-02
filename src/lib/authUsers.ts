@@ -18,7 +18,7 @@ export const PRECONFIGURED_USERS: Record<string, SystemAccount> = {
   "admin@gmail.com": {
     email: "Admin@gmail.com",
     role: "ADMIN",
-    password: "FDH12345",
+    password: "1234",
     name: "Ward Sachivalayam Secretary",
     badge: "Ward Sachivalayam #18 · GVMC",
     subtext: "Admin@gmail.com · Ward Welfare & Development Secretary",
