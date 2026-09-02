@@ -14,19 +14,6 @@ export interface SystemAccount {
 }
 
 export const PRECONFIGURED_USERS: Record<string, SystemAccount> = {
-  // Customer Persona
-  "kameswara.surya@gmail.com": {
-    email: "Kameswara.surya@gmail.com",
-    role: "CUSTOMER",
-    password: "FDH12345",
-    name: "Kameswara Surya",
-    badge: "Verified Resident Customer",
-    subtext: "Kameswara.surya@gmail.com · MVP Colony, Vizag",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-    id: "cust-kameswara",
-    zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
-  },
-
   // Sector Admin Persona
   "admin@gmail.com": {
     email: "Admin@gmail.com",
