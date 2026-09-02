@@ -153,12 +153,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setRole = (newRole: UserRole) => {
     setRoleState(newRole);
-    setCustomUser(null);
-    localStorage.removeItem("coopserve_custom_user");
     localStorage.setItem("coopserve_role", newRole);
     setIsAuthenticated(true);
     localStorage.setItem("coopserve_auth", "true");
-    showToast(`Switched persona to ${DEMO_USERS[newRole].name} (${DEMO_USERS[newRole].badge})`);
+
+    if (customUser) {
+      const isWorker = newRole === "WORKER";
+      const updatedUser: DemoUser = {
+        ...customUser,
+        role: newRole,
+        badge: isWorker
+          ? "Google Verified Worker"
+          : newRole === "CUSTOMER"
+          ? "Google Verified Resident"
+          : "Sector Administrator",
+      };
+      setCustomUser(updatedUser);
+      localStorage.setItem("coopserve_custom_user", JSON.stringify(updatedUser));
+      showToast(`Switched persona to ${updatedUser.name} (${updatedUser.badge})`);
+    } else {
+      showToast(`Switched persona to ${DEMO_USERS[newRole].name} (${DEMO_USERS[newRole].badge})`);
+    }
   };
 
   const login = (userOrRole: DemoUser | UserRole) => {

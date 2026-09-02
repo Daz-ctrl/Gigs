@@ -108,6 +108,24 @@ export default function SelectRolePage() {
         (isWorker
           ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
           : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80");
+      const userId = googleUser?.id ? `sb-${googleUser.id.slice(-6)}` : `usr-${Date.now().toString().slice(-4)}`;
+
+      // 3. Persist profile record into PostgreSQL/Prisma database
+      try {
+        await fetch("/api/auth/sync-profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: userId,
+            email: uEmail,
+            name: uName,
+            avatar: uAvatar,
+            role: selectedRole,
+          }),
+        });
+      } catch (syncErr) {
+        console.warn("DB profile sync non-blocking:", syncErr);
+      }
 
       const appUser = {
         role: selectedRole,
@@ -117,12 +135,12 @@ export default function SelectRolePage() {
           ? `${uEmail} · Registered Co-op Member`
           : `${uEmail} · MVP Colony, Vizag`,
         avatar: uAvatar,
-        id: googleUser?.id ? `sb-${googleUser.id.slice(-6)}` : `usr-${Date.now().toString().slice(-4)}`,
+        id: userId,
         zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
       };
 
-      setRole(selectedRole);
       login(appUser);
+      setRole(selectedRole);
       showToast(`Welcome! You are signed in as ${isWorker ? "a Worker" : "a Resident Customer"}.`);
 
       if (isWorker) {
