@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Building2,
   Users,
@@ -69,8 +69,9 @@ interface FlaggedRating {
 }
 
 function AdminDashboardContent() {
-  const { t, showToast, role } = useApp();
+  const { t, showToast, role, isAuthenticated } = useApp();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [workers, setWorkers] = useState<WorkerWithDetails[]>([]);
   const [flaggedRatings, setFlaggedRatings] = useState<FlaggedRating[]>([]);
   const [alertSubTab, setAlertSubTab] = useState<"pending" | "acknowledged">("pending");
@@ -81,6 +82,13 @@ function AdminDashboardContent() {
 
   // Policy state
   const [wageFloor, setWageFloor] = useState(450);
+
+  useEffect(() => {
+    if (isAuthenticated && role !== "ADMIN") {
+      showToast("Access restricted: Administrator portal is reserved for sector admins.");
+      router.replace(role === "WORKER" ? "/worker/dashboard" : "/customer/book");
+    }
+  }, [role, isAuthenticated, router, showToast]);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab");

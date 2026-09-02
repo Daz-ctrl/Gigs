@@ -33,7 +33,7 @@ import { BorderBeam } from "@/components/ui/BorderBeam";
 
 function WorkerDashboardContent() {
   const router = useRouter();
-  const { t, showToast, role, setRole, currentUser } = useApp();
+  const { t, showToast, role, setRole, currentUser, isAuthenticated } = useApp();
   const searchParams = useSearchParams();
   const [worker, setWorker] = useState<WorkerWithDetails | null>(null);
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
@@ -44,6 +44,13 @@ function WorkerDashboardContent() {
   const [hasActiveReview, setHasActiveReview] = useState(false);
   const [activeNoticeRating, setActiveNoticeRating] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<"jobs" | "id">("jobs");
+
+  useEffect(() => {
+    if (isAuthenticated && role !== "WORKER") {
+      showToast("Access restricted: Worker dashboard is reserved for verified workers.");
+      router.replace(role === "ADMIN" ? "/admin/dashboard" : "/customer/book");
+    }
+  }, [role, isAuthenticated, router, showToast]);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab");

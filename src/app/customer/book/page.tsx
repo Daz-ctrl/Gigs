@@ -59,7 +59,7 @@ const ZONES = [
 
 export default function CustomerBookPage() {
   const router = useRouter();
-  const { t, showToast, role } = useApp();
+  const { t, showToast, role, isAuthenticated } = useApp();
   const [workers, setWorkers] = useState<WorkerWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState("ALL");
@@ -99,6 +99,16 @@ export default function CustomerBookPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (role === "WORKER") {
+        router.replace("/worker/dashboard");
+      } else if (role === "ADMIN") {
+        router.replace("/admin/dashboard");
+      }
+    }
+  }, [role, isAuthenticated, router]);
 
   useEffect(() => {
     fetchWorkers();
