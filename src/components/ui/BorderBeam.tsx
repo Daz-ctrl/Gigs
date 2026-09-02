@@ -7,6 +7,7 @@ interface BorderBeamProps {
   className?: string;
   duration?: number;
   borderWidth?: number;
+  borderRadius?: string;
   colorFrom?: string;
   colorTo?: string;
   delay?: number;
@@ -16,6 +17,7 @@ export function BorderBeam({
   className = "",
   duration = 6,
   borderWidth = 2,
+  borderRadius = "inherit",
   colorFrom = "#10b981", // Emerald 500
   colorTo = "#06b6d4",   // Cyan 500
   delay = 0,
@@ -23,6 +25,7 @@ export function BorderBeam({
   return (
     <div
       aria-hidden="true"
+      style={{ borderRadius }}
       className={cn(
         "pointer-events-none absolute inset-0 rounded-[inherit] overflow-hidden z-0",
         className
@@ -31,6 +34,7 @@ export function BorderBeam({
       {/* Primary Crisp LED Beam */}
       <div
         style={{
+          borderRadius,
           padding: `${borderWidth}px`,
           WebkitMask:
             "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
@@ -52,6 +56,7 @@ export function BorderBeam({
       {/* Soft Ambient Neon Glow Trace */}
       <div
         style={{
+          borderRadius,
           padding: `${borderWidth + 1.5}px`,
           WebkitMask:
             "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",

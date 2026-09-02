@@ -63,7 +63,7 @@ export function SpotlightCard({
           background: `radial-gradient(450px circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)`,
         }}
       />
-      <div className="relative z-20 h-full flex flex-col justify-between">
+      <div className="relative z-20 h-full flex flex-col justify-between rounded-[inherit]">
         {children}
       </div>
     </div>

@@ -55,7 +55,7 @@ export function TrustBentoGrid() {
         spotlightColor="rgba(16, 185, 129, 0.18)"
         className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-emerald-500/20 rounded-[32px]"
       >
-        <BorderBeam duration={8} colorFrom="#10b981" colorTo="#14b8a6" />
+        <BorderBeam duration={8} colorFrom="#10b981" colorTo="#14b8a6" borderRadius="32px" />
 
         {/* Visual Interactive Header: The 3 Pathway Selector Stack */}
         <div className="relative z-10 mb-6">
@@ -244,7 +244,7 @@ export function TrustBentoGrid() {
         spotlightColor="rgba(168, 85, 247, 0.18)"
         className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-purple-500/20 rounded-[32px]"
       >
-        <BorderBeam duration={8} colorFrom="#a855f7" colorTo="#ec4899" />
+        <BorderBeam duration={8} colorFrom="#a855f7" colorTo="#ec4899" borderRadius="32px" />
 
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
