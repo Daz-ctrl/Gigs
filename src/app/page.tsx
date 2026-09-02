@@ -32,14 +32,35 @@ import { Meteors } from "@/components/ui/Meteors";
 import { HeroInteractivePreview } from "@/components/ui/HeroInteractivePreview";
 import { TrustBentoGrid } from "@/components/ui/TrustBentoGrid";
 import { Marquee } from "@/components/ui/Marquee";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 
 export default function HomePage() {
-  const { t, setRole } = useApp();
+  const { t, setRole, showToast } = useApp();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const oauthError = searchParams.get("error_description") || searchParams.get("error");
 
   return (
     <BackgroundGrid className="min-h-screen relative overflow-hidden">
       <Meteors number={25} />
+
+      {oauthError && (
+        <div className="fixed top-20 inset-x-4 z-50 max-w-lg mx-auto p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs shadow-xl backdrop-blur-xl flex items-center justify-between">
+          <div>
+            <div className="font-bold">OAuth Notice</div>
+            <div className="text-[11px] text-amber-700 dark:text-amber-300">Previous login session expired. Please sign in again.</div>
+          </div>
+          <Link
+            href="/login"
+            onClick={() => router.replace("/")}
+            className="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs"
+          >
+            Sign In
+          </Link>
+        </div>
+      )}
+
       {/* HERO SECTION */}
       <section className="pt-28 sm:pt-32 md:pt-36 pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center relative z-20">
         {/* Subtle SIH Pill */}

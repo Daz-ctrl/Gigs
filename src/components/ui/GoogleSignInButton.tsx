@@ -20,11 +20,13 @@ export function GoogleSignInButton({
   const handleSignIn = async () => {
     setIsLoading(true);
     try {
-      let origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
-      // 0.0.0.0 is an invalid hostname for client browsers - normalize to localhost
-      if (origin.includes("0.0.0.0")) {
-        origin = origin.replace("0.0.0.0", "localhost");
+      // If user is on 0.0.0.0, redirect to localhost first to prevent PKCE state domain mismatch
+      if (typeof window !== "undefined" && window.location.hostname === "0.0.0.0") {
+        window.location.href = window.location.href.replace("0.0.0.0", "localhost");
+        return;
       }
+
+      const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
       const redirectUrl = `${origin}/auth/select-role`;
 
       const { error } = await supabase.auth.signInWithOAuth({
