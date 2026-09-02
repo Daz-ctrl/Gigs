@@ -7,12 +7,14 @@ interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   spotlightColor?: string;
+  borderBeam?: React.ReactNode;
 }
 
 export function SpotlightCard({
   children,
   className = "",
   spotlightColor = "rgba(16, 185, 129, 0.15)", // Emerald highlight
+  borderBeam,
   ...props
 }: SpotlightCardProps) {
   const divRef = useRef<HTMLDivElement>(null);
@@ -56,14 +58,19 @@ export function SpotlightCard({
       )}
       {...props}
     >
-      {/* Zero-re-render GPU-accelerated CSS Spotlight */}
+      {/* 1. Full-size BorderBeam anchored directly to the card's outer perimeter (outside padding) */}
+      {borderBeam}
+
+      {/* 2. Zero-re-render GPU-accelerated CSS Spotlight */}
       <div
         className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-10 [opacity:var(--spotlight-opacity)]"
         style={{
           background: `radial-gradient(450px circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)`,
         }}
       />
-      <div className="relative z-20 h-full flex flex-col justify-between rounded-[inherit]">
+
+      {/* 3. Card Content: safely padded away from the border beam */}
+      <div className="z-20 h-full flex flex-col justify-between pointer-events-auto">
         {children}
       </div>
     </div>

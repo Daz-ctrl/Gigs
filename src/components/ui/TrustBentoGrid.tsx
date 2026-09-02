@@ -53,9 +53,17 @@ export function TrustBentoGrid() {
       {/* CARD 1: INCLUSIVE 3-PATHWAY VERIFICATION (Col-span 7 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(16, 185, 129, 0.18)"
-        className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden group border-emerald-500/20 rounded-[36px] min-h-[500px]"
+        borderBeam={
+          <BorderBeam
+            duration={8}
+            colorFrom="#10b981"
+            colorTo="#14b8a6"
+            borderRadius="32px"
+            borderWidth={2.5}
+          />
+        }
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-emerald-500/20 rounded-[32px]"
       >
-        <BorderBeam duration={8} colorFrom="#10b981" colorTo="#14b8a6" borderRadius="36px" borderWidth={2.5} />
 
         {/* Visual Interactive Header: The 3 Pathway Selector Stack */}
         <div className="relative z-10 mb-6">
@@ -137,7 +145,7 @@ export function TrustBentoGrid() {
       {/* CARD 2: FREE AADHAAR e-KYC (Col-span 5 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(59, 130, 246, 0.18)"
-        className="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden border-blue-500/20 rounded-[36px] min-h-[500px]"
+        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-blue-500/20 rounded-[32px]"
       >
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
@@ -190,7 +198,7 @@ export function TrustBentoGrid() {
       {/* CARD 3: START-WORK SECURITY HANDSHAKE OTP (Col-span 5 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(245, 158, 11, 0.18)"
-        className="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden border-amber-500/20 rounded-[36px] min-h-[500px]"
+        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-amber-500/20 rounded-[32px]"
       >
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
@@ -242,9 +250,17 @@ export function TrustBentoGrid() {
       {/* CARD 4: AI DEMAND RADAR & 1-CLICK REBALANCE (Col-span 7 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(168, 85, 247, 0.18)"
-        className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden border-purple-500/20 rounded-[36px] min-h-[500px]"
+        borderBeam={
+          <BorderBeam
+            duration={8}
+            colorFrom="#a855f7"
+            colorTo="#ec4899"
+            borderRadius="32px"
+            borderWidth={2.5}
+          />
+        }
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-purple-500/20 rounded-[32px]"
       >
-        <BorderBeam duration={8} colorFrom="#a855f7" colorTo="#ec4899" borderRadius="36px" borderWidth={2.5} />
 
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
