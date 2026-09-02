@@ -67,20 +67,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
 
     const savedAuth = localStorage.getItem("coopserve_auth");
-    if (savedAuth !== null) {
-      setIsAuthenticated(savedAuth === "true");
-    }
-    const savedCustomUser = localStorage.getItem("coopserve_custom_user");
-    if (savedCustomUser) {
-      try {
-        setCustomUser(JSON.parse(savedCustomUser));
-      } catch (e) {
-        console.error(e);
+    if (savedAuth === "true") {
+      setIsAuthenticated(true);
+      const savedCustomUser = localStorage.getItem("coopserve_custom_user");
+      if (savedCustomUser) {
+        try {
+          setCustomUser(JSON.parse(savedCustomUser));
+        } catch (e) {
+          console.error(e);
+        }
       }
-    }
-    const savedRole = localStorage.getItem("coopserve_role") as UserRole;
-    if (savedRole && DEMO_USERS[savedRole]) {
-      setRoleState(savedRole);
+      const savedRole = localStorage.getItem("coopserve_role") as UserRole;
+      if (savedRole && DEMO_USERS[savedRole]) {
+        setRoleState(savedRole);
+      }
+    } else {
+      setIsAuthenticated(false);
+      setCustomUser(null);
+      setRoleState("CUSTOMER");
     }
     const savedLang = localStorage.getItem("coopserve_lang") as LanguageCode;
     if (savedLang && translations[savedLang]) {
@@ -203,9 +207,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     supabase.auth.signOut().catch(() => {});
     setIsAuthenticated(false);
+    setRoleState("CUSTOMER");
     setCustomUser(null);
-    localStorage.setItem("coopserve_auth", "false");
+    localStorage.removeItem("coopserve_auth");
     localStorage.removeItem("coopserve_custom_user");
+    localStorage.removeItem("coopserve_role");
     showToast("Signed out successfully. Session closed.");
   };
 
