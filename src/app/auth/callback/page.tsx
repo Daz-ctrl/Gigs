@@ -18,8 +18,9 @@ function AuthCallbackContent() {
 
       // The SINGLE SOURCE OF TRUTH: this specific user's metadata in Supabase
       const role = user.user_metadata?.role;
+      const profileCompleted = user.user_metadata?.profile_completed;
 
-      if (role === "WORKER") {
+      if (role === "WORKER" && profileCompleted) {
         setStatusText(`Welcome back, ${user.user_metadata?.name || "Worker"}! Loading Worker Dashboard...`);
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
@@ -27,7 +28,7 @@ function AuthCallbackContent() {
         }
         router.replace("/worker/dashboard");
         return;
-      } else if (role === "CUSTOMER") {
+      } else if (role === "CUSTOMER" && profileCompleted) {
         setStatusText(`Welcome back, ${user.user_metadata?.name || "Customer"}! Loading Customer Services...`);
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
