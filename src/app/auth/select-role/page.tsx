@@ -58,11 +58,9 @@ export default function SelectRolePage() {
 
   const [fullName, setFullName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [phone, setPhone] = useState("");
   const [originalGoogleAvatar, setOriginalGoogleAvatar] = useState("");
 
   useEffect(() => {
-    // 0. Auto-redirect from 0.0.0.0 to localhost if ever visited via 0.0.0.0
     if (typeof window !== "undefined" && window.location.hostname === "0.0.0.0") {
       window.location.href = window.location.href.replace("0.0.0.0", "localhost");
       return;
@@ -90,7 +88,7 @@ export default function SelectRolePage() {
       setAvatarUrl(avatar);
       setOriginalGoogleAvatar(avatar);
 
-      // If this specific user already chose a role AND completed profile customization in the past:
+      // If this specific user already chose a role AND completed profile customization:
       const existingRole = u.user_metadata?.role;
       const profileCompleted = u.user_metadata?.profile_completed;
 
@@ -104,7 +102,6 @@ export default function SelectRolePage() {
       }
     };
 
-    // 1. Listen for Supabase auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session?.user) {
@@ -113,7 +110,6 @@ export default function SelectRolePage() {
       }
     );
 
-    // 2. Direct session check
     supabase.auth.getSession().then(({ data }) => {
       if (data?.session?.user) {
         updateUserState(data.session.user);
@@ -150,7 +146,7 @@ export default function SelectRolePage() {
     reader.onload = (event) => {
       if (event.target?.result) {
         setAvatarUrl(event.target.result as string);
-        showToast("Profile photo loaded successfully!");
+        showToast("Profile photo loaded!");
       }
     };
     reader.readAsDataURL(file);
@@ -175,7 +171,6 @@ export default function SelectRolePage() {
 
     setIsSubmitting(true);
     try {
-      // 1. Update Supabase user metadata with selected role and customized profile
       await supabase.auth.updateUser({
         data: {
           role: selectedRole,
@@ -184,12 +179,10 @@ export default function SelectRolePage() {
           name: trimmedName,
           avatar_url: finalAvatar,
           picture: finalAvatar,
-          phone: phone.trim() || undefined,
           profile_completed: true,
         },
       });
 
-      // 1b. Upsert into Supabase public.profiles table
       if (googleUser?.id) {
         try {
           await supabase.from("profiles").upsert({
@@ -201,11 +194,10 @@ export default function SelectRolePage() {
             updated_at: new Date().toISOString(),
           });
         } catch (e) {
-          // profiles table is optional
+          // profiles table optional
         }
       }
 
-      // 2. Persist in local storage
       localStorage.setItem("coopserve_role", selectedRole);
       if (googleUser?.id) {
         localStorage.setItem(`coopserve_role_${googleUser.id}`, selectedRole);
@@ -216,7 +208,6 @@ export default function SelectRolePage() {
       const uEmail = googleUser?.email || "user@sahakarkarmakar.gov.in";
       const userId = googleUser?.id ? `sb-${googleUser.id.slice(-6)}` : `usr-${Date.now().toString().slice(-4)}`;
 
-      // 3. Persist profile record into PostgreSQL/Prisma database
       try {
         await fetch("/api/auth/sync-profile", {
           method: "POST",
@@ -248,7 +239,7 @@ export default function SelectRolePage() {
       localStorage.setItem("coopserve_custom_user", JSON.stringify(appUser));
       login(appUser);
       setRole(selectedRole);
-      showToast(`Welcome, ${trimmedName}! Your profile is now set.`);
+      showToast(`Welcome, ${trimmedName}! Your profile is ready.`);
 
       if (isWorker) {
         router.push("/worker/dashboard");
@@ -265,26 +256,26 @@ export default function SelectRolePage() {
   const activePresets = PRESET_AVATARS[selectedRole] || PRESET_AVATARS.CUSTOMER;
 
   return (
-    <BackgroundGrid className="min-h-screen flex flex-col items-center justify-center py-16 px-4">
-      <div className="w-full max-w-[560px] mx-auto">
+    <BackgroundGrid className="min-h-screen flex items-center justify-center p-4 sm:p-6 py-12">
+      <div className="w-full max-w-lg mx-auto">
         <SpotlightCard
           spotlightColor="rgba(16, 185, 129, 0.15)"
-          className="p-7 sm:p-9 relative overflow-hidden rounded-[32px] border border-slate-200/90 dark:border-white/[0.1] bg-white/95 dark:bg-[#070c16]/95 backdrop-blur-2xl shadow-2xl"
+          className="p-6 sm:p-8 relative overflow-hidden rounded-3xl border border-slate-200/90 dark:border-white/[0.1] bg-white/95 dark:bg-[#070c16]/95 backdrop-blur-2xl shadow-2xl"
           borderBeam={
             <BorderBeam
               duration={8}
               colorFrom="#10b981"
               colorTo="#06b6d4"
-              borderRadius="32px"
+              borderRadius="24px"
             />
           }
         >
-          {/* Progress Indicator */}
+          {/* Step Progress Pill */}
           <div className="flex items-center justify-center gap-2 mb-6">
             <div
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                 step === 1
-                  ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20"
+                  ? "bg-emerald-500 text-slate-950 shadow-sm"
                   : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
               }`}
             >
@@ -295,7 +286,7 @@ export default function SelectRolePage() {
             <div
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                 step === 2
-                  ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20"
+                  ? "bg-emerald-500 text-slate-950 shadow-sm"
                   : "bg-slate-100 dark:bg-slate-800/80 text-slate-400"
               }`}
             >
@@ -305,123 +296,119 @@ export default function SelectRolePage() {
 
           {/* ================= STEP 1: ROLE SELECTION ================= */}
           {step === 1 && (
-            <div>
-              {/* User Welcome Header */}
-              <div className="text-center mb-6 relative z-10">
-                {googleUser?.avatar ? (
-                  <div className="relative inline-block mb-3">
+            <div className="flex flex-col">
+              {/* User Header */}
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="relative mb-3">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-500 shadow-md">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={googleUser.avatar}
-                      alt={googleUser.name}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-emerald-500 shadow-lg mx-auto"
+                      src={
+                        googleUser?.avatar ||
+                        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
+                      }
+                      alt={googleUser?.name || "User"}
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-bold text-xs shadow-md">
-                      ✓
-                    </div>
                   </div>
-                ) : (
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-emerald-500/20 mx-auto mb-3">
-                    SK
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-[10px] shadow-sm">
+                    ✓
                   </div>
-                )}
+                </div>
 
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs mb-2">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[11px] mb-1.5">
+                  <Sparkles className="w-3 h-3" />
                   <span>Google Account Connected</span>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   Welcome, {googleUser?.name || "Member"}!
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
                   How would you like to join Sahakar Karmakar today?
                 </p>
               </div>
 
-              {/* Role Cards */}
-              <div className="space-y-3.5 mb-7 relative z-10">
+              {/* Role Option Cards */}
+              <div className="space-y-3 mb-6">
                 {/* Customer Option */}
-                <button
-                  type="button"
+                <div
                   onClick={() => setSelectedRole("CUSTOMER")}
-                  className={`w-full p-4.5 rounded-2xl border text-left transition-all cursor-pointer relative flex items-start gap-4 ${
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3.5 ${
                     selectedRole === "CUSTOMER"
-                      ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30 shadow-md scale-[1.01]"
+                      ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/20 shadow-sm"
                       : "bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15]"
                   }`}
                 >
                   <div
-                    className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                       selectedRole === "CUSTOMER"
-                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
-                        : "bg-slate-200 dark:bg-white/[0.08] text-slate-600 dark:text-slate-300"
+                        ? "bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20"
+                        : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                     }`}
                   >
                     <User className="w-5 h-5" />
                   </div>
 
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-sm text-slate-900 dark:text-white">
                         Citizen Customer
                       </span>
                       {selectedRole === "CUSTOMER" && (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                       )}
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                      I want to discover & book verified electricians, plumbers, AC technicians, and home care services with 0% surge fees.
+                      Book verified electricians, plumbers, AC repair, and home services with 0% surge fees.
                     </p>
                   </div>
-                </button>
+                </div>
 
                 {/* Worker Option */}
-                <button
-                  type="button"
+                <div
                   onClick={() => setSelectedRole("WORKER")}
-                  className={`w-full p-4.5 rounded-2xl border text-left transition-all cursor-pointer relative flex items-start gap-4 ${
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3.5 ${
                     selectedRole === "WORKER"
-                      ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30 shadow-md scale-[1.01]"
+                      ? "bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/20 shadow-sm"
                       : "bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15]"
                   }`}
                 >
                   <div
-                    className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                       selectedRole === "WORKER"
-                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
-                        : "bg-slate-200 dark:bg-white/[0.08] text-slate-600 dark:text-slate-300"
+                        ? "bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20"
+                        : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                     }`}
                   >
                     <Wrench className="w-5 h-5" />
                   </div>
 
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
-                        Cooperative Worker (Gig Member)
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-sm text-slate-900 dark:text-white">
+                        Cooperative Worker
                       </span>
                       {selectedRole === "WORKER" && (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                       )}
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                      I am a skilled artisan / worker. I want guaranteed 90% direct payouts, free group healthcare, and my 3D virtual ID.
+                      Earn guaranteed 90% direct payouts, free group healthcare, and manage your 3D virtual ID.
                     </p>
                   </div>
-                </button>
+                </div>
               </div>
 
               {/* Action Button */}
-              <div className="relative z-10">
+              <div>
                 <button
                   type="button"
                   onClick={handleProceedToProfile}
-                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>
-                    Continue to Profile Setup (
-                    {selectedRole === "CUSTOMER" ? "Customer" : "Worker"})
+                    Continue as {selectedRole === "CUSTOMER" ? "Customer" : "Worker"}
                   </span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -431,44 +418,43 @@ export default function SelectRolePage() {
 
           {/* ================= STEP 2: PROFILE CUSTOMIZATION ================= */}
           {step === 2 && (
-            <form onSubmit={handleFinalSubmit} className="relative z-10">
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs mb-2">
+            <form onSubmit={handleFinalSubmit} className="space-y-4">
+              <div className="text-center mb-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[11px] mb-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>
-                    Setting up your{" "}
                     {selectedRole === "CUSTOMER" ? "Customer" : "Worker"} Profile
                   </span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   Customize Your Profile
                 </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Choose your display name and photo. This will be shown on your{" "}
-                  {selectedRole === "WORKER" ? "Virtual ID Card" : "Citizen Account"}.
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Set your name & photo for your {selectedRole === "WORKER" ? "Virtual ID Card" : "Account"}.
                 </p>
               </div>
 
-              {/* Avatar Uploader Section */}
-              <div className="flex flex-col items-center mb-6">
-                <div className="relative group mb-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={avatarUrl || activePresets[0]}
-                    alt="Custom Avatar"
-                    className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-emerald-500/40 shadow-2xl shadow-emerald-500/20 transition group-hover:scale-105"
-                  />
+              {/* Avatar Section */}
+              <div className="flex flex-col items-center">
+                <div className="relative mb-2.5">
+                  <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden border-2 border-emerald-500/50 shadow-xl mx-auto">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={avatarUrl || activePresets[0]}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute -bottom-2 -right-2 p-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 transition cursor-pointer active:scale-90"
+                    className="absolute -bottom-1 -right-1 p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition cursor-pointer"
                     title="Upload Custom Photo"
                   >
-                    <Camera className="w-4 h-4" />
+                    <Camera className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Hidden File Input */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -477,13 +463,13 @@ export default function SelectRolePage() {
                   className="hidden"
                 />
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-2.5">
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.1] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.1] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 cursor-pointer"
                   >
-                    <Upload className="w-3.5 h-3.5" />
+                    <Upload className="w-3 h-3" />
                     <span>Upload Photo</span>
                   </button>
 
@@ -492,49 +478,44 @@ export default function SelectRolePage() {
                       type="button"
                       onClick={() => {
                         setAvatarUrl(originalGoogleAvatar);
-                        showToast("Reset to Google profile photo");
+                        showToast("Reset to Google photo");
                       }}
-                      className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.1] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 cursor-pointer"
+                      className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.1] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 cursor-pointer"
                     >
-                      <RefreshCw className="w-3.5 h-3.5" />
+                      <RefreshCw className="w-3 h-3" />
                       <span>Use Google Photo</span>
                     </button>
                   )}
                 </div>
 
-                {/* Preset Avatars Quick Select */}
-                <div className="mt-4 text-center">
-                  <div className="text-[11px] font-semibold text-slate-400 mb-2">
-                    Or choose a verified avatar:
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    {activePresets.map((preset: string, idx: number) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setAvatarUrl(preset)}
-                        className={`w-10 h-10 rounded-2xl overflow-hidden border-2 transition cursor-pointer ${
-                          avatarUrl === preset
-                            ? "border-emerald-500 scale-110 shadow-md shadow-emerald-500/30 ring-2 ring-emerald-500/20"
-                            : "border-slate-300 dark:border-slate-700 opacity-60 hover:opacity-100"
-                        }`}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={preset}
-                          alt="Preset avatar"
-                          className="w-full h-full object-cover"
-                        />
-                      </button>
-                    ))}
-                  </div>
+                {/* Preset Avatars Row */}
+                <div className="flex items-center justify-center gap-2">
+                  {activePresets.map((preset: string, idx: number) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setAvatarUrl(preset)}
+                      className={`w-9 h-9 rounded-xl overflow-hidden border-2 transition cursor-pointer shrink-0 ${
+                        avatarUrl === preset
+                          ? "border-emerald-500 scale-105 shadow-sm ring-2 ring-emerald-500/20"
+                          : "border-slate-200 dark:border-slate-700 opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={preset}
+                        alt="Preset"
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Form Fields */}
-              <div className="space-y-4 mb-6">
+              {/* Input Fields */}
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
                     Full Name <span className="text-emerald-500">*</span>
                   </label>
                   <div className="relative">
@@ -544,47 +525,32 @@ export default function SelectRolePage() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="e.g. Sunil Kumar / Ananya Sharma"
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40 transition"
+                      className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition"
                     />
-                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                    Connected Email (Locked)
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                    Connected Email
                   </label>
                   <input
                     type="email"
                     disabled
                     value={googleUser?.email || ""}
-                    className="w-full px-4 py-3 rounded-2xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] text-slate-500 dark:text-slate-400 font-mono text-xs cursor-not-allowed"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] text-slate-500 dark:text-slate-400 font-mono text-xs cursor-not-allowed"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                    Primary Operational Ward
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      disabled
-                      value="Ward #18 · MVP Colony & Beach Road, Vizag"
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] text-slate-600 dark:text-slate-300 text-xs cursor-not-allowed"
-                    />
-                    <MapPin className="w-4 h-4 text-emerald-500 absolute left-3.5 top-3.5" />
-                  </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={() => setStep(1)}
                   disabled={isSubmitting}
-                  className="py-3.5 px-4 rounded-2xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 font-bold text-sm transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="py-3 px-4 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back</span>
@@ -593,16 +559,16 @@ export default function SelectRolePage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !fullName.trim()}
-                  className="flex-1 py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-emerald-500/20 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Saving your profile...</span>
+                      <span>Saving profile...</span>
                     </>
                   ) : (
                     <>
-                      <span>Save Profile & Enter Platform</span>
+                      <span>Save Profile & Enter</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}

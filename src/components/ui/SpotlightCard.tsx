@@ -69,8 +69,8 @@ export function SpotlightCard({
         }}
       />
 
-      {/* 3. Card Content: safely padded away from the border beam */}
-      <div className="z-20 h-full flex flex-col justify-between pointer-events-auto">
+      {/* 3. Card Content: safe layout container */}
+      <div className="z-20 h-full w-full pointer-events-auto">
         {children}
       </div>
     </div>
