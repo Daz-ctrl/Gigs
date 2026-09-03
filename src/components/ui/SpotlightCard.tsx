@@ -58,7 +58,7 @@ export function SpotlightCard({
       )}
       {...props}
     >
-      {/* 1. Full-size BorderBeam anchored directly to the card's outer perimeter (outside padding) */}
+      {/* 1. Full-size BorderBeam anchored directly to the card's outer perimeter */}
       {borderBeam}
 
       {/* 2. Zero-re-render GPU-accelerated CSS Spotlight */}
@@ -69,8 +69,8 @@ export function SpotlightCard({
         }}
       />
 
-      {/* 3. Card Content: safe layout container */}
-      <div className="z-20 h-full w-full pointer-events-auto">
+      {/* 3. Card Content: positioned with relative z-20 so it renders on top of all background layers */}
+      <div className="relative z-20 h-full w-full pointer-events-auto">
         {children}
       </div>
     </div>
