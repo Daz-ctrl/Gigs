@@ -32,7 +32,7 @@ export default function WorkerRegisterPage() {
 
   // Basic Info
   const [fullName, setFullName] = useState(() => currentUser?.name || "");
-  const [phone, setPhone] = useState("+91 98480 22334");
+  const [phone, setPhone] = useState("");
   const [skillCategory, setSkillCategory] = useState("Electrician");
   const [experienceYrs, setExperienceYrs] = useState("5");
   const [hourlyRate, setHourlyRate] = useState("500");
@@ -125,6 +125,12 @@ export default function WorkerRegisterPage() {
   // Step 3: Final Worker Application Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanPhone = phone.trim();
+    if (!cleanPhone || cleanPhone.replace(/\D/g, "").length < 10) {
+      setKycError("Please enter your valid 10-digit mobile number.");
+      return;
+    }
+
     if (!isKycVerified) {
       setKycError("Please verify your Aadhaar number via OTP before submitting.");
       return;
@@ -336,7 +342,7 @@ export default function WorkerRegisterPage() {
                 <input
                   type="text"
                   required
-                  placeholder="+91 98711 00921"
+                  placeholder="e.g. +91 98765 43210"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-emerald-500/40 outline-none"
