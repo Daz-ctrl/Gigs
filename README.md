@@ -1,4 +1,4 @@
-# Sahakarya (सहकार कर्मकार) — Cooperative Gig Platform (SIH26089)
+# KaryaSetu (सहकार कर्मकार) — Cooperative Gig Platform (SIH26089)
 
 > **Smart India Hackathon 2026** · **Ministry of Cooperation** · **Theme: Smart Automation**  
 > *India's first worker-owned cooperative gig services platform ensuring 90% direct payouts, free healthcare, and AI-driven workforce allocation.*

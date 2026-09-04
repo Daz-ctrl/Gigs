@@ -88,11 +88,11 @@ export function FairnessMeter({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm">
-                SK
+                KS
               </div>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white text-base">
-                  Sahakarya Platform
+                  KaryaSetu Platform
                 </h4>
                 <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                   Democratic Federation Governance

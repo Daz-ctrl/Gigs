@@ -109,7 +109,7 @@ export interface TranslationDictionary {
 
 export const translations: Record<LanguageCode, TranslationDictionary> = {
   en: {
-    appName: "Sahakarya",
+    appName: "KaryaSetu",
     tagline: "India's First Worker-Owned Cooperative Gig Platform",
     fairnessMeterTitle: "The Cooperative Fairness Meter",
     fairnessMeterSubtitle: "Every rupee transparently accounted for. No hidden corporate profit extraction.",
@@ -169,7 +169,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
       adminCardLink: "Cooperative Admin Hub",
       ctaBadge: "Grassroots Empowerment · SIH26089",
       ctaTitle: "Ready to Experience India's First Fair Labour Co-op Marketplace?",
-      ctaSubtitle: "Whether you are a resident needing a certified electrician or a worker seeking 90% direct payouts with free medical cover, Sahakarya is built for you.",
+      ctaSubtitle: "Whether you are a resident needing a certified electrician or a worker seeking 90% direct payouts with free medical cover, KaryaSetu is built for you.",
       joinArtisan: "Join as Worker (Free e-KYC)",
     },
     customer: {
@@ -215,7 +215,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     },
   },
   hi: {
-    appName: "सहकार्य (Sahakarya)",
+    appName: "कार्यसेतु (KaryaSetu)",
     tagline: "भारत का पहला श्रमिक-स्वामित्व वाला सहकारी गिग मंच",
     fairnessMeterTitle: "सहकारी निष्पक्षता मीटर (Fairness Meter)",
     fairnessMeterSubtitle: "हर रुपये का पारदर्शी हिसाब। कोई छुपा हुआ कॉर्पोरेट मुनाफा नहीं।",
@@ -321,7 +321,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     },
   },
   ta: {
-    appName: "சககார்யா (Sahakarya)",
+    appName: "காரியசேது (KaryaSetu)",
     tagline: "இந்தியாவின் முதல் தொழிலாளர் கூட்டுறவு கிக் தளம்",
     fairnessMeterTitle: "கூட்டுறவு நியாய அளவீடு (Fairness Meter)",
     fairnessMeterSubtitle: "ஒவ்வொரு ரூபாய்க்கும் வெளிப்படையான கணக்கு. கார்ப்பரேட் சுரண்டல் இல்லை.",
@@ -427,7 +427,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     },
   },
   te: {
-    appName: "సహకార్య (Sahakarya)",
+    appName: "కార్యసేతు (KaryaSetu)",
     tagline: "భారతదేశ మొట్టమొదటి కార్మిక సహకార గిగ్ మార్కెట్‌ప్లేస్",
     fairnessMeterTitle: "సహకార పారదర్శకత కొలమానం (Fairness Meter)",
     fairnessMeterSubtitle: "ప్రతి రూపాయికి పూర్తి పారదర్శకత. కార్పొరేట్ దోపిడీకి తావులేదు.",

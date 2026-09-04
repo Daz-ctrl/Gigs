@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sahakarya (सहकार्य) — Worker-Owned Cooperative Gig Platform",
+  title: "KaryaSetu (कार्यसेतु) — Worker-Owned Cooperative Gig Platform",
   description:
     "India's worker-owned gig platform for Labour Cooperative Federations. Ensuring 90% direct payouts, free healthcare, and community trust (SIH26089).",
 };

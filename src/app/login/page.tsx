@@ -115,13 +115,13 @@ export default function LoginPage() {
           {/* Platform Header */}
           <div className="text-center mb-6 relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-emerald-500/20 mx-auto mb-3">
-              SK
+              KS
             </div>
             <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Sign In to Sahakarya
+              Sign In to KaryaSetu
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Worker-Owned Cooperative Platform (सहकार्य)
+              Worker-Owned Cooperative Platform (कार्यसेतु)
             </p>
           </div>
 

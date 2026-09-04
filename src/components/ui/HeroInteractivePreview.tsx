@@ -74,7 +74,7 @@ export function HeroInteractivePreview() {
               <div className="w-3 h-3 rounded-full bg-amber-500/80" />
               <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
             </div>
-            <span className="text-xs font-mono text-slate-400">sahakarya.gov.in · live mission control</span>
+            <span className="text-xs font-mono text-slate-400">karyasetu.gov.in · live mission control</span>
           </div>
 
           <div className="flex items-center gap-2">

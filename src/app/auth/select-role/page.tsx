@@ -205,7 +205,7 @@ export default function SelectRolePage() {
       localStorage.setItem("coopserve_auth", "true");
 
       const isWorker = selectedRole === "WORKER";
-      const uEmail = googleUser?.email || "user@sahakarkarmakar.gov.in";
+      const uEmail = googleUser?.email || "user@karyasetu.gov.in";
       const userId = googleUser?.id ? `sb-${googleUser.id.slice(-6)}` : `usr-${Date.now().toString().slice(-4)}`;
 
       try {
@@ -325,7 +325,7 @@ export default function SelectRolePage() {
                   Welcome, {googleUser?.name || "Member"}!
                 </h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                  How would you like to join Sahakar Karmakar today?
+                  How would you like to join KaryaSetu today?
                 </p>
               </div>
 

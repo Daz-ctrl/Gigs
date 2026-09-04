@@ -105,11 +105,11 @@ function NavbarContent() {
             className="flex items-center gap-2.5 group shrink-0 pl-1 cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xs shadow-md shadow-emerald-500/30 group-hover:scale-105 transition-transform">
-              SK
+              KS
             </div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
-                Sahakarya
+                KaryaSetu
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
