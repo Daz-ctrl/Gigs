@@ -21,7 +21,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
 
 export default function CustomerBookingsPage() {
-  const { t, showToast, role } = useApp();
+  const { t, showToast, role, currentUser } = useApp();
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -391,7 +391,7 @@ export default function CustomerBookingsPage() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Billed To</span>
                 <strong className="text-slate-800 dark:text-slate-200">
-                  {invoiceBooking.customer?.name || "Ananya Sharma"}
+                  {invoiceBooking.customer?.name || currentUser.name || "Resident Customer"}
                 </strong>
                 <p className="text-[11px] text-slate-500">{invoiceBooking.customer?.address || "MVP Colony, Visakhapatnam"}</p>
               </div>

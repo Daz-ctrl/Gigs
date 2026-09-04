@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import NextLink from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import {
   Home,
   Wrench,
@@ -27,6 +28,11 @@ function NavbarContent() {
   const { t, role, currentUser, isAuthenticated, logout, language, setLanguage } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close menus on route change
   useEffect(() => {
@@ -160,7 +166,7 @@ function NavbarContent() {
             </div>
 
             {/* Profile Button / Dropdown */}
-            {isAuthenticated ? (
+            {mounted && isAuthenticated ? (
               <div className="relative">
                 <button
                   type="button"
@@ -170,11 +176,10 @@ function NavbarContent() {
                   }}
                   className="flex items-center gap-2 p-1 pr-2.5 rounded-full border border-slate-200/90 dark:border-white/[0.1] bg-white/70 dark:bg-white/[0.04] hover:bg-slate-100 dark:hover:bg-white/[0.08] transition cursor-pointer shadow-xs active:scale-95"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <UserAvatar
                     src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="w-6 h-6 rounded-full object-cover border border-emerald-500/40"
+                    name={currentUser.name}
+                    className="w-6 h-6 rounded-full border border-emerald-500/40"
                   />
                   <span className="font-bold text-xs text-slate-800 dark:text-slate-200 hidden sm:inline max-w-[95px] truncate">
                     {currentUser.name.split(" ")[0]}
@@ -468,7 +473,7 @@ function NavbarContent() {
           )}
 
           {/* Sign In or Profile */}
-          {isAuthenticated ? (
+          {mounted && isAuthenticated ? (
             <button
               type="button"
               onClick={() => {
@@ -477,11 +482,10 @@ function NavbarContent() {
               }}
               className="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-[10px] font-bold text-slate-500 dark:text-slate-400 transition cursor-pointer"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <UserAvatar
                 src={currentUser.avatar}
-                alt={currentUser.name}
-                className="w-4 h-4 rounded-full object-cover mb-0.5 border border-emerald-500/40"
+                name={currentUser.name}
+                className="w-4 h-4 rounded-full mb-0.5 border border-emerald-500/40 text-[9px]"
               />
               <span>Profile</span>
             </button>

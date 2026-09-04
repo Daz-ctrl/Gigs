@@ -22,6 +22,7 @@ import {
 import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 
 const PRESET_AVATARS: Record<string, string[]> = {
   CUSTOMER: [
@@ -173,7 +174,8 @@ export default function SelectRolePage() {
   // Step 1 -> Step 2: Proceed to Profile Customization
   const handleProceedToProfile = () => {
     const presets = PRESET_AVATARS[selectedRole] || PRESET_AVATARS.CUSTOMER;
-    if (selectedRole === "WORKER" && (!avatarUrl || avatarUrl === PRESET_AVATARS.CUSTOMER[0])) {
+    // Only set default preset if user has no avatar and no Google avatar
+    if (!avatarUrl && !googleUser?.avatar) {
       setAvatarUrl(presets[0]);
     }
     setStep(2);
@@ -457,11 +459,10 @@ export default function SelectRolePage() {
               <div className="flex flex-col items-center">
                 <div className="relative mb-2.5">
                   <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl overflow-hidden border-2 border-emerald-500/50 shadow-xl mx-auto">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <UserAvatar
                       src={avatarUrl || activePresets[0]}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
+                      name={fullName || googleUser?.name || "User"}
+                      className="w-full h-full text-2xl"
                     />
                   </div>
                   <button
@@ -543,7 +544,7 @@ export default function SelectRolePage() {
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Sunil Kumar / Ananya Sharma"
+                      placeholder="e.g. Sunil Kumar / Rajesh Varma"
                       className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition"
                     />
                     <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />

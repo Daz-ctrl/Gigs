@@ -25,6 +25,7 @@ import {
   Building2,
 } from "lucide-react";
 import { WorkerWithDetails } from "@/types";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { useApp } from "@/context/AppContext";
 import { formatDistance, calculateDistanceKm } from "@/lib/geo";
 import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
@@ -467,14 +468,10 @@ export default function CustomerBookPage() {
 
                   {/* Worker Profile Header */}
                   <div className="flex items-center gap-3.5 mb-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={
-                        worker.avatar ||
-                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                      }
-                      alt={worker.name}
-                      className="w-14 h-14 rounded-2xl object-cover border-2 border-emerald-500/40"
+                    <UserAvatar
+                      src={worker.avatar}
+                      name={worker.name}
+                      className="w-14 h-14 rounded-2xl border-2 border-emerald-500/40 text-lg"
                     />
                     <div>
                       <h3 className="font-bold text-slate-900 dark:text-white text-base">
@@ -644,14 +641,10 @@ export default function CustomerBookPage() {
               /* CHECKOUT FORM */
               <div>
                 <div className="flex items-center gap-3 mb-6">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={
-                      selectedWorker.avatar ||
-                      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                    }
-                    alt={selectedWorker.name}
-                    className="w-12 h-12 rounded-2xl object-cover border border-emerald-500"
+                  <UserAvatar
+                    src={selectedWorker.avatar}
+                    name={selectedWorker.name}
+                    className="w-12 h-12 rounded-2xl border border-emerald-500 text-base"
                   />
                   <div>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white">

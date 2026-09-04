@@ -25,6 +25,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { WorkerWithDetails } from "@/types";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { KokonutStatCard } from "@/components/ui/KokonutStatCard";
 import { AllocationPanel } from "@/components/ai/AllocationPanel";
 import { useApp } from "@/context/AppContext";
@@ -503,14 +504,10 @@ function AdminDashboardContent() {
                     <div>
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-3">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={
-                              worker.avatar ||
-                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                            }
-                            alt={worker.name}
-                            className="w-12 h-12 rounded-2xl object-cover border border-amber-500/40"
+                          <UserAvatar
+                            src={worker.avatar}
+                            name={worker.name}
+                            className="w-12 h-12 rounded-2xl border border-amber-500/40 text-base"
                           />
                           <div>
                             <div className="font-bold text-sm text-slate-900 dark:text-white">
@@ -715,14 +712,10 @@ function AdminDashboardContent() {
                                   Target Worker / Artisan
                                 </div>
                                 <div className="flex items-center gap-3">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img
-                                    src={
-                                      worker?.avatar ||
-                                      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                                    }
-                                    alt={worker?.name || "Worker"}
-                                    className="w-12 h-12 rounded-2xl object-cover border-2 border-rose-500/40"
+                                  <UserAvatar
+                                    src={worker?.avatar}
+                                    name={worker?.name || "Worker"}
+                                    className="w-12 h-12 rounded-2xl border-2 border-rose-500/40 text-base"
                                   />
                                   <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">
@@ -892,14 +885,10 @@ function AdminDashboardContent() {
                                   Affiliated Artisan
                                 </div>
                                 <div className="flex items-center gap-3">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img
-                                    src={
-                                      worker?.avatar ||
-                                      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                                    }
-                                    alt={worker?.name || "Worker"}
-                                    className="w-12 h-12 rounded-2xl object-cover border-2 border-teal-500/40"
+                                  <UserAvatar
+                                    src={worker?.avatar}
+                                    name={worker?.name || "Worker"}
+                                    className="w-12 h-12 rounded-2xl border-2 border-teal-500/40 text-base"
                                   />
                                   <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">
@@ -1061,14 +1050,10 @@ function AdminDashboardContent() {
                     {verifiedWorkers.map((w) => (
                       <tr key={w.id} className="hover:bg-slate-500/5 transition">
                         <td className="p-4 flex items-center gap-3">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={
-                              w.avatar ||
-                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                            }
-                            alt={w.name}
-                            className="w-9 h-9 rounded-xl object-cover border border-emerald-500/40"
+                          <UserAvatar
+                            src={w.avatar}
+                            name={w.name}
+                            className="w-9 h-9 rounded-xl border border-emerald-500/40 text-xs"
                           />
                           <div>
                             <div className="font-bold text-slate-900 dark:text-white">{w.name}</div>

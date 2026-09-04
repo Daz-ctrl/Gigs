@@ -165,8 +165,10 @@ export default function WorkerRegisterPage() {
         const errData = await res.json().catch(() => ({}));
         showToast(errData.error || "Application received! Routing to Admin Queue...");
         const fallbackWorker = {
+          id: currentUser?.id,
           name: fullName,
           phone,
+          avatar: currentUser?.avatar,
           aadhaarMasked: `XXXX-XXXX-${aadhaarInput.slice(-4) || "4821"}`,
           skills: skillCategory,
           digitalIdCard: `COOP-ID-${fullName.toUpperCase().replace(/\s+/g, "")}-PENDING`,
@@ -178,8 +180,10 @@ export default function WorkerRegisterPage() {
       console.error(e);
       showToast("Application submitted to local queue!");
       const fallbackWorker = {
+        id: currentUser?.id,
         name: fullName,
         phone,
+        avatar: currentUser?.avatar,
         aadhaarMasked: `XXXX-XXXX-${aadhaarInput.slice(-4) || "4821"}`,
         skills: skillCategory,
         digitalIdCard: `COOP-ID-${fullName.toUpperCase().replace(/\s+/g, "")}-PENDING`,
@@ -262,8 +266,11 @@ export default function WorkerRegisterPage() {
                   name: submittedWorker.name,
                   badge: "Applicant (Pending Verification)",
                   subtext: `${submittedWorker.phone} · Status: Pending Verification`,
-                  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-                  id: submittedWorker.id,
+                  avatar:
+                    submittedWorker.avatar ||
+                    currentUser?.avatar ||
+                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+                  id: submittedWorker.id || currentUser?.id,
                   zone: "MVP Colony, Vizag",
                 });
                 router.push("/worker/dashboard");

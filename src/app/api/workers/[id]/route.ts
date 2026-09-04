@@ -38,7 +38,7 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await req.json();
-    const { status, isAvailable } = body;
+    const { status, isAvailable, avatar, name, skills, phone } = body;
 
     const updateData: any = {};
     if (status !== undefined) {
@@ -52,6 +52,18 @@ export async function PATCH(
     }
     if (isAvailable !== undefined) {
       updateData.isAvailable = isAvailable;
+    }
+    if (avatar !== undefined) {
+      updateData.avatar = avatar;
+    }
+    if (name !== undefined) {
+      updateData.name = name;
+    }
+    if (skills !== undefined) {
+      updateData.skills = skills;
+    }
+    if (phone !== undefined) {
+      updateData.phone = phone;
     }
 
     const updatedWorker = await prisma.worker.update({

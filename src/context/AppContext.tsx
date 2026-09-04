@@ -9,11 +9,11 @@ import { findSystemAccount } from "@/lib/authUsers";
 export const DEMO_USERS: Record<UserRole, DemoUser> = {
   CUSTOMER: {
     role: "CUSTOMER",
-    name: "Ananya Sharma",
+    name: "Resident Citizen",
     badge: "Verified Resident Customer",
-    subtext: "ananya.sharma@gmail.com · MVP Colony, Vizag",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-    id: "cust-ananya",
+    subtext: "citizen@karyasetu.gov.in · MVP Colony, Vizag",
+    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+    id: "cust-resident",
     zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
   },
   WORKER: {
@@ -56,7 +56,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [role, setRoleState] = useState<UserRole>("CUSTOMER");
   const [customUser, setCustomUser] = useState<DemoUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [language, setLanguageState] = useState<LanguageCode>("en");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -119,9 +119,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               u.email?.split("@")[0] ||
               (isWorker ? "Co-op Worker" : "Resident Customer");
 
-            const avatarUrl =
+            // Check all sources for Google profile photo
+            const googleAvatar =
               u.user_metadata?.avatar_url ||
               u.user_metadata?.picture ||
+              u.identities?.[0]?.identity_data?.avatar_url ||
+              u.identities?.[0]?.identity_data?.picture;
+
+            // Check if user has an existing saved custom avatar
+            let existingLocalAvatar: string | undefined;
+            if (typeof window !== "undefined") {
+              try {
+                const raw = localStorage.getItem("coopserve_custom_user");
+                if (raw) {
+                  const parsed = JSON.parse(raw);
+                  if (parsed.avatar) existingLocalAvatar = parsed.avatar;
+                }
+              } catch (e) {}
+            }
+
+            const avatarUrl =
+              existingLocalAvatar ||
+              googleAvatar ||
               (isWorker
                 ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
                 : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80");

@@ -23,6 +23,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { WorkerWithDetails, BookingWithDetails } from "@/types";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { WorkerIdCard } from "@/components/ui/WorkerIdCard";
 import { KokonutStatCard } from "@/components/ui/KokonutStatCard";
 import { useApp } from "@/context/AppContext";
@@ -104,6 +105,7 @@ function WorkerDashboardContent() {
           currentArtisan = {
             id: currentUser.id || `custom-${Date.now()}`,
             name: currentUser.name || "Co-op Artisan",
+            avatar: currentUser.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
             phone: currentUser.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
             skills: "General Maintenance & Repairs",
             status: "UNSUBMITTED",
@@ -117,6 +119,18 @@ function WorkerDashboardContent() {
           };
         } else if (!currentArtisan) {
           currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
+        }
+
+        // Keep avatar in sync with logged-in user profile
+        if (currentArtisan && currentUser?.avatar && currentArtisan.avatar !== currentUser.avatar) {
+          currentArtisan = { ...currentArtisan, avatar: currentUser.avatar };
+          if (currentArtisan.id && !currentArtisan.id.startsWith("custom-")) {
+            fetch(`/api/workers/${currentArtisan.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ avatar: currentUser.avatar }),
+            }).catch(() => {});
+          }
         }
 
         setWorker(currentArtisan);
@@ -267,14 +281,10 @@ function WorkerDashboardContent() {
         {/* Top Welcome & Shift Toggle */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/70 dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl">
           <div className="flex items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={
-                worker.avatar ||
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-              }
-              alt={worker.name}
-              className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-500 shadow-md"
+            <UserAvatar
+              src={worker.avatar}
+              name={worker.name}
+              className="w-16 h-16 rounded-2xl border-2 border-emerald-500 shadow-md text-xl"
             />
             <div>
               <div className="flex items-center gap-2">

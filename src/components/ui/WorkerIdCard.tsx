@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { WorkerWithDetails } from "@/types";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { motion } from "framer-motion";
 
 interface WorkerIdCardProps {
@@ -82,14 +83,10 @@ export function WorkerIdCard({
           {/* Worker Photo & Main Details */}
           <div className="flex gap-4 items-center mb-3">
             <div className="relative shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  worker.avatar ||
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-                }
-                alt={worker.name}
-                className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-400 shadow-md"
+              <UserAvatar
+                src={worker.avatar}
+                name={worker.name}
+                className="w-16 h-16 rounded-2xl border-2 border-emerald-400 shadow-md text-xl"
               />
               <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-slate-950 rounded-full p-1 shadow">
                 <CheckCircle2 className="w-3.5 h-3.5" />
