@@ -9,11 +9,11 @@ import { findSystemAccount } from "@/lib/authUsers";
 export const DEMO_USERS: Record<UserRole, DemoUser> = {
   CUSTOMER: {
     role: "CUSTOMER",
-    name: "Kameswara Surya",
+    name: "Ananya Sharma",
     badge: "Verified Resident Customer",
-    subtext: "Kameswara.surya@gmail.com · MVP Colony, Vizag",
+    subtext: "ananya.sharma@gmail.com · MVP Colony, Vizag",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-    id: "cust-kameswara",
+    id: "cust-ananya",
     zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
   },
   WORKER: {

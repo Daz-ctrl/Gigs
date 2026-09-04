@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sahakar Karmakar (सहकार कर्मकार) — Worker-Owned Cooperative Gig Platform",
+  title: "Sahakarya (सहकार्य) — Worker-Owned Cooperative Gig Platform",
   description:
-    "Worker-owned gig marketplace for Labour Cooperative Federations and Societies. Ensuring 90% payouts, worker welfare, and consumer trust (SIH26089).",
+    "India's worker-owned gig platform for Labour Cooperative Federations. Ensuring 90% direct payouts, free healthcare, and community trust (SIH26089).",
 };
 
 export default function RootLayout({

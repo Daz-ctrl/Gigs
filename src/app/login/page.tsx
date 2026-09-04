@@ -118,10 +118,10 @@ export default function LoginPage() {
               SK
             </div>
             <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Sign In to Sahakar Karmakar
+              Sign In to Sahakarya
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Worker-Owned Cooperative Platform (सहकार कर्मकार)
+              Worker-Owned Cooperative Platform (सहकार्य)
             </p>
           </div>
 

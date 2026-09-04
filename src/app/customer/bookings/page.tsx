@@ -391,14 +391,14 @@ export default function CustomerBookingsPage() {
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Billed To</span>
                 <strong className="text-slate-800 dark:text-slate-200">
-                  {invoiceBooking.customer?.name || "Kameswara Surya"}
+                  {invoiceBooking.customer?.name || "Ananya Sharma"}
                 </strong>
                 <p className="text-[11px] text-slate-500">{invoiceBooking.customer?.address || "MVP Colony, Visakhapatnam"}</p>
               </div>
               <div className="text-right">
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Service Provider</span>
                 <strong className="text-slate-800 dark:text-slate-200">
-                  {invoiceBooking.worker?.name || "Kameshwara Akundi"}
+                  {invoiceBooking.worker?.name || "Sunil Kumar"}
                 </strong>
                 <p className="text-[11px] text-emerald-500 font-medium">Verified Co-op Member</p>
               </div>

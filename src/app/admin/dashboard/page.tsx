@@ -182,7 +182,7 @@ function AdminDashboardContent() {
           localStorage.setItem("coopserve_worker_review_active", "true");
           localStorage.setItem(
             "coopserve_review_target_worker",
-            rating.booking.worker?.name || "Kameshwara Akundi"
+            rating.booking.worker?.name || "Sunil Kumar"
           );
         }
         showToast(
@@ -648,7 +648,7 @@ function AdminDashboardContent() {
                                   />
                                   <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">
-                                      {worker?.name || "Kameshwara Akundi"}
+                                      {worker?.name || "Sunil Kumar"}
                                     </div>
                                     <div className="text-xs text-slate-500">
                                       {worker?.skills || "Electrician"}
@@ -825,7 +825,7 @@ function AdminDashboardContent() {
                                   />
                                   <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">
-                                      {worker?.name || "Kameshwara Akundi"}
+                                      {worker?.name || "Sunil Kumar"}
                                     </div>
                                     <div className="text-xs text-slate-500">
                                       {worker?.skills || "Electrician"}

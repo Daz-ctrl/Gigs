@@ -92,7 +92,7 @@ export function FairnessMeter({
               </div>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white text-base">
-                  Sahakar Karmakar Platform
+                  Sahakarya Platform
                 </h4>
                 <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                   Democratic Federation Governance

@@ -109,7 +109,7 @@ function NavbarContent() {
             </div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
-                Sahakar Karmakar
+                Sahakarya
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
