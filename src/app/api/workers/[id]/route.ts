@@ -86,3 +86,48 @@ export async function PATCH(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const worker = await prisma.worker.findUnique({
+      where: { id },
+    });
+
+    if (!worker) {
+      return NextResponse.json({ error: "Worker not found" }, { status: 404 });
+    }
+
+    // Set workerId to null for any existing bookings to preserve booking history
+    await prisma.booking.updateMany({
+      where: { workerId: id },
+      data: { workerId: null },
+    });
+
+    // Delete certifications & welfare record if not fully cascaded
+    await prisma.certification.deleteMany({
+      where: { workerId: id },
+    });
+    await prisma.welfareRecord.deleteMany({
+      where: { workerId: id },
+    });
+
+    // Delete the worker record
+    await prisma.worker.delete({
+      where: { id },
+    });
+
+    // Invalidate workers in-memory cache immediately
+    invalidateWorkersCache();
+
+    return NextResponse.json({ success: true, message: `Worker ${worker.name} deleted successfully` });
+  } catch (error: any) {
+    console.error("Error deleting worker:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+

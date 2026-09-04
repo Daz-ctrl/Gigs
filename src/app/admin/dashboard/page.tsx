@@ -23,6 +23,7 @@ import {
   MessageSquare,
   Send,
   ArrowRight,
+  Trash2,
 } from "lucide-react";
 import { WorkerWithDetails } from "@/types";
 import { KokonutStatCard } from "@/components/ui/KokonutStatCard";
@@ -196,6 +197,28 @@ function AdminDashboardContent() {
       }
     } catch (e) {
       showToast("Error rejecting worker on server.");
+      fetchWorkers();
+    }
+  };
+
+  const handleDeleteWorker = async (workerId: string, workerName: string) => {
+    if (!window.confirm(`Permanently delete worker "${workerName}" from cooperative registry?`)) return;
+
+    // 1. Instant Optimistic UI Update
+    setWorkers((prev) => prev.filter((w) => w.id !== workerId));
+    showToast(`Worker ${workerName} permanently removed.`);
+
+    // 2. Background Sync
+    try {
+      const res = await fetch(`/api/workers/${workerId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        showToast("Error deleting worker from server.");
+        fetchWorkers();
+      }
+    } catch (e) {
+      showToast("Network error deleting worker.");
       fetchWorkers();
     }
   };
@@ -519,10 +542,19 @@ function AdminDashboardContent() {
                       </button>
                       <button
                         type="button"
+                        title="Reject application"
                         onClick={() => handleRejectWorker(worker.id)}
-                        className="py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 font-bold text-xs transition cursor-pointer"
+                        className="py-2 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 font-bold text-xs transition cursor-pointer"
                       >
                         <XCircle className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        title="Delete worker permanently"
+                        onClick={() => handleDeleteWorker(worker.id, worker.name)}
+                        className="py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-600 hover:text-white text-rose-600 font-bold text-xs transition cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </SpotlightCard>
