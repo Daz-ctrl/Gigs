@@ -494,157 +494,185 @@ function WorkerDashboardContent() {
 
         {/* TAB 1: MY BOOKINGS & JOBS */}
         {activeTab === "jobs" && (
-          <div className="space-y-6">
-            <div className="rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    Active & Assigned Cooperative Jobs
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Fair dispatch directly from your local cooperative society.
-                  </p>
-                </div>
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
-                  {bookings.length} Assigned Jobs
-                </span>
+          isLocked ? (
+            <div className="rounded-3xl border-2 border-dashed border-amber-500/30 bg-white/50 dark:bg-slate-900/50 p-8 sm:p-12 text-center backdrop-blur-xl max-w-xl mx-auto space-y-4 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-amber-500/15 text-amber-500 flex items-center justify-center mx-auto border border-amber-500/30 shadow-inner">
+                <Lock className="w-8 h-8" />
               </div>
-
-              {bookings.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 text-xs">
-                  No active jobs currently assigned. Keep your status &quot;On-Duty&quot; to receive nearest customer bookings.
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {bookings.map((booking) => {
-                    const isCompleted = booking.status === "COMPLETED";
-                    return (
-                      <div
-                        key={booking.id}
-                        className={`p-5 rounded-2xl border transition-all ${
-                          isCompleted
-                            ? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30"
-                            : "border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-950/15 shadow-md shadow-emerald-500/5"
-                        }`}
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-bold text-slate-900 dark:text-white text-base">
-                                {booking.serviceType} Request
-                              </h4>
-                              <span
-                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                  isCompleted
-                                    ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
-                                    : "bg-emerald-500 text-white animate-pulse"
-                                }`}
-                              >
-                                {booking.status}
-                              </span>
-                              {booking.isEmergency && (
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white">
-                                  EMERGENCY
-                                </span>
-                              )}
-                            </div>
-
-                            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                              {booking.description}
-                            </p>
-
-                            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 mt-3">
-                              <span>Client: <strong className="text-slate-300">{booking.customer?.name || "Resident"}</strong></span>
-                              <span>Address: {booking.customer?.address || "Zone 1"}</span>
-                              <span>Ref: <span className="font-mono">{booking.id.slice(0, 8)}</span></span>
-                            </div>
-                          </div>
-
-                          {/* Payout & Complete Button */}
-                          <div className="text-left sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-200 dark:border-slate-800">
-                            <div className="text-xs text-slate-400">Your Take-Home (90%)</div>
-                            <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
-                              ₹{booking.workerPayout}
-                            </div>
-                            <div className="text-[10px] text-teal-600 dark:text-teal-400 font-medium">
-                              +₹{booking.welfareFee} into your Welfare Fund
-                            </div>
-
-                            {booking.status === "ACCEPTED" && (
-                              <div className="mt-3 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left space-y-2">
-                                <span className="block text-[11px] font-bold text-amber-600 dark:text-amber-400">
-                                  🔐 Ask Customer For Start-Work OTP:
-                                </span>
-                                <div className="flex gap-2">
-                                  <input
-                                    type="text"
-                                    maxLength={4}
-                                    placeholder="e.g. 8341"
-                                    value={otpInputs[booking.id] || ""}
-                                    onChange={(e) =>
-                                      setOtpInputs({
-                                        ...otpInputs,
-                                        [booking.id]: e.target.value,
-                                      })
-                                    }
-                                    className="w-24 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-white dark:bg-slate-900 font-mono font-black text-sm text-center focus:outline-none"
-                                  />
-                                  <button
-                                    type="button"
-                                    disabled={startingJobId === booking.id}
-                                    onClick={() => handleStartJobWithOtp(booking.id)}
-                                    className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition cursor-pointer shadow-sm"
-                                  >
-                                    Verify
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-
-                            {booking.status === "IN_PROGRESS" && (
-                              <button
-                                type="button"
-                                onClick={() => handleCompleteJob(booking.id)}
-                                className="mt-3 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md shadow-emerald-500/20"
-                              >
-                                Mark Completed
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+              <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                Job Dispatching Locked (Verification Required)
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md mx-auto">
+                {isUnsubmitted
+                  ? "Please complete your free Aadhaar e-KYC application to submit your profile for verification."
+                  : "Your worker profile has been submitted and is currently in the Ward Sachivalayam Secretary verification queue. You will be able to go on-duty and receive customer service requests as soon as your profile is approved."}
+              </p>
+              {isUnsubmitted && (
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/worker/register")}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md transition cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    <span>Complete e-KYC Application</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
               )}
             </div>
-
-            {/* Certifications Section */}
-            <div className="rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4">
-                Verified Skill Badges & NSDC Certifications
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {worker.certifications?.map((c) => (
-                  <div
-                    key={c.id}
-                    className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-xs"
-                  >
-                    <div className="font-bold text-emerald-700 dark:text-emerald-300">
-                      {c.title}
-                    </div>
-                    <div className="text-slate-500 dark:text-slate-400 mt-1">
-                      {c.issuer}
-                    </div>
-                    <div className="flex justify-between items-center mt-3 pt-2 border-t border-emerald-500/20 text-[11px]">
-                      <span className="font-mono text-slate-400">{c.certNumber}</span>
-                      <span className="font-bold text-emerald-600">VERIFIED</span>
-                    </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                      Active & Assigned Cooperative Jobs
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Fair dispatch directly from your local cooperative society.
+                    </p>
                   </div>
-                ))}
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+                    {bookings.length} Assigned Jobs
+                  </span>
+                </div>
+
+                {bookings.length === 0 ? (
+                  <div className="p-8 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-slate-400 text-xs">
+                    No active jobs currently assigned. Keep your status &quot;On-Duty&quot; to receive nearest customer bookings.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {bookings.map((booking) => {
+                      const isCompleted = booking.status === "COMPLETED";
+                      return (
+                        <div
+                          key={booking.id}
+                          className={`p-5 rounded-2xl border transition-all ${
+                            isCompleted
+                              ? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30"
+                              : "border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-950/15 shadow-md shadow-emerald-500/5"
+                          }`}
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-bold text-slate-900 dark:text-white text-base">
+                                  {booking.serviceType} Request
+                                </h4>
+                                <span
+                                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                    isCompleted
+                                      ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
+                                      : "bg-emerald-500 text-white animate-pulse"
+                                  }`}
+                                >
+                                  {booking.status}
+                                </span>
+                                {booking.isEmergency && (
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white">
+                                    EMERGENCY
+                                  </span>
+                                )}
+                              </div>
+
+                              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                                {booking.description}
+                              </p>
+
+                              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 mt-3">
+                                <span>Client: <strong className="text-slate-300">{booking.customer?.name || "Resident"}</strong></span>
+                                <span>Address: {booking.customer?.address || "Zone 1"}</span>
+                                <span>Ref: <span className="font-mono">{booking.id.slice(0, 8)}</span></span>
+                              </div>
+                            </div>
+
+                            {/* Payout & Complete Button */}
+                            <div className="text-left sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-200 dark:border-slate-800">
+                              <div className="text-xs text-slate-400">Your Take-Home (90%)</div>
+                              <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                                ₹{booking.workerPayout}
+                              </div>
+                              <div className="text-[10px] text-teal-600 dark:text-teal-400 font-medium">
+                                +₹{booking.welfareFee} into your Welfare Fund
+                              </div>
+
+                              {booking.status === "ACCEPTED" && (
+                                <div className="mt-3 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-left space-y-2">
+                                  <span className="block text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                                    🔐 Ask Customer For Start-Work OTP:
+                                  </span>
+                                  <div className="flex gap-2">
+                                    <input
+                                      type="text"
+                                      maxLength={4}
+                                      placeholder="e.g. 8341"
+                                      value={otpInputs[booking.id] || ""}
+                                      onChange={(e) =>
+                                        setOtpInputs({
+                                          ...otpInputs,
+                                          [booking.id]: e.target.value,
+                                        })
+                                      }
+                                      className="w-24 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-white dark:bg-slate-900 font-mono font-black text-sm text-center focus:outline-none"
+                                    />
+                                    <button
+                                      type="button"
+                                      disabled={startingJobId === booking.id}
+                                      onClick={() => handleStartJobWithOtp(booking.id)}
+                                      className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition cursor-pointer shadow-sm"
+                                    >
+                                      Verify
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+
+                              {booking.status === "IN_PROGRESS" && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleCompleteJob(booking.id)}
+                                  className="mt-3 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md shadow-emerald-500/20"
+                                >
+                                  Mark Completed
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Certifications Section */}
+              <div className="rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4">
+                  Verified Skill Badges & NSDC Certifications
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {worker.certifications?.map((c) => (
+                    <div
+                      key={c.id}
+                      className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-xs"
+                    >
+                      <div className="font-bold text-emerald-700 dark:text-emerald-300">
+                        {c.title}
+                      </div>
+                      <div className="text-slate-500 dark:text-slate-400 mt-1">
+                        {c.issuer}
+                      </div>
+                      <div className="flex justify-between items-center mt-3 pt-2 border-t border-emerald-500/20 text-[11px]">
+                        <span className="font-mono text-slate-400">{c.certNumber}</span>
+                        <span className="font-bold text-emerald-600">VERIFIED</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
 
         {/* TAB 2: VIRTUAL ID */}
@@ -662,28 +690,18 @@ function WorkerDashboardContent() {
                   ? "Your cryptographic, tamper-proof 3D Digital Co-op ID and verifiable QR credential will be unlocked once you submit your free Aadhaar e-KYC and skill profile to the Ward Sachivalayam Secretary."
                   : "Your cryptographic 3D Digital Co-op ID card and QR credential will be automatically unlocked and issued once your profile is verified and approved by the Ward Sachivalayam Secretary."}
               </p>
-              <div className="pt-2">
-                {isUnsubmitted ? (
+              {isUnsubmitted && (
+                <div className="pt-2">
                   <button
                     type="button"
                     onClick={() => router.push("/worker/register")}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md transition cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md transition cursor-pointer inline-flex items-center gap-1.5"
                   >
-                    Submit e-KYC to Local Admin 🚀
+                    <span>Complete e-KYC Application</span>
+                    <ArrowRight className="w-4 h-4" />
                   </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRole("ADMIN");
-                      router.push("/admin/dashboard?tab=queue");
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md shadow-purple-500/25 transition cursor-pointer"
-                  >
-                    Switch to Admin to Review & Approve 🏢
-                  </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
