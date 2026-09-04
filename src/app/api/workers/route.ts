@@ -145,7 +145,6 @@ export async function POST(req: NextRequest) {
 
     if (existingWorkers.length > 0) {
       const primaryWorker = existingWorkers[0];
-      const isAlreadyVerified = primaryWorker.status === "VERIFIED";
 
       resultWorker = await prisma.worker.update({
         where: { id: primaryWorker.id },
@@ -158,9 +157,9 @@ export async function POST(req: NextRequest) {
           skills: skills || primaryWorker.skills,
           experienceYrs: Number(experienceYrs) || primaryWorker.experienceYrs,
           hourlyRate: Number(hourlyRate) || primaryWorker.hourlyRate,
-          status: isAlreadyVerified ? "VERIFIED" : "PENDING_VERIFICATION",
-          isAvailable: isAlreadyVerified ? primaryWorker.isAvailable : false,
-          digitalIdCard: isAlreadyVerified ? primaryWorker.digitalIdCard : digitalIdCard,
+          status: "PENDING_VERIFICATION",
+          isAvailable: false,
+          digitalIdCard,
         },
         include: {
           society: true,
@@ -168,6 +167,18 @@ export async function POST(req: NextRequest) {
           welfareRecord: true,
         },
       });
+
+      // Ensure certifications & welfare are pending until admin explicitly verifies
+      await prisma.certification.updateMany({
+        where: { workerId: primaryWorker.id },
+        data: { verified: false },
+      });
+      if (resultWorker.welfareRecord) {
+        await prisma.welfareRecord.update({
+          where: { id: resultWorker.welfareRecord.id },
+          data: { insuranceStatus: "PENDING" },
+        });
+      }
 
       // Purge any older duplicate records with same name/phone to keep DB clean
       if (existingWorkers.length > 1) {

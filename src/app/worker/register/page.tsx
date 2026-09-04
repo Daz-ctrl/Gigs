@@ -43,36 +43,6 @@ export default function WorkerRegisterPage() {
     }
   }, [currentUser, fullName]);
 
-  // If this worker is ALREADY verified in DB, redirect directly to dashboard!
-  useEffect(() => {
-    async function checkExistingWorker() {
-      try {
-        const { data: authData } = await supabase.auth.getUser();
-        const uEmail = (authData?.user?.email || "").toLowerCase().trim();
-        const uId = (authData?.user?.id || currentUser?.id || "").trim();
-        const uShortId = uId ? uId.slice(-6) : "";
-
-        const res = await fetch("/api/workers?status=ALL");
-        if (res.ok) {
-          const workers = await res.json();
-          const matched = Array.isArray(workers) && workers.find((w: any) => {
-            const wEmail = (w.email || "").toLowerCase().trim();
-            const wId = (w.id || "").trim();
-            if (uEmail && wEmail && uEmail === wEmail) return true;
-            if (uId && (wId === uId || wId === `sb-${uShortId}` || (uShortId && wId.includes(uShortId)))) return true;
-            return false;
-          });
-
-          if (matched && matched.status === "VERIFIED") {
-            showToast(`Welcome back, ${matched.name}! Redirecting to your Worker Dashboard.`);
-            router.replace("/worker/dashboard");
-          }
-        }
-      } catch (e) {}
-    }
-    checkExistingWorker();
-  }, [currentUser?.id, router, showToast]);
-
   // Aadhaar e-KYC state
   const [aadhaarInput, setAadhaarInput] = useState("");
   const [otpSent, setOtpSent] = useState(false);
