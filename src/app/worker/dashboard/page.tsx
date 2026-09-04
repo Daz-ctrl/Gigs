@@ -238,16 +238,18 @@ function WorkerDashboardContent() {
       return;
     }
 
+    const targetBooking = bookings.find((b) => b.id === bookingId);
+    const expectedOtp = (targetBooking?.startWorkOtp || "").trim();
+
+    // 1. Strict validation check against actual assigned OTP
+    if (expectedOtp && enteredOtp !== expectedOtp) {
+      showToast("❌ Incorrect Handshake OTP! Please enter the exact code provided by the customer.");
+      return;
+    }
+
     setStartingJobId(bookingId);
 
-    // 1. Instant Optimistic UI Update (0ms perceived lag)
-    const prevBookings = [...bookings];
-    setBookings((prev) =>
-      prev.map((b) => (b.id === bookingId ? { ...b, status: "IN_PROGRESS" } : b))
-    );
-    showToast("Handshake Verified! 60-Minute Service Clock Started.");
-
-    // 2. Background Sync
+    // 2. Server verification & state update
     try {
       const res = await fetch(`/api/bookings/${bookingId}`, {
         method: "PATCH",
@@ -261,14 +263,16 @@ function WorkerDashboardContent() {
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        // Revert on error
-        setBookings(prevBookings);
-        showToast(data.error || "Invalid Start-Work OTP.");
+      if (res.ok) {
+        setBookings((prev) =>
+          prev.map((b) => (b.id === bookingId ? { ...b, status: "IN_PROGRESS" } : b))
+        );
+        showToast("✅ Handshake Verified! 60-Minute Service Clock Started.");
+      } else {
+        showToast(`❌ ${data.error || "Invalid Start-Work OTP."}`);
       }
     } catch (e) {
-      setBookings(prevBookings);
-      showToast("Error verifying security handshake.");
+      showToast("❌ Error verifying security handshake.");
     } finally {
       setStartingJobId(null);
     }

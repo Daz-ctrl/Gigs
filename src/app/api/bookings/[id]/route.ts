@@ -20,14 +20,16 @@ export async function PATCH(
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    // Verify Start-Work Security Handshake OTP (Instant & Resilient)
+    // Strictly verify Start-Work Security Handshake OTP (No bypasses)
     const cleanInput = (startWorkOtp || startOtp || "").toString().trim();
-    if (action === "start_work" || cleanInput) {
-      const actualOtp = (booking.startWorkOtp || "8341").toString().trim();
+    const isStartingWork = action === "start_work" || status === "IN_PROGRESS";
 
-      if (cleanInput !== actualOtp && cleanInput !== "8341" && cleanInput !== "1234") {
+    if (isStartingWork) {
+      const actualOtp = (booking.startWorkOtp || "").toString().trim();
+
+      if (!cleanInput || cleanInput !== actualOtp) {
         return NextResponse.json(
-          { error: `Incorrect Start-Work OTP (${cleanInput}). Please check code ${actualOtp}.` },
+          { error: "Incorrect Handshake OTP. Please enter the exact 4-digit code shown on the customer's screen." },
           { status: 400 }
         );
       }
