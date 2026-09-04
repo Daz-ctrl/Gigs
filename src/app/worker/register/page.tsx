@@ -135,6 +135,8 @@ export default function WorkerRegisterPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          id: currentUser?.id,
+          avatar: currentUser?.avatar,
           name: fullName,
           phone,
           aadhaarLast4: aadhaarInput.slice(-4),

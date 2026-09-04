@@ -91,16 +91,30 @@ function WorkerDashboardContent() {
       const res = await fetch("/api/workers?status=ALL");
       if (res.ok) {
         const workers = await res.json();
+        const matchingWorkers = workers.filter((w: any) =>
+          (currentUser?.id && w.id === currentUser.id) ||
+          (currentUser?.name && (w.name.toLowerCase().trim() === currentUser.name.toLowerCase().trim() || w.name.toLowerCase().includes(currentUser.name.toLowerCase())))
+        );
         let currentArtisan =
-          workers.find((w: any) =>
-            (currentUser?.name && w.name.toLowerCase().includes(currentUser.name.toLowerCase())) ||
-            (currentUser?.id && w.id === currentUser.id)
-          );
+          matchingWorkers.find((w: any) => w.status === "VERIFIED") ||
+          matchingWorkers.find((w: any) => w.status === "PENDING_VERIFICATION") ||
+          matchingWorkers[0];
 
         if (!currentArtisan && currentUser?.role === "WORKER") {
-          showToast("Worker profile reset by Administrator. Please submit your Aadhaar e-KYC.");
-          router.replace("/worker/register");
-          return;
+          currentArtisan = {
+            id: currentUser.id || `custom-${Date.now()}`,
+            name: currentUser.name || "Co-op Artisan",
+            phone: currentUser.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
+            skills: "General Maintenance & Repairs",
+            status: "UNSUBMITTED",
+            isAvailable: false,
+            rating: 5.0,
+            totalJobs: 0,
+            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
+            society: { name: "Ward Sachivalayam #18 (MVP Colony Co-op)", zone: "MVP Colony & Beach Road" },
+            certifications: [],
+            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "PENDING" },
+          };
         } else if (!currentArtisan) {
           currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
         }

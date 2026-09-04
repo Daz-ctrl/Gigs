@@ -49,9 +49,13 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ success: true, profile: customer, role: "CUSTOMER" });
     } else if (role === "WORKER") {
+      // Look up existing worker by id or name
       let worker = await prisma.worker.findFirst({
         where: {
-          OR: [{ id }],
+          OR: [
+            { id },
+            { name: { equals: cleanName, mode: "insensitive" } },
+          ],
         },
       });
 
@@ -63,51 +67,17 @@ export async function POST(req: NextRequest) {
             avatar: avatar || worker.avatar,
           },
         });
-      } else {
-        const firstSoc = await prisma.society.findFirst();
-        worker = await prisma.worker.create({
-          data: {
-            id,
-            societyId: firstSoc?.id || "soc-mvp",
-            name: cleanName,
-            phone: `+91 ${Math.floor(1000000000 + Math.random() * 9000000000)}`,
-            aadhaarMasked: "XXXX-XXXX-PENDING",
-            avatar:
-              avatar ||
-              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-            skills: "General Repairs,Maintenance",
-            experienceYrs: 3,
-            hourlyRate: 500,
-            status: "PENDING_VERIFICATION",
-            isAvailable: false,
-            latitude: 17.7421,
-            longitude: 83.3384,
-            digitalIdCard: `COOP-ID-${cleanName.toUpperCase().replace(/\s+/g, "")}-PENDING`,
-            certifications: {
-              create: [
-                {
-                  title: "Cooperative Onboarding Assessment",
-                  issuer: "Labour Cooperative Society",
-                  certNumber: `NSDC-COOP-${Date.now().toString().slice(-6)}`,
-                  issuedYear: new Date().getFullYear(),
-                  verified: false,
-                },
-              ],
-            },
-            welfareRecord: {
-              create: {
-                insuranceStatus: "PENDING",
-                insurancePlan: "Pradhan Mantri Suraksha Bima Yojana (Cooperative Group)",
-                policyNumber: "PENDING-APPROVAL",
-                fundBalance: 0,
-                earningsYTD: 0,
-              },
-            },
-          },
-        });
+        return NextResponse.json({ success: true, profile: worker, role: "WORKER" });
       }
 
-      return NextResponse.json({ success: true, profile: worker, role: "WORKER" });
+      // DO NOT create a dummy worker in the database here!
+      // Workers are officially created when they submit their e-KYC on /worker/register.
+      // This eliminates duplicate OAuth entries in the Admin Verification Queue.
+      return NextResponse.json({
+        success: true,
+        message: "Worker profile authenticated. Ready for e-KYC registration.",
+        role: "WORKER",
+      });
     }
 
     return NextResponse.json({ success: true });

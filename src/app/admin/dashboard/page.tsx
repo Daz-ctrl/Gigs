@@ -23,7 +23,6 @@ import {
   MessageSquare,
   Send,
   ArrowRight,
-  Trash2,
 } from "lucide-react";
 import { WorkerWithDetails } from "@/types";
 import { KokonutStatCard } from "@/components/ui/KokonutStatCard";
@@ -152,10 +151,15 @@ function AdminDashboardContent() {
   }, [role]);
 
   const handleVerifyWorker = async (workerId: string) => {
-    // 1. Instant Optimistic UI Update (0ms)
+    const target = workers.find((w) => w.id === workerId);
+    const targetName = target?.name?.trim().toLowerCase();
+
+    // 1. Instant Optimistic UI Update (0ms) - marks all matching instances as VERIFIED
     setWorkers((prev) =>
       prev.map((w) =>
-        w.id === workerId ? { ...w, status: "VERIFIED", isAvailable: true } : w
+        w.id === workerId || (targetName && w.name?.trim().toLowerCase() === targetName)
+          ? { ...w, status: "VERIFIED", isAvailable: true }
+          : w
       )
     );
     showToast("Worker approved! Digital Cooperative ID & QR credential issued.");
@@ -177,10 +181,15 @@ function AdminDashboardContent() {
   };
 
   const handleRejectWorker = async (workerId: string) => {
-    // 1. Instant Optimistic UI Update (0ms)
+    const target = workers.find((w) => w.id === workerId);
+    const targetName = target?.name?.trim().toLowerCase();
+
+    // 1. Instant Optimistic UI Update (0ms) - marks all matching instances as REJECTED
     setWorkers((prev) =>
       prev.map((w) =>
-        w.id === workerId ? { ...w, status: "REJECTED", isAvailable: false } : w
+        w.id === workerId || (targetName && w.name?.trim().toLowerCase() === targetName)
+          ? { ...w, status: "REJECTED", isAvailable: false }
+          : w
       )
     );
     showToast("Worker registration rejected.");
@@ -197,28 +206,6 @@ function AdminDashboardContent() {
       }
     } catch (e) {
       showToast("Error rejecting worker on server.");
-      fetchWorkers();
-    }
-  };
-
-  const handleDeleteWorker = async (workerId: string, workerName: string) => {
-    if (!window.confirm(`Permanently delete worker "${workerName}" from cooperative registry?`)) return;
-
-    // 1. Instant Optimistic UI Update
-    setWorkers((prev) => prev.filter((w) => w.id !== workerId));
-    showToast(`Worker ${workerName} permanently removed.`);
-
-    // 2. Background Sync
-    try {
-      const res = await fetch(`/api/workers/${workerId}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        showToast("Error deleting worker from server.");
-        fetchWorkers();
-      }
-    } catch (e) {
-      showToast("Network error deleting worker.");
       fetchWorkers();
     }
   };
@@ -293,8 +280,41 @@ function AdminDashboardContent() {
     }
   };
 
-  const pendingWorkers = workers.filter((w) => w.status === "PENDING_VERIFICATION" || w.status === "PENDING");
-  const verifiedWorkers = workers.filter((w) => w.status === "VERIFIED");
+  // Deduplicate and filter applicants awaiting verification:
+  // 1. Must be PENDING_VERIFICATION or PENDING
+  // 2. Must have submitted e-KYC (not an unsubmitted XXXX-XXXX-PENDING stub)
+  // 3. Deduplicate by worker name/identity to guarantee zero duplicate cards
+  const pendingMap = new Map<string, any>();
+  workers
+    .filter(
+      (w) =>
+        (w.status === "PENDING_VERIFICATION" || w.status === "PENDING") &&
+        w.aadhaarMasked &&
+        !w.aadhaarMasked.includes("PENDING")
+    )
+    .forEach((w) => {
+      const key = (w.name || "").trim().toLowerCase();
+      if (!pendingMap.has(key)) {
+        pendingMap.set(key, w);
+      } else {
+        const existing = pendingMap.get(key);
+        if (!existing.avatar && w.avatar) {
+          pendingMap.set(key, w);
+        }
+      }
+    });
+  const pendingWorkers = Array.from(pendingMap.values());
+
+  const verifiedMap = new Map<string, any>();
+  workers
+    .filter((w) => w.status === "VERIFIED")
+    .forEach((w) => {
+      const key = (w.name || "").trim().toLowerCase();
+      if (!verifiedMap.has(key)) {
+        verifiedMap.set(key, w);
+      }
+    });
+  const verifiedWorkers = Array.from(verifiedMap.values());
 
   const pendingAlerts = flaggedRatings.filter(
     (r) => r.flagged && r.adminStatus !== "ACKNOWLEDGED" && r.adminStatus !== "RESOLVED"
@@ -542,19 +562,10 @@ function AdminDashboardContent() {
                       </button>
                       <button
                         type="button"
-                        title="Reject application"
                         onClick={() => handleRejectWorker(worker.id)}
-                        className="py-2 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 font-bold text-xs transition cursor-pointer"
+                        className="py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 font-bold text-xs transition cursor-pointer"
                       >
                         <XCircle className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        title="Delete worker permanently"
-                        onClick={() => handleDeleteWorker(worker.id, worker.name)}
-                        className="py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-600 hover:text-white text-rose-600 font-bold text-xs transition cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </SpotlightCard>

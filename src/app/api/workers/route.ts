@@ -44,7 +44,10 @@ export async function GET(req: NextRequest) {
     if (status !== "ALL") {
       if (status === "PENDING" || status === "PENDING_VERIFICATION") {
         filtered = filtered.filter(
-          (w) => w.status === "PENDING" || w.status === "PENDING_VERIFICATION"
+          (w) =>
+            (w.status === "PENDING" || w.status === "PENDING_VERIFICATION") &&
+            w.aadhaarMasked &&
+            !w.aadhaarMasked.includes("PENDING")
         );
       } else {
         filtered = filtered.filter((w) => w.status === status);
@@ -98,8 +101,10 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
+      id,
       name,
       phone,
+      avatar,
       aadhaarLast4,
       skills,
       experienceYrs,
@@ -109,41 +114,47 @@ export async function POST(req: NextRequest) {
       certIssuer,
     } = body;
 
+    const trimmedName = (name || "New Co-op Member").trim();
     const safePhone = (phone || `+91 ${Math.floor(6000000000 + Math.random() * 3999999999)}`).trim();
     const aadhaarMasked = `XXXX-XXXX-${aadhaarLast4 || "1029"}`;
-    const digitalIdCard = `COOP-ID-${(name || "WORKER").toUpperCase().replace(/\s+/g, "")}-${Date.now().toString().slice(-4)}-PENDING`;
+    const digitalIdCard = `COOP-ID-${trimmedName.toUpperCase().replace(/\s+/g, "")}-${Date.now().toString().slice(-4)}-PENDING`;
 
     let targetSocietyId = societyId;
     if (!targetSocietyId) {
       const firstSoc = await prisma.society.findFirst();
-      targetSocietyId = firstSoc?.id || "";
+      targetSocietyId = firstSoc?.id || "soc-mvp";
     }
 
-    // Check if worker with this phone or name already exists to prevent duplicate error
-    const existing = await prisma.worker.findFirst({
+    // 1. Check for ANY existing worker with this ID, phone, or name to prevent duplicates
+    const existingWorkers = await prisma.worker.findMany({
       where: {
         OR: [
+          ...(id ? [{ id }] : []),
           { phone: safePhone },
-          { name: { equals: name, mode: "insensitive" } },
+          { name: { equals: trimmedName, mode: "insensitive" } },
         ],
       },
       include: { society: true, certifications: true, welfareRecord: true },
+      orderBy: { createdAt: "desc" },
     });
 
     let resultWorker;
 
-    if (existing) {
+    if (existingWorkers.length > 0) {
+      const primaryWorker = existingWorkers[0];
       resultWorker = await prisma.worker.update({
-        where: { id: existing.id },
+        where: { id: primaryWorker.id },
         data: {
-          name: name || existing.name,
+          name: trimmedName,
           phone: safePhone,
           aadhaarMasked,
-          skills: skills || existing.skills,
-          experienceYrs: Number(experienceYrs) || existing.experienceYrs,
-          hourlyRate: Number(hourlyRate) || existing.hourlyRate,
+          avatar: avatar || primaryWorker.avatar,
+          skills: skills || primaryWorker.skills,
+          experienceYrs: Number(experienceYrs) || primaryWorker.experienceYrs,
+          hourlyRate: Number(hourlyRate) || primaryWorker.hourlyRate,
           status: "PENDING_VERIFICATION",
           isAvailable: false,
+          digitalIdCard,
         },
         include: {
           society: true,
@@ -151,13 +162,29 @@ export async function POST(req: NextRequest) {
           welfareRecord: true,
         },
       });
+
+      // Purge any older duplicate records with same name/phone to keep DB clean
+      if (existingWorkers.length > 1) {
+        const redundantIds = existingWorkers.slice(1).map((w) => w.id);
+        try {
+          await prisma.worker.deleteMany({
+            where: { id: { in: redundantIds } },
+          });
+        } catch (delErr) {
+          console.warn("Redundant worker cleanup:", delErr);
+        }
+      }
     } else {
       resultWorker = await prisma.worker.create({
         data: {
+          ...(id ? { id } : {}),
           societyId: targetSocietyId,
-          name: name || "New Co-op Member",
+          name: trimmedName,
           phone: safePhone,
           aadhaarMasked,
+          avatar:
+            avatar ||
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
           skills: skills || "General Maintenance",
           experienceYrs: Number(experienceYrs) || 3,
           hourlyRate: Number(hourlyRate) || 450,
@@ -197,7 +224,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Invalidate cache immediately on new worker
+    // Invalidate cache immediately on new or updated worker
     invalidateWorkersCache();
 
     return NextResponse.json(resultWorker, { status: 201 });
