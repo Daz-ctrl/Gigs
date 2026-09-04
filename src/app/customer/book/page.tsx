@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { WorkerWithDetails } from "@/types";
 import { useApp } from "@/context/AppContext";
-import { formatDistance } from "@/lib/geo";
+import { formatDistance, calculateDistanceKm } from "@/lib/geo";
 import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
@@ -60,7 +60,7 @@ const ZONES = [
 export default function CustomerBookPage() {
   const router = useRouter();
   const { t, showToast, role, isAuthenticated } = useApp();
-  const [workers, setWorkers] = useState<WorkerWithDetails[]>([]);
+  const [allAvailableWorkers, setAllAvailableWorkers] = useState<WorkerWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState("ALL");
   const [selectedZone, setSelectedZone] = useState("ALL");
@@ -74,29 +74,20 @@ export default function CustomerBookPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState<any | null>(null);
 
-  const fetchWorkers = async () => {
-    setLoading(true);
+  const fetchWorkers = async (isInitial = false) => {
+    if (isInitial) setLoading(true);
     try {
-      const currentZoneObj = ZONES.find((z) => z.id === selectedZone) || ZONES[0];
-      const params = new URLSearchParams();
-      if (selectedService !== "ALL") params.append("serviceType", selectedService);
-      if (selectedZone !== "ALL") params.append("zone", selectedZone);
-      params.append("lat", currentZoneObj.lat.toString());
-      params.append("lng", currentZoneObj.lng.toString());
-      params.append("status", "VERIFIED");
-      params.append("available", "true");
-
-      const res = await fetch(`/api/workers?${params.toString()}`, {
-        cache: "no-store",
+      const res = await fetch(`/api/workers?status=VERIFIED&available=true`, {
+        cache: "default",
       });
       if (res.ok) {
         const data = await res.json();
-        setWorkers(data);
+        setAllAvailableWorkers(data);
       }
     } catch (e) {
       console.error("Error fetching workers:", e);
     } finally {
-      setLoading(false);
+      if (isInitial) setLoading(false);
     }
   };
 
@@ -111,19 +102,52 @@ export default function CustomerBookPage() {
   }, [role, isAuthenticated, router]);
 
   useEffect(() => {
-    fetchWorkers();
-  }, [selectedService, selectedZone, role]);
+    fetchWorkers(true);
+  }, [role]);
 
-  const filteredWorkers = workers.filter((w) => {
-    if (!w.isAvailable) return false;
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      w.name.toLowerCase().includes(q) ||
-      w.skills.toLowerCase().includes(q) ||
-      w.society?.name.toLowerCase().includes(q)
+  const currentZoneObj = ZONES.find((z) => z.id === selectedZone) || ZONES[0];
+
+  const filteredWorkers = React.useMemo(() => {
+    let list = allAvailableWorkers.filter(
+      (w) => w.isAvailable !== false && w.status === "VERIFIED"
     );
-  });
+
+    if (selectedService !== "ALL") {
+      list = list.filter((w) =>
+        w.skills.toLowerCase().includes(selectedService.toLowerCase())
+      );
+    }
+
+    if (selectedZone !== "ALL") {
+      list = list.filter((w) => w.society?.zone === selectedZone);
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (w) =>
+          w.name.toLowerCase().includes(q) ||
+          w.skills.toLowerCase().includes(q) ||
+          w.society?.name.toLowerCase().includes(q)
+      );
+    }
+
+    // Attach Haversine distance and sort by proximity
+    return list
+      .map((w) => {
+        let distanceKm = 2.5;
+        if (currentZoneObj) {
+          distanceKm = calculateDistanceKm(
+            currentZoneObj.lat,
+            currentZoneObj.lng,
+            w.latitude,
+            w.longitude
+          );
+        }
+        return { ...w, distanceKm };
+      })
+      .sort((a, b) => a.distanceKm - b.distanceKm);
+  }, [allAvailableWorkers, selectedService, selectedZone, searchQuery, currentZoneObj]);
 
   const handleBookClick = (worker: WorkerWithDetails) => {
     setSelectedWorker(worker);

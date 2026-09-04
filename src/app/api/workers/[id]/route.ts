@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { invalidateWorkersCache } from "@/app/api/workers/route";
 
 export async function GET(
   req: NextRequest,
@@ -76,6 +77,9 @@ export async function PATCH(
         });
       }
     }
+
+    // Invalidate in-memory cache
+    invalidateWorkersCache();
 
     return NextResponse.json(updatedWorker);
   } catch (error: any) {

@@ -379,17 +379,6 @@ function WorkerDashboardContent() {
                   </p>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setRole("ADMIN");
-                  router.push("/admin/dashboard?tab=queue");
-                }}
-                className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition cursor-pointer shadow-md shadow-purple-500/25 shrink-0"
-              >
-                Switch to Admin to Approve Worker 🏢
-              </button>
             </div>
           </div>
         )}

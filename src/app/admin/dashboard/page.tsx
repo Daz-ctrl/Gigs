@@ -103,7 +103,6 @@ function AdminDashboardContent() {
   }, [searchParams]);
 
   const fetchWorkers = async () => {
-    setLoading(true);
     try {
       const res = await fetch("/api/workers?status=ALL");
       if (res.ok) {
@@ -130,38 +129,74 @@ function AdminDashboardContent() {
   };
 
   useEffect(() => {
-    fetchWorkers();
-    fetchFlaggedRatings();
+    let isMounted = true;
+    setLoading(true);
+    Promise.all([
+      fetch("/api/workers?status=ALL").then((r) => (r.ok ? r.json() : [])),
+      fetch("/api/ratings?flagged=true").then((r) => (r.ok ? r.json() : [])),
+    ])
+      .then(([workersData, ratingsData]) => {
+        if (!isMounted) return;
+        if (Array.isArray(workersData)) setWorkers(workersData);
+        if (Array.isArray(ratingsData)) setFlaggedRatings(ratingsData);
+      })
+      .catch((e) => console.error("Admin parallel load error:", e))
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [role]);
 
   const handleVerifyWorker = async (workerId: string) => {
+    // 1. Instant Optimistic UI Update (0ms)
+    setWorkers((prev) =>
+      prev.map((w) =>
+        w.id === workerId ? { ...w, status: "VERIFIED", isAvailable: true } : w
+      )
+    );
+    showToast("Worker approved! Digital Cooperative ID & QR credential issued.");
+
+    // 2. Background Sync
     try {
       const res = await fetch(`/api/workers/${workerId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "VERIFIED", isAvailable: true }),
       });
-
-      if (res.ok) {
-        showToast("Worker approved! Digital Cooperative ID & QR credential issued.");
+      if (!res.ok) {
         fetchWorkers();
       }
     } catch (e) {
-      showToast("Error updating worker status.");
+      showToast("Error updating worker status on server.");
+      fetchWorkers();
     }
   };
 
   const handleRejectWorker = async (workerId: string) => {
+    // 1. Instant Optimistic UI Update (0ms)
+    setWorkers((prev) =>
+      prev.map((w) =>
+        w.id === workerId ? { ...w, status: "REJECTED", isAvailable: false } : w
+      )
+    );
+    showToast("Worker registration rejected.");
+
+    // 2. Background Sync
     try {
-      await fetch(`/api/workers/${workerId}`, {
+      const res = await fetch(`/api/workers/${workerId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "REJECTED" }),
       });
-      showToast("Worker registration rejected.");
-      fetchWorkers();
+      if (!res.ok) {
+        fetchWorkers();
+      }
     } catch (e) {
-      showToast("Error rejecting worker.");
+      showToast("Error rejecting worker on server.");
+      fetchWorkers();
     }
   };
 

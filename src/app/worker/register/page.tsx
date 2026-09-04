@@ -250,17 +250,7 @@ export default function WorkerRegisterPage() {
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setRole("ADMIN");
-                router.push("/admin/dashboard");
-              }}
-              className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25 transition cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>Switch to Co-op Admin to Approve Worker 🏢</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+
 
             <button
               type="button"

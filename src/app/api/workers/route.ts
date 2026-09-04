@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { calculateDistanceKm } from "@/lib/geo";
 
+// High-speed In-Memory Cache (10s TTL)
+let cachedAllWorkers: any[] | null = null;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 10000;
+
+export function invalidateWorkersCache() {
+  cachedAllWorkers = null;
+  lastCacheTime = 0;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -12,34 +22,44 @@ export async function GET(req: NextRequest) {
     const userLat = parseFloat(searchParams.get("lat") || "");
     const userLng = parseFloat(searchParams.get("lng") || "");
 
-    const whereClause: any = {};
+    const now = Date.now();
+    let allWorkers = cachedAllWorkers;
+
+    if (!allWorkers || now - lastCacheTime > CACHE_TTL_MS) {
+      allWorkers = await prisma.worker.findMany({
+        include: {
+          society: true,
+          certifications: true,
+          welfareRecord: true,
+        },
+        orderBy: { rating: "desc" },
+      });
+      cachedAllWorkers = allWorkers;
+      lastCacheTime = now;
+    }
+
+    // Fast in-memory filtering (0ms latency)
+    let filtered = allWorkers;
+
     if (status !== "ALL") {
       if (status === "PENDING" || status === "PENDING_VERIFICATION") {
-        whereClause.status = { in: ["PENDING", "PENDING_VERIFICATION"] };
+        filtered = filtered.filter(
+          (w) => w.status === "PENDING" || w.status === "PENDING_VERIFICATION"
+        );
       } else {
-        whereClause.status = status;
+        filtered = filtered.filter((w) => w.status === status);
       }
     }
+
     if (available === "true") {
-      whereClause.isAvailable = true;
+      filtered = filtered.filter((w) => w.isAvailable === true);
     } else if (available === "false") {
-      whereClause.isAvailable = false;
+      filtered = filtered.filter((w) => w.isAvailable === false);
     }
+
     if (zone && zone !== "ALL") {
-      whereClause.society = { zone };
+      filtered = filtered.filter((w) => w.society?.zone === zone);
     }
-
-    const workers = await prisma.worker.findMany({
-      where: whereClause,
-      include: {
-        society: true,
-        certifications: true,
-        welfareRecord: true,
-      },
-      orderBy: { rating: "desc" },
-    });
-
-    let filtered = workers;
 
     if (serviceType && serviceType !== "ALL") {
       filtered = filtered.filter((w) =>
@@ -49,7 +69,7 @@ export async function GET(req: NextRequest) {
 
     // Attach Haversine distance if lat/lng are provided
     const withDistance = filtered.map((w) => {
-      let distanceKm = 2.5; // default reasonable distance
+      let distanceKm = 2.5;
       if (!isNaN(userLat) && !isNaN(userLng)) {
         distanceKm = calculateDistanceKm(userLat, userLng, w.latitude, w.longitude);
       }
@@ -59,12 +79,15 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    // Sort by proximity if coordinates available, otherwise by rating
     if (!isNaN(userLat) && !isNaN(userLng)) {
       withDistance.sort((a, b) => a.distanceKm - b.distanceKm);
     }
 
-    return NextResponse.json(withDistance);
+    return NextResponse.json(withDistance, {
+      headers: {
+        "Cache-Control": "public, s-maxage=5, stale-while-revalidate=15",
+      },
+    });
   } catch (error: any) {
     console.error("Workers API GET error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -86,11 +109,9 @@ export async function POST(req: NextRequest) {
       certIssuer,
     } = body;
 
-    // Mask Aadhaar: "XXXX-XXXX-" + last4
     const aadhaarMasked = `XXXX-XXXX-${aadhaarLast4 || "1029"}`;
     const digitalIdCard = `COOP-ID-${(name || "WORKER").toUpperCase().replace(/\s+/g, "")}-${Date.now().toString().slice(-4)}-PENDING`;
 
-    // Find default society if not specified
     let targetSocietyId = societyId;
     if (!targetSocietyId) {
       const firstSoc = await prisma.society.findFirst();
@@ -108,7 +129,7 @@ export async function POST(req: NextRequest) {
         hourlyRate: Number(hourlyRate) || 450,
         rating: 5.0,
         totalJobs: 0,
-        status: "PENDING_VERIFICATION", // Visible in Sector Admin verification queue
+        status: "PENDING_VERIFICATION",
         isAvailable: false,
         latitude: 17.7421,
         longitude: 83.3384,
@@ -128,9 +149,9 @@ export async function POST(req: NextRequest) {
           create: {
             insuranceStatus: "PENDING",
             insurancePlan: "Pradhan Mantri Suraksha Bima Yojana (Cooperative Group)",
-            policyNumber: `PMSBY-PENDING-${Date.now().toString().slice(-5)}`,
-            fundBalance: 1000.0, // Welcome seed grant from federation
-            earningsYTD: 0.0,
+            policyNumber: `PMSBY-${Date.now().toString().slice(-6)}`,
+            fundBalance: 0,
+            earningsYTD: 0,
           },
         },
       },
@@ -140,6 +161,9 @@ export async function POST(req: NextRequest) {
         welfareRecord: true,
       },
     });
+
+    // Invalidate cache immediately on new worker
+    invalidateWorkersCache();
 
     return NextResponse.json(newWorker, { status: 201 });
   } catch (error: any) {
