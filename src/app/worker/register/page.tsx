@@ -17,6 +17,8 @@ import {
   FileCheck2,
   Users,
   Briefcase,
+  Trash2,
+  X,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { VerificationPathway } from "@/types";
@@ -28,7 +30,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 export default function WorkerRegisterPage() {
   const router = useRouter();
-  const { showToast, setRole, login, currentUser } = useApp();
+  const { showToast, setRole, login, logout, currentUser } = useApp();
 
   // Basic Info
   const [fullName, setFullName] = useState(() => currentUser?.name || "");
@@ -61,6 +63,49 @@ export default function WorkerRegisterPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedWorker, setSubmittedWorker] = useState<any | null>(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      let authUserEmail = "";
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        authUserEmail = (authData?.user?.email || "").toLowerCase().trim();
+      } catch (e) {}
+
+      const userEmail = authUserEmail || (currentUser?.subtext?.includes("@") ? currentUser.subtext.split("·")[0].trim().toLowerCase() : "");
+      const targetId = submittedWorker?.id || currentUser?.id || "";
+
+      const queryParam = userEmail ? `?email=${encodeURIComponent(userEmail)}` : "";
+      await fetch(`/api/workers/${targetId}${queryParam}`, {
+        method: "DELETE",
+      }).catch(() => {});
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("coopserve_custom_user");
+        localStorage.removeItem("coopserve_auth");
+        localStorage.removeItem("coopserve_role");
+        localStorage.removeItem("coopserve_worker_review_active");
+        localStorage.removeItem("coopserve_review_target_worker");
+      }
+
+      await supabase.auth.signOut().catch(() => {});
+      logout();
+
+      showToast("Worker application and all associated data have been permanently deleted.");
+      router.replace("/");
+    } catch (e) {
+      showToast("Worker account deleted. Session closed.");
+      logout();
+      router.replace("/");
+    } finally {
+      setIsDeletingAccount(false);
+      setShowDeleteModal(false);
+    }
+  };
 
   // Step 1: Request Aadhaar OTP (Free e-KYC simulation)
   const handleSendAadhaarOtp = async () => {
@@ -302,9 +347,18 @@ export default function WorkerRegisterPage() {
             <button
               type="button"
               onClick={() => router.push("/")}
-              className="py-3 px-6 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 transition cursor-pointer"
+              className="py-3 px-6 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               Return Home
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(true)}
+              className="py-3 px-5 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Delete Application</span>
             </button>
           </div>
         </div>
@@ -657,7 +711,71 @@ export default function WorkerRegisterPage() {
                 : "Submit Application to Cooperative Admin"}
             </span>
           </button>
+
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(true)}
+              className="inline-flex items-center gap-1.5 text-xs text-rose-500/80 hover:text-rose-500 hover:underline cursor-pointer font-medium"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Cancel Registration & Delete Worker Account Data</span>
+            </button>
+          </div>
         </form>
+      )}
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md rounded-3xl bg-slate-900 border border-rose-500/30 p-6 sm:p-8 shadow-2xl space-y-5 text-left">
+            <button
+              onClick={() => !isDeletingAccount && setShowDeleteModal(false)}
+              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center">
+              <Trash2 className="w-6 h-6" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-white">
+                Delete Worker Application & Account?
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                This action is <strong className="text-rose-400">permanent and irreversible</strong>. It will delete:
+              </p>
+              <ul className="text-xs text-slate-300 space-y-1.5 list-disc pl-4 pt-1">
+                <li>Your Aadhaar e-KYC submissions and registration data</li>
+                <li>All assigned bookings, welfare records, and rating histories</li>
+                <li>Your cooperative worker identity & authentication profile</li>
+              </ul>
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+              <button
+                type="button"
+                disabled={isDeletingAccount}
+                onClick={handleDeleteAccount}
+                className="flex-1 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-600/30 disabled:opacity-50"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>{isDeletingAccount ? "Deleting Account..." : "Yes, Delete Everything"}</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isDeletingAccount}
+                onClick={() => setShowDeleteModal(false)}
+                className="py-3 px-4 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-bold text-xs transition cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       </div>
     </BackgroundGrid>

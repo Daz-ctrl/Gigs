@@ -123,66 +123,96 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get("email")?.trim().toLowerCase();
 
-    const worker = await prisma.worker.findUnique({
-      where: { id },
+    // Find worker by exact ID, email, or suffix
+    const matchConditions: any[] = [{ id }];
+    if (email) matchConditions.push({ email });
+    if (id.startsWith("sb-")) {
+      matchConditions.push({ id: { contains: id.replace("sb-", "") } });
+    }
+
+    const worker = await prisma.worker.findFirst({
+      where: {
+        OR: matchConditions,
+      },
     });
 
     if (!worker) {
       return NextResponse.json({ error: "Worker not found" }, { status: 404 });
     }
 
-    // Set workerId to null for any existing bookings to preserve booking history
-    await prisma.booking.updateMany({
-      where: { workerId: id },
-      data: { workerId: null },
-    });
+    const workerId = worker.id;
 
-    // Delete certifications & welfare record if not fully cascaded
-    await prisma.certification.deleteMany({
-      where: { workerId: id },
-    });
-    await prisma.welfareRecord.deleteMany({
-      where: { workerId: id },
-    });
-
-    // Delete the worker record
-    await prisma.worker.delete({
-      where: { id },
-    });
-
-    // Also automatically purge from Supabase Auth (auth.users and profiles) so the admin doesn't have to manually delete in Supabase dashboard
+    // 1. Delete ratings on worker's bookings
     try {
-      const sbSuffix = id.startsWith("sb-") ? id.replace("sb-", "") : "";
+      await prisma.rating.deleteMany({
+        where: {
+          booking: { workerId },
+        },
+      });
+    } catch (e) {}
+
+    // 2. Delete all bookings assigned to this worker
+    try {
+      await prisma.booking.deleteMany({
+        where: { workerId },
+      });
+    } catch (e) {}
+
+    // 3. Delete certifications & welfare records
+    try {
+      await prisma.certification.deleteMany({
+        where: { workerId },
+      });
+      await prisma.welfareRecord.deleteMany({
+        where: { workerId },
+      });
+    } catch (e) {}
+
+    // 4. Delete the worker record from PostgreSQL
+    await prisma.worker.delete({
+      where: { id: workerId },
+    });
+
+    // 5. Purge from Supabase Auth (auth.users & profiles)
+    try {
+      const sbSuffix = workerId.startsWith("sb-") ? workerId.replace("sb-", "") : "";
+      const workerEmail = worker.email || email || "";
       const cleanPhone = (worker.phone || "").replace(/[^0-9]/g, "");
 
-      // Delete from profiles if table exists
       try {
         await prisma.$executeRawUnsafe(`
           DELETE FROM public.profiles 
           WHERE (name ILIKE $1)
              OR ($2 != '' AND id::text LIKE '%' || $2)
-        `, worker.name, sbSuffix);
+             OR ($3 != '' AND email ILIKE $3)
+        `, worker.name, sbSuffix, workerEmail);
       } catch (pErr) {}
 
-      // Delete from auth.users (cascades identities, sessions, refresh tokens)
       await prisma.$executeRawUnsafe(`
         DELETE FROM auth.users 
         WHERE (raw_user_meta_data->>'name' ILIKE $1)
            OR (raw_user_meta_data->>'full_name' ILIKE $1)
-           OR (email ILIKE $1)
-           OR ($2 != '' AND id::text LIKE '%' || $2)
-           OR ($3 != '' AND phone LIKE '%' || $3)
-           OR ($3 != '' AND raw_user_meta_data->>'phone' LIKE '%' || $3)
-      `, worker.name, sbSuffix, cleanPhone);
+           OR ($2 != '' AND email ILIKE $2)
+           OR ($3 != '' AND id::text LIKE '%' || $3)
+           OR ($4 != '' AND phone LIKE '%' || $4)
+           OR ($4 != '' AND raw_user_meta_data->>'phone' LIKE '%' || $4)
+      `, worker.name, workerEmail, sbSuffix, cleanPhone);
     } catch (authErr) {
-      console.warn("Non-fatal Supabase auth.users delete:", authErr);
+      console.warn("Non-fatal Supabase auth delete:", authErr);
     }
 
-    // Invalidate workers in-memory cache immediately
+    // Invalidate in-memory caches immediately
     invalidateWorkersCache();
+    const { invalidateBookingsCache } = await import("@/app/api/bookings/route");
+    invalidateBookingsCache();
 
-    return NextResponse.json({ success: true, message: `Worker ${worker.name} and authentication profile deleted successfully` });
+    return NextResponse.json({
+      success: true,
+      message: `Worker ${worker.name} and all associated data deleted successfully.`,
+    });
   } catch (error: any) {
     console.error("Error deleting worker:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

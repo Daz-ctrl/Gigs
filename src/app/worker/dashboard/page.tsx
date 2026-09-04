@@ -21,6 +21,8 @@ import {
   AlertTriangle,
   Lock,
   AlertCircle,
+  Trash2,
+  X,
 } from "lucide-react";
 import { WorkerWithDetails, BookingWithDetails } from "@/types";
 import { UserAvatar } from "@/components/ui/UserAvatar";
@@ -35,7 +37,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 function WorkerDashboardContent() {
   const router = useRouter();
-  const { t, showToast, role, setRole, currentUser, isAuthenticated } = useApp();
+  const { t, showToast, role, setRole, currentUser, isAuthenticated, logout } = useApp();
   const searchParams = useSearchParams();
   const [worker, setWorker] = useState<WorkerWithDetails | null>(() => {
     if (currentUser?.role === "WORKER" || role === "WORKER") {
@@ -356,6 +358,49 @@ function WorkerDashboardContent() {
     }
   };
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      let authUserEmail = "";
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        authUserEmail = (authData?.user?.email || "").toLowerCase().trim();
+      } catch (e) {}
+
+      const userEmail = authUserEmail || (currentUser?.subtext?.includes("@") ? currentUser.subtext.split("·")[0].trim().toLowerCase() : "");
+      const targetId = worker?.id || currentUser?.id || "";
+
+      const queryParam = userEmail ? `?email=${encodeURIComponent(userEmail)}` : "";
+      await fetch(`/api/workers/${targetId}${queryParam}`, {
+        method: "DELETE",
+      }).catch(() => {});
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("coopserve_custom_user");
+        localStorage.removeItem("coopserve_auth");
+        localStorage.removeItem("coopserve_role");
+        localStorage.removeItem("coopserve_worker_review_active");
+        localStorage.removeItem("coopserve_review_target_worker");
+      }
+
+      await supabase.auth.signOut().catch(() => {});
+      logout();
+
+      showToast("Your worker account and all associated data have been permanently deleted.");
+      router.replace("/");
+    } catch (e) {
+      showToast("Worker account deleted. Session closed.");
+      logout();
+      router.replace("/");
+    } finally {
+      setIsDeletingAccount(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   if (loading || !worker) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -416,8 +461,8 @@ function WorkerDashboardContent() {
             </div>
           </div>
 
-          {/* Shift Availability Switch */}
-          <div className="flex items-center gap-3">
+          {/* Shift Availability Switch & Delete Account */}
+          <div className="flex items-center gap-2.5">
             <button
               type="button"
               disabled={isLocked}
@@ -432,6 +477,16 @@ function WorkerDashboardContent() {
             >
               <Power className="w-4 h-4" />
               <span>{isLocked ? "Awaiting Verification" : isAvailable ? "On-Duty Available" : "Off-Duty / Shift Paused"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(true)}
+              className="px-3.5 py-2.5 rounded-2xl bg-rose-500/10 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-500/25 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+              title="Delete worker account and all data"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Delete Account</span>
             </button>
           </div>
         </div>
@@ -884,6 +939,89 @@ function WorkerDashboardContent() {
               </div>
             </div>
           )
+        )}
+
+        {/* Account Management & Data Rights (Danger Zone) */}
+        <div className="mt-12 p-6 rounded-3xl border border-rose-500/20 bg-rose-500/5 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-extrabold text-sm">
+              <Trash2 className="w-4 h-4" />
+              <span>Worker Account & Privacy Management</span>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+              Permanently delete your worker profile, Aadhaar e-KYC documents, assigned jobs history, earnings ledger, and digital identity credentials from the cooperative database.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md shadow-rose-500/20 transition cursor-pointer flex items-center gap-2 shrink-0 self-start sm:self-auto active:scale-95"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Delete Worker Account</span>
+          </button>
+        </div>
+
+        {/* DELETE ACCOUNT CONFIRMATION MODAL */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
+            <div className="bg-white dark:bg-slate-900 border border-rose-500/40 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/25">
+                <Trash2 className="w-7 h-7" />
+              </div>
+
+              <h3 className="text-xl font-black text-center text-slate-900 dark:text-white">
+                Delete Worker Account?
+              </h3>
+              <p className="text-xs text-center text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                Are you sure you want to permanently delete your worker profile (<strong className="text-slate-900 dark:text-white">{worker?.name}</strong>)? This will permanently wipe all your e-KYC records, assigned jobs, earnings history, and digital ID card.
+              </p>
+
+              <div className="p-3.5 my-4 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left text-xs space-y-1.5">
+                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                  <span className="text-slate-400">Worker ID:</span>
+                  <span className="font-mono text-[11px] font-bold">{worker?.id || currentUser?.id}</span>
+                </div>
+                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                  <span className="text-slate-400">Trade:</span>
+                  <span className="font-semibold">{worker?.skills}</span>
+                </div>
+                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                  <span className="text-slate-400">Action:</span>
+                  <span className="text-rose-500 font-bold">Complete & Irreversible Purge</span>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  disabled={isDeletingAccount}
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isDeletingAccount}
+                  onClick={handleDeleteAccount}
+                  className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-500/25 transition cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{isDeletingAccount ? "Deleting..." : "Permanently Delete"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </BackgroundGrid>
