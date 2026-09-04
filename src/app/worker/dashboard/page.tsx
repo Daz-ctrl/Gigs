@@ -109,17 +109,11 @@ function WorkerDashboardContent() {
         const matchingWorkers = workers.filter((w: any) => {
           const wEmail = (w.email || "").toLowerCase().trim();
           const wId = (w.id || "").trim();
-          const wName = (w.name || "").toLowerCase().trim();
-          const wAvatar = (w.avatar || "").trim();
 
-          // 1. Email match
+          // 1. Strict Email match
           if (cEmail && wEmail && cEmail === wEmail) return true;
-          // 2. ID match
-          if (cId && (wId === cId || (cShortId && wId.includes(cShortId)))) return true;
-          // 3. Avatar match
-          if (cAvatar && wAvatar && (cAvatar === wAvatar || (cAvatar.includes("googleusercontent.com") && wAvatar.includes("googleusercontent.com") && cAvatar.split("=")[0] === wAvatar.split("=")[0]))) return true;
-          // 4. Name match
-          if (cName && wName && (cName === wName || wName.includes(cName) || cName.includes(wName))) return true;
+          // 2. Strict ID match
+          if (cId && (wId === cId || (cShortId && wId.endsWith(cShortId)))) return true;
 
           return false;
         });
@@ -129,24 +123,27 @@ function WorkerDashboardContent() {
           matchingWorkers.find((w: any) => w.status === "PENDING_VERIFICATION") ||
           matchingWorkers[0];
 
-        if (!currentArtisan && currentUser?.role === "WORKER") {
-          currentArtisan = {
-            id: currentUser.id || `custom-${Date.now()}`,
-            name: currentUser.name || "Co-op Artisan",
-            avatar: currentUser.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-            phone: currentUser.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
-            skills: "General Maintenance & Repairs",
-            status: "UNSUBMITTED",
-            isAvailable: false,
-            rating: 5.0,
-            totalJobs: 0,
-            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
-            society: { name: "Ward Sachivalayam #18 (MVP Colony Co-op)", zone: "MVP Colony & Beach Road" },
-            certifications: [],
-            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "PENDING" },
-          };
-        } else if (!currentArtisan) {
-          currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
+        if (!currentArtisan) {
+          if (currentUser?.id === "work-dheeraj") {
+            currentArtisan = workers.find((w: any) => w.id === "work-dheeraj" || w.name.toLowerCase().includes("dheeraj")) || workers[0];
+          } else {
+            currentArtisan = {
+              id: currentUser?.id || `sb-${Date.now().toString().slice(-6)}`,
+              email: cEmail || undefined,
+              name: currentUser?.name || "Co-op Artisan",
+              avatar: currentUser?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+              phone: currentUser?.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
+              skills: "General Maintenance & Repairs",
+              status: "UNSUBMITTED",
+              isAvailable: false,
+              rating: 5.0,
+              totalJobs: 0,
+              digitalIdCard: `COOP-ID-${currentUser?.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
+              society: { name: "Ward Sachivalayam #18 (MVP Colony Co-op)", zone: "MVP Colony & Beach Road" },
+              certifications: [],
+              welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "PENDING" },
+            };
+          }
         }
 
         if (currentArtisan && currentArtisan.status === "VERIFIED") {
@@ -168,7 +165,7 @@ function WorkerDashboardContent() {
         // Keep avatar in sync with logged-in user profile
         if (currentArtisan && currentUser?.avatar && currentArtisan.avatar !== currentUser.avatar) {
           currentArtisan = { ...currentArtisan, avatar: currentUser.avatar };
-          if (currentArtisan.id && !currentArtisan.id.startsWith("custom-")) {
+          if (currentArtisan.id && !currentArtisan.id.startsWith("custom-") && !currentArtisan.id.startsWith("sb-")) {
             fetch(`/api/workers/${currentArtisan.id}`, {
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
@@ -181,26 +178,32 @@ function WorkerDashboardContent() {
         setIsAvailable(currentArtisan?.status === "VERIFIED" && currentArtisan?.isAvailable === true);
 
         if (currentArtisan?.id) {
-          // Parallel fetch for instantaneous booking & notice loading
-          const [bRes, rRes] = await Promise.all([
-            fetch(`/api/bookings?workerId=${currentArtisan.id}`),
-            fetch(`/api/ratings?workerId=${currentArtisan.id}&flagged=true`),
-          ]);
+          if (currentArtisan.status === "UNSUBMITTED") {
+            setBookings([]);
+            setHasActiveReview(false);
+            setActiveNoticeRating(null);
+          } else {
+            // Parallel fetch for instantaneous booking & notice loading
+            const [bRes, rRes] = await Promise.all([
+              fetch(`/api/bookings?workerId=${currentArtisan.id}`),
+              fetch(`/api/ratings?workerId=${currentArtisan.id}&flagged=true`),
+            ]);
 
-          if (bRes.ok) {
-            const bData = await bRes.json();
-            setBookings(bData);
-          }
+            if (bRes.ok) {
+              const bData = await bRes.json();
+              setBookings(bData);
+            }
 
-          if (rRes.ok) {
-            const rData = await rRes.json();
-            const pending = rData.find((r: any) => r.noticeSent && !r.workerAcknowledged);
-            if (pending) {
-              setActiveNoticeRating(pending);
-              setHasActiveReview(true);
-            } else {
-              setActiveNoticeRating(null);
-              setHasActiveReview(false);
+            if (rRes.ok) {
+              const rData = await rRes.json();
+              const pending = rData.find((r: any) => r.noticeSent && !r.workerAcknowledged);
+              if (pending) {
+                setActiveNoticeRating(pending);
+                setHasActiveReview(true);
+              } else {
+                setActiveNoticeRating(null);
+                setHasActiveReview(false);
+              }
             }
           }
         }

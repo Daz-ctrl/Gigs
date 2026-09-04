@@ -15,7 +15,9 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const customerId = searchParams.get("customerId");
+    const customerEmail = searchParams.get("customerEmail")?.toLowerCase().trim();
     const workerId = searchParams.get("workerId");
+    const workerEmail = searchParams.get("workerEmail")?.toLowerCase().trim();
     const status = searchParams.get("status");
 
     const now = Date.now();
@@ -36,8 +38,20 @@ export async function GET(req: NextRequest) {
 
     // Fast in-memory filtering (0ms)
     let filtered = allBookings;
-    if (customerId) filtered = filtered.filter((b) => b.customerId === customerId);
-    if (workerId) filtered = filtered.filter((b) => b.workerId === workerId);
+    if (customerId || customerEmail) {
+      filtered = filtered.filter(
+        (b) =>
+          (customerId && b.customerId === customerId) ||
+          (customerEmail && b.customer?.email?.toLowerCase().trim() === customerEmail)
+      );
+    }
+    if (workerId || workerEmail) {
+      filtered = filtered.filter(
+        (b) =>
+          (workerId && b.workerId === workerId) ||
+          (workerEmail && b.worker?.email?.toLowerCase().trim() === workerEmail)
+      );
+    }
     if (status) filtered = filtered.filter((b) => b.status === status);
 
     return NextResponse.json(filtered, {

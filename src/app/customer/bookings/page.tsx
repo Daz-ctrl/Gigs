@@ -35,7 +35,15 @@ export default function CustomerBookingsPage() {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/bookings");
+      const email = currentUser?.subtext?.includes("@")
+        ? currentUser.subtext.split("·")[0].trim()
+        : "";
+      const queryParams = new URLSearchParams();
+      if (currentUser?.id) queryParams.set("customerId", currentUser.id);
+      if (email) queryParams.set("customerEmail", email);
+
+      const url = queryParams.toString() ? `/api/bookings?${queryParams.toString()}` : "/api/bookings";
+      const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
         setBookings(data);
@@ -49,7 +57,7 @@ export default function CustomerBookingsPage() {
 
   useEffect(() => {
     fetchBookings();
-  }, [role]);
+  }, [role, currentUser?.id, currentUser?.name]);
 
   const handleRatingSubmit = async () => {
     if (!ratingBooking) return;
