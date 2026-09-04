@@ -129,9 +129,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             const supabaseUser: DemoUser = {
               role: userRole,
               name: fullName,
-              badge: isWorker ? "Google Verified Worker" : "Google Verified Resident",
+              badge: isWorker ? "Applicant (e-KYC Pending)" : "Google Verified Resident",
               subtext: isWorker
-                ? `${u.email} · Registered Co-op Member`
+                ? `${u.email} · e-KYC Verification Required`
                 : `${u.email} · MVP Colony, Vizag`,
               avatar: avatarUrl,
               id: `sb-${u.id.slice(-6)}`,
@@ -170,7 +170,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         ...customUser,
         role: newRole,
         badge: isWorker
-          ? "Google Verified Worker"
+          ? "Applicant (e-KYC Pending)"
           : newRole === "CUSTOMER"
           ? "Google Verified Resident"
           : "Sector Administrator",

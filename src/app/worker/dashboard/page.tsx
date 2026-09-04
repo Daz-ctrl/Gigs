@@ -37,6 +37,7 @@ function WorkerDashboardContent() {
   const searchParams = useSearchParams();
   const [worker, setWorker] = useState<WorkerWithDetails | null>(() => {
     if (currentUser?.role === "WORKER" || role === "WORKER") {
+      const isUnregistered = currentUser?.badge?.includes("e-KYC") || currentUser?.badge?.includes("Applicant");
       return {
         id: currentUser?.id || "work-initial",
         societyId: "soc-mvp",
@@ -46,16 +47,16 @@ function WorkerDashboardContent() {
         skills: "General Maintenance & Repairs",
         experienceYrs: 3,
         hourlyRate: 500,
-        status: "VERIFIED",
-        isAvailable: true,
+        status: isUnregistered ? "UNSUBMITTED" : "PENDING_VERIFICATION",
+        isAvailable: false,
         rating: 5.0,
         totalJobs: 0,
         latitude: 17.742,
         longitude: 83.338,
-        digitalIdCard: `COOP-ID-${currentUser?.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-VERIFIED`,
+        digitalIdCard: `COOP-ID-${currentUser?.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
         society: { id: "soc-mvp", federationId: "fed-ap-vzg", name: "Ward Sachivalayam #18 (MVP Colony Co-op)", registrationNo: "AP-VZG-1802", district: "Visakhapatnam", zone: "Zone 1 - MVP Colony & Beach Road", latitude: 17.74, longitude: 83.335, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
         certifications: [],
-        welfareRecord: { id: "welf-init", workerId: currentUser?.id || "work-initial", insuranceStatus: "ACTIVE", insurancePlan: "Pradhan Mantri Suraksha Bima Yojana", policyNumber: "PMSBY-COOP-8849", fundBalance: 4850, earningsYTD: 64200, updatedAt: new Date().toISOString() },
+        welfareRecord: { id: "welf-init", workerId: currentUser?.id || "work-initial", insuranceStatus: "PENDING", insurancePlan: "Pradhan Mantri Suraksha Bima Yojana", policyNumber: "PMSBY-COOP-8849", fundBalance: 0, earningsYTD: 0, updatedAt: new Date().toISOString() },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       } as unknown as WorkerWithDetails;
@@ -64,7 +65,7 @@ function WorkerDashboardContent() {
   });
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(false);
   const [otpInputs, setOtpInputs] = useState<Record<string, string>>({});
   const [startingJobId, setStartingJobId] = useState<string | null>(null);
   const [hasActiveReview, setHasActiveReview] = useState(false);
@@ -97,27 +98,26 @@ function WorkerDashboardContent() {
           );
 
         if (!currentArtisan && currentUser?.role === "WORKER") {
-          const isPendingApplicant = currentUser?.badge?.includes("Pending") || currentUser?.subtext?.includes("Pending");
           currentArtisan = {
             id: currentUser.id || `custom-${Date.now()}`,
             name: currentUser.name || "Co-op Artisan",
             phone: currentUser.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
             skills: "General Maintenance & Repairs",
-            status: isPendingApplicant ? "PENDING_VERIFICATION" : "VERIFIED",
-            isAvailable: true,
+            status: "UNSUBMITTED",
+            isAvailable: false,
             rating: 5.0,
             totalJobs: 0,
-            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-VERIFIED`,
+            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
             society: { name: "Ward Sachivalayam #18 (MVP Colony Co-op)", zone: "MVP Colony & Beach Road" },
             certifications: [],
-            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "ACTIVE" },
+            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "PENDING" },
           };
         } else if (!currentArtisan) {
           currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
         }
 
         setWorker(currentArtisan);
-        setIsAvailable(currentArtisan?.isAvailable ?? (currentArtisan?.status === "VERIFIED"));
+        setIsAvailable(currentArtisan?.status === "VERIFIED" && currentArtisan?.isAvailable === true);
 
         if (currentArtisan?.id) {
           // Parallel fetch for instantaneous booking & notice loading

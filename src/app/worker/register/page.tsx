@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   UserPlus,
@@ -27,14 +27,20 @@ import { ShimmerButton } from "@/components/ui/ShimmerButton";
 
 export default function WorkerRegisterPage() {
   const router = useRouter();
-  const { showToast, setRole, login } = useApp();
+  const { showToast, setRole, login, currentUser } = useApp();
 
   // Basic Info
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("+91 ");
+  const [fullName, setFullName] = useState(() => currentUser?.name || "");
+  const [phone, setPhone] = useState("+91 98480 22334");
   const [skillCategory, setSkillCategory] = useState("Electrician");
   const [experienceYrs, setExperienceYrs] = useState("5");
   const [hourlyRate, setHourlyRate] = useState("500");
+
+  useEffect(() => {
+    if (currentUser?.name && !fullName) {
+      setFullName(currentUser.name);
+    }
+  }, [currentUser, fullName]);
 
   // Aadhaar e-KYC state
   const [aadhaarInput, setAadhaarInput] = useState("");

@@ -227,9 +227,9 @@ export default function SelectRolePage() {
       const appUser = {
         role: selectedRole,
         name: trimmedName,
-        badge: isWorker ? "Google Verified Worker" : "Google Verified Resident",
+        badge: isWorker ? "Applicant (e-KYC Pending)" : "Google Verified Resident",
         subtext: isWorker
-          ? `${uEmail} · Registered Co-op Member`
+          ? `${uEmail} · Free e-KYC Required`
           : `${uEmail} · MVP Colony, Vizag`,
         avatar: finalAvatar,
         id: userId,
@@ -239,11 +239,12 @@ export default function SelectRolePage() {
       localStorage.setItem("coopserve_custom_user", JSON.stringify(appUser));
       login(appUser);
       setRole(selectedRole);
-      showToast(`Welcome, ${trimmedName}! Your profile is ready.`);
 
       if (isWorker) {
-        router.push("/worker/dashboard");
+        showToast(`Welcome, ${trimmedName}! Please complete your free Aadhaar e-KYC.`);
+        router.push("/worker/register");
       } else {
+        showToast(`Welcome, ${trimmedName}! Your customer account is ready.`);
         router.push("/customer/book");
       }
     } catch (err: any) {
