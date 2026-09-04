@@ -107,13 +107,13 @@ function AuthCallbackContent() {
         return;
       }
 
-      if (role === "WORKER" && !profileCompleted) {
-        setStatusText("Welcome! Loading Aadhaar e-KYC registration...");
+      if (role === "WORKER") {
+        setStatusText("Welcome back! Loading Worker Dashboard...");
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
           localStorage.setItem("coopserve_role", "WORKER");
         }
-        router.replace("/worker/register");
+        router.replace("/worker/dashboard");
         return;
       }
 

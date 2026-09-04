@@ -326,8 +326,8 @@ export default function SelectRolePage() {
         } catch (e) {}
 
         if (!alreadyHasWorker) {
-          showToast(`Welcome, ${trimmedName}! Please complete your free Aadhaar e-KYC.`);
-          router.push("/worker/register");
+          showToast(`Welcome, ${trimmedName}! Your worker profile is ready. Please apply for e-KYC.`);
+          router.push("/worker/dashboard");
         }
       } else {
         showToast(`Welcome, ${trimmedName}! Your customer account is ready.`);

@@ -299,8 +299,8 @@ export default function WorkerRegisterPage() {
             <button
               type="button"
               onClick={() => {
-                login({
-                  role: "WORKER",
+                const pendingUser = {
+                  role: "WORKER" as const,
                   name: submittedWorker.name,
                   badge: "Applicant (Pending Verification)",
                   subtext: `${submittedWorker.phone} · Status: Pending Verification`,
@@ -310,12 +310,14 @@ export default function WorkerRegisterPage() {
                     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
                   id: submittedWorker.id || currentUser?.id,
                   zone: "MVP Colony, Vizag",
-                });
+                };
+                localStorage.setItem("coopserve_custom_user", JSON.stringify(pendingUser));
+                login(pendingUser);
                 router.push("/worker/dashboard");
               }}
               className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 transition cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Go to My Worker Profile (Pending View) 🛠️</span>
+              <span>Go back to Profile Page (Awaiting Approval) 🛠️</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 

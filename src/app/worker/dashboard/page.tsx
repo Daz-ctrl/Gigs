@@ -389,14 +389,14 @@ function WorkerDashboardContent() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
-                      Submit e-KYC Verification to Local Sector Admin
+                      Apply for Aadhaar e-KYC Verification
                     </span>
                     <span className="px-2.5 py-0.5 rounded-full bg-blue-500/25 text-blue-700 dark:text-blue-400 text-[10px] font-black uppercase tracking-wider">
                       Action Required
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed max-w-3xl">
-                    Your worker profile is created. To unlock your cryptographic 3D Digital Co-op ID, group healthcare insurance, and direct customer job matching, submit your free Aadhaar e-KYC to the <strong>Ward Sachivalayam Secretary (Ward #18, GVMC)</strong>.
+                    Your worker profile is created. To unlock your cryptographic 3D Digital Co-op ID, group healthcare insurance, and direct customer job matching, complete your free Aadhaar e-KYC application.
                   </p>
                 </div>
               </div>
@@ -406,7 +406,7 @@ function WorkerDashboardContent() {
                 onClick={() => router.push("/worker/register")}
                 className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md transition cursor-pointer shrink-0 flex items-center gap-1.5"
               >
-                <span>Submit e-KYC to Local Admin</span>
+                <span>Apply for e-KYC 📲</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
