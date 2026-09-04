@@ -98,20 +98,9 @@ function WorkerDashboardContent() {
           );
 
         if (!currentArtisan && currentUser?.role === "WORKER") {
-          currentArtisan = {
-            id: currentUser.id || `custom-${Date.now()}`,
-            name: currentUser.name || "Co-op Artisan",
-            phone: currentUser.subtext?.split("·")[0]?.trim() || "+91 98480 22334",
-            skills: "General Maintenance & Repairs",
-            status: "UNSUBMITTED",
-            isAvailable: false,
-            rating: 5.0,
-            totalJobs: 0,
-            digitalIdCard: `COOP-ID-${currentUser.name?.toUpperCase().replace(/\s+/g, "") || "WORKER"}-PENDING`,
-            society: { name: "Ward Sachivalayam #18 (MVP Colony Co-op)", zone: "MVP Colony & Beach Road" },
-            certifications: [],
-            welfareRecord: { earningsYTD: 0, fundBalance: 0, insuranceStatus: "PENDING" },
-          };
+          showToast("Worker profile reset by Administrator. Please submit your Aadhaar e-KYC.");
+          router.replace("/worker/register");
+          return;
         } else if (!currentArtisan) {
           currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
         }

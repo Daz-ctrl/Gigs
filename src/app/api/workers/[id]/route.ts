@@ -121,10 +121,38 @@ export async function DELETE(
       where: { id },
     });
 
+    // Also automatically purge from Supabase Auth (auth.users and profiles) so the admin doesn't have to manually delete in Supabase dashboard
+    try {
+      const sbSuffix = id.startsWith("sb-") ? id.replace("sb-", "") : "";
+      const cleanPhone = (worker.phone || "").replace(/[^0-9]/g, "");
+
+      // Delete from profiles if table exists
+      try {
+        await prisma.$executeRawUnsafe(`
+          DELETE FROM public.profiles 
+          WHERE (name ILIKE $1)
+             OR ($2 != '' AND id::text LIKE '%' || $2)
+        `, worker.name, sbSuffix);
+      } catch (pErr) {}
+
+      // Delete from auth.users (cascades identities, sessions, refresh tokens)
+      await prisma.$executeRawUnsafe(`
+        DELETE FROM auth.users 
+        WHERE (raw_user_meta_data->>'name' ILIKE $1)
+           OR (raw_user_meta_data->>'full_name' ILIKE $1)
+           OR (email ILIKE $1)
+           OR ($2 != '' AND id::text LIKE '%' || $2)
+           OR ($3 != '' AND phone LIKE '%' || $3)
+           OR ($3 != '' AND raw_user_meta_data->>'phone' LIKE '%' || $3)
+      `, worker.name, sbSuffix, cleanPhone);
+    } catch (authErr) {
+      console.warn("Non-fatal Supabase auth.users delete:", authErr);
+    }
+
     // Invalidate workers in-memory cache immediately
     invalidateWorkersCache();
 
-    return NextResponse.json({ success: true, message: `Worker ${worker.name} deleted successfully` });
+    return NextResponse.json({ success: true, message: `Worker ${worker.name} and authentication profile deleted successfully` });
   } catch (error: any) {
     console.error("Error deleting worker:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

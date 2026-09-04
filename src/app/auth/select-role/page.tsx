@@ -94,7 +94,25 @@ export default function SelectRolePage() {
 
       if (existingRole && profileCompleted) {
         if (existingRole === "WORKER") {
-          router.replace("/worker/dashboard");
+          fetch("/api/workers?status=ALL")
+            .then((r) => (r.ok ? r.json() : []))
+            .then((workers) => {
+              const exists =
+                Array.isArray(workers) &&
+                workers.some(
+                  (w: any) =>
+                    (name && w.name.toLowerCase() === name.toLowerCase()) ||
+                    (u.id && w.id.includes(u.id.slice(-6)))
+                );
+              if (exists) {
+                router.replace("/worker/dashboard");
+              } else {
+                router.replace("/worker/register");
+              }
+            })
+            .catch(() => {
+              router.replace("/worker/register");
+            });
         } else if (existingRole === "CUSTOMER") {
           router.replace("/customer/book");
         }

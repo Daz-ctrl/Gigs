@@ -21,6 +21,35 @@ function AuthCallbackContent() {
       const profileCompleted = user.user_metadata?.profile_completed;
 
       if (role === "WORKER" && profileCompleted) {
+        // Verify if this worker actually exists in the cooperative registry
+        try {
+          const res = await fetch("/api/workers?status=ALL");
+          if (res.ok) {
+            const workers = await res.json();
+            const userName = user.user_metadata?.name || user.user_metadata?.full_name || "";
+            const exists = Array.isArray(workers) && workers.some((w: any) =>
+              (userName && w.name.toLowerCase() === userName.toLowerCase()) ||
+              (user.id && w.id.includes(user.id.slice(-6)))
+            );
+            if (!exists) {
+              // Worker was deleted by Admin! Reset metadata so they must complete e-KYC again
+              await supabase.auth.updateUser({
+                data: { role: "WORKER", profile_completed: false }
+              });
+              if (typeof window !== "undefined") {
+                localStorage.removeItem("coopserve_custom_user");
+                localStorage.setItem("coopserve_auth", "true");
+                localStorage.setItem("coopserve_role", "WORKER");
+              }
+              setStatusText("Profile reset by Administrator. Loading Aadhaar e-KYC...");
+              router.replace("/worker/register");
+              return;
+            }
+          }
+        } catch (dbCheckErr) {
+          console.warn("DB check fallback:", dbCheckErr);
+        }
+
         setStatusText(`Welcome back, ${user.user_metadata?.name || "Worker"}! Loading Worker Dashboard...`);
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
