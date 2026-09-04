@@ -31,6 +31,7 @@ import { motion } from "framer-motion";
 import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
+import { supabase } from "@/lib/supabaseClient";
 
 function WorkerDashboardContent() {
   const router = useRouter();
@@ -38,7 +39,8 @@ function WorkerDashboardContent() {
   const searchParams = useSearchParams();
   const [worker, setWorker] = useState<WorkerWithDetails | null>(() => {
     if (currentUser?.role === "WORKER" || role === "WORKER") {
-      const isUnregistered = currentUser?.badge?.includes("e-KYC") || currentUser?.badge?.includes("Applicant");
+      const isVerifiedMember = currentUser?.badge?.includes("Verified");
+      const isUnregistered = !isVerifiedMember && (currentUser?.badge?.includes("e-KYC") || currentUser?.badge?.includes("Applicant"));
       return {
         id: currentUser?.id || "work-initial",
         societyId: "soc-mvp",
@@ -48,8 +50,8 @@ function WorkerDashboardContent() {
         skills: "General Maintenance & Repairs",
         experienceYrs: 3,
         hourlyRate: 500,
-        status: isUnregistered ? "UNSUBMITTED" : "PENDING_VERIFICATION",
-        isAvailable: false,
+        status: isVerifiedMember ? "VERIFIED" : isUnregistered ? "UNSUBMITTED" : "PENDING_VERIFICATION",
+        isAvailable: isVerifiedMember,
         rating: 5.0,
         totalJobs: 0,
         latitude: 17.742,
@@ -89,13 +91,39 @@ function WorkerDashboardContent() {
 
   const fetchWorkerData = async () => {
     try {
+      let authUserEmail = "";
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        authUserEmail = (authData?.user?.email || "").toLowerCase().trim();
+      } catch (e) {}
+
       const res = await fetch("/api/workers?status=ALL");
       if (res.ok) {
         const workers = await res.json();
-        const matchingWorkers = workers.filter((w: any) =>
-          (currentUser?.id && w.id === currentUser.id) ||
-          (currentUser?.name && (w.name.toLowerCase().trim() === currentUser.name.toLowerCase().trim() || w.name.toLowerCase().includes(currentUser.name.toLowerCase())))
-        );
+        const cId = (currentUser?.id || "").trim();
+        const cShortId = cId.replace("sb-", "").slice(-6);
+        const cName = (currentUser?.name || "").toLowerCase().trim();
+        const cAvatar = (currentUser?.avatar || "").trim();
+        const cEmail = authUserEmail || (currentUser?.subtext?.includes("@") ? currentUser.subtext.split("·")[0].trim().toLowerCase() : "");
+
+        const matchingWorkers = workers.filter((w: any) => {
+          const wEmail = (w.email || "").toLowerCase().trim();
+          const wId = (w.id || "").trim();
+          const wName = (w.name || "").toLowerCase().trim();
+          const wAvatar = (w.avatar || "").trim();
+
+          // 1. Email match
+          if (cEmail && wEmail && cEmail === wEmail) return true;
+          // 2. ID match
+          if (cId && (wId === cId || (cShortId && wId.includes(cShortId)))) return true;
+          // 3. Avatar match
+          if (cAvatar && wAvatar && (cAvatar === wAvatar || (cAvatar.includes("googleusercontent.com") && wAvatar.includes("googleusercontent.com") && cAvatar.split("=")[0] === wAvatar.split("=")[0]))) return true;
+          // 4. Name match
+          if (cName && wName && (cName === wName || wName.includes(cName) || cName.includes(wName))) return true;
+
+          return false;
+        });
+
         let currentArtisan =
           matchingWorkers.find((w: any) => w.status === "VERIFIED") ||
           matchingWorkers.find((w: any) => w.status === "PENDING_VERIFICATION") ||
@@ -119,6 +147,22 @@ function WorkerDashboardContent() {
           };
         } else if (!currentArtisan) {
           currentArtisan = workers.find((w: any) => w.name.toLowerCase().includes("dheeraj")) || workers[0];
+        }
+
+        if (currentArtisan && currentArtisan.status === "VERIFIED") {
+          try {
+            const rawUser = localStorage.getItem("coopserve_custom_user");
+            if (rawUser) {
+              const parsed = JSON.parse(rawUser);
+              if (parsed.badge?.includes("Applicant") || parsed.badge?.includes("e-KYC")) {
+                parsed.badge = "Verified Co-op Member";
+                parsed.name = currentArtisan.name;
+                parsed.id = currentArtisan.id;
+                parsed.subtext = `${cEmail || currentArtisan.phone} · Status: Verified Member`;
+                localStorage.setItem("coopserve_custom_user", JSON.stringify(parsed));
+              }
+            }
+          } catch (e) {}
         }
 
         // Keep avatar in sync with logged-in user profile

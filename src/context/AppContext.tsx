@@ -126,34 +126,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               u.identities?.[0]?.identity_data?.avatar_url ||
               u.identities?.[0]?.identity_data?.picture;
 
-            // Check if user has an existing saved custom avatar
-            let existingLocalAvatar: string | undefined;
+            // Check if user has an existing saved custom user/avatar
+            let existingCustomUser: any = null;
             if (typeof window !== "undefined") {
               try {
                 const raw = localStorage.getItem("coopserve_custom_user");
-                if (raw) {
-                  const parsed = JSON.parse(raw);
-                  if (parsed.avatar) existingLocalAvatar = parsed.avatar;
-                }
+                if (raw) existingCustomUser = JSON.parse(raw);
               } catch (e) {}
             }
 
             const avatarUrl =
-              existingLocalAvatar ||
+              existingCustomUser?.avatar ||
               googleAvatar ||
               (isWorker
                 ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
                 : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80");
 
+            const isAlreadyVerifiedWorker =
+              isWorker && existingCustomUser?.badge?.includes("Verified");
+
+            const workerBadge = isAlreadyVerifiedWorker
+              ? "Verified Co-op Member"
+              : "Applicant (e-KYC Pending)";
+
+            const workerSubtext = isAlreadyVerifiedWorker
+              ? `${u.email} · Verified Member`
+              : `${u.email} · e-KYC Verification Required`;
+
             const supabaseUser: DemoUser = {
               role: userRole,
-              name: fullName,
-              badge: isWorker ? "Applicant (e-KYC Pending)" : "Google Verified Resident",
-              subtext: isWorker
-                ? `${u.email} · e-KYC Verification Required`
-                : `${u.email} · MVP Colony, Vizag`,
+              name: (isAlreadyVerifiedWorker && existingCustomUser?.name) ? existingCustomUser.name : fullName,
+              badge: isWorker ? workerBadge : "Google Verified Resident",
+              subtext: isWorker ? workerSubtext : `${u.email} · MVP Colony, Vizag`,
               avatar: avatarUrl,
-              id: `sb-${u.id.slice(-6)}`,
+              id: (isAlreadyVerifiedWorker && existingCustomUser?.id) ? existingCustomUser.id : `sb-${u.id.slice(-6)}`,
               zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
             };
 
@@ -163,6 +169,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem("coopserve_auth", "true");
             localStorage.setItem("coopserve_role", userRole);
             localStorage.setItem("coopserve_custom_user", JSON.stringify(supabaseUser));
+
+            // Background DB verification check for workers
+            if (isWorker) {
+              fetch("/api/workers?status=ALL")
+                .then((r) => (r.ok ? r.json() : []))
+                .then((workers) => {
+                  const uEmail = (u.email || "").toLowerCase().trim();
+                  const uId = u.id || "";
+                  const uShortId = uId.slice(-6);
+                  const matched = Array.isArray(workers) && workers.find((w: any) =>
+                    (uEmail && w.email && w.email.toLowerCase().trim() === uEmail) ||
+                    (uId && (w.id === uId || w.id === `sb-${uShortId}` || w.id.includes(uShortId)))
+                  );
+                  if (matched && matched.status === "VERIFIED") {
+                    const verifiedUser: DemoUser = {
+                      role: "WORKER",
+                      name: matched.name,
+                      badge: "Verified Co-op Member",
+                      subtext: `${u.email} · Status: Verified Member`,
+                      avatar: matched.avatar || avatarUrl,
+                      id: matched.id,
+                      zone: matched.society?.zone || "Zone 1 - MVP Colony & Beach Road, Vizag",
+                    };
+                    setCustomUser(verifiedUser);
+                    localStorage.setItem("coopserve_custom_user", JSON.stringify(verifiedUser));
+                  }
+                })
+                .catch(() => {});
+            }
           } else {
             // New user without role selected yet
             setIsAuthenticated(true);

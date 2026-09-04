@@ -16,48 +16,88 @@ function AuthCallbackContent() {
     async function handleUserRouting(user: any) {
       if (!isMounted) return;
 
-      // The SINGLE SOURCE OF TRUTH: this specific user's metadata in Supabase
-      const role = user.user_metadata?.role;
-      const profileCompleted = user.user_metadata?.profile_completed;
+      const userEmail = (user.email || "").toLowerCase().trim();
+      const userName = (user.user_metadata?.name || user.user_metadata?.full_name || "").toLowerCase().trim();
+      const userAvatar = (user.user_metadata?.avatar_url || user.user_metadata?.picture || "").trim();
+      const userId = (user.id || "").trim();
+      const userShortId = userId ? userId.slice(-6) : "";
 
-      if (role === "WORKER" && profileCompleted) {
-        // Verify if this worker actually exists in the cooperative registry
-        try {
-          const res = await fetch("/api/workers?status=ALL");
-          if (res.ok) {
-            const workers = await res.json();
-            const userName = user.user_metadata?.name || user.user_metadata?.full_name || "";
-            const exists = Array.isArray(workers) && workers.some((w: any) =>
-              (userName && w.name.toLowerCase() === userName.toLowerCase()) ||
-              (user.id && w.id.includes(user.id.slice(-6)))
-            );
-            if (!exists) {
-              // Worker was deleted by Admin! Reset metadata so they must complete e-KYC again
-              await supabase.auth.updateUser({
-                data: { role: "WORKER", profile_completed: false }
-              });
-              if (typeof window !== "undefined") {
-                localStorage.removeItem("coopserve_custom_user");
-                localStorage.setItem("coopserve_auth", "true");
-                localStorage.setItem("coopserve_role", "WORKER");
-              }
-              setStatusText("Profile reset by Administrator. Loading Aadhaar e-KYC...");
-              router.replace("/worker/register");
-              return;
-            }
+      // 1. Query the Worker registry in the database to see if this user has an existing worker profile
+      let matchedWorker: any = null;
+      try {
+        const res = await fetch("/api/workers?status=ALL");
+        if (res.ok) {
+          const workers = await res.json();
+          if (Array.isArray(workers)) {
+            matchedWorker = workers.find((w: any) => {
+              const wEmail = (w.email || "").toLowerCase().trim();
+              const wName = (w.name || "").toLowerCase().trim();
+              const wId = (w.id || "").trim();
+              const wAvatar = (w.avatar || "").trim();
+
+              // Exact email match
+              if (userEmail && wEmail && userEmail === wEmail) return true;
+              // ID match
+              if (userId && (wId === userId || wId === `sb-${userShortId}` || (userShortId && wId.includes(userShortId)))) return true;
+              // Avatar match (Google profile pictures share root identity URL)
+              if (userAvatar && wAvatar && (userAvatar === wAvatar || (userAvatar.includes("googleusercontent.com") && wAvatar.includes("googleusercontent.com") && userAvatar.split("=")[0] === wAvatar.split("=")[0]))) return true;
+              // Name match
+              if (userName && wName && userName === wName) return true;
+              return false;
+            });
           }
-        } catch (dbCheckErr) {
-          console.warn("DB check fallback:", dbCheckErr);
         }
+      } catch (dbCheckErr) {
+        console.warn("DB check fallback:", dbCheckErr);
+      }
 
-        setStatusText(`Welcome back, ${user.user_metadata?.name || "Worker"}! Loading Worker Dashboard...`);
+      // If this user is an existing worker in the cooperative database:
+      if (matchedWorker) {
+        const isVerified = matchedWorker.status === "VERIFIED";
+
+        // Keep Supabase user metadata permanently in sync
+        await supabase.auth.updateUser({
+          data: {
+            role: "WORKER",
+            persona: "WORKER",
+            full_name: matchedWorker.name,
+            name: matchedWorker.name,
+            avatar_url: matchedWorker.avatar || userAvatar,
+            picture: matchedWorker.avatar || userAvatar,
+            profile_completed: true,
+          },
+        }).catch(() => {});
+
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
           localStorage.setItem("coopserve_role", "WORKER");
+
+          const customUser = {
+            role: "WORKER",
+            name: matchedWorker.name,
+            badge: isVerified ? "Verified Co-op Member" : "Applicant (Pending Verification)",
+            subtext: `${user.email} · ${isVerified ? "Verified Member" : "Status: Pending Verification"}`,
+            avatar: matchedWorker.avatar || userAvatar,
+            id: matchedWorker.id,
+            zone: matchedWorker.society?.zone || "MVP Colony & Beach Road, Vizag",
+          };
+          localStorage.setItem("coopserve_custom_user", JSON.stringify(customUser));
         }
+
+        setStatusText(
+          isVerified
+            ? `Welcome back, ${matchedWorker.name}! Loading Worker Dashboard...`
+            : `Welcome back, ${matchedWorker.name}! Loading application status...`
+        );
         router.replace("/worker/dashboard");
         return;
-      } else if (role === "CUSTOMER" && profileCompleted) {
+      }
+
+      // 2. Check Supabase role metadata for customers or workers without DB entry yet
+      const role = user.user_metadata?.role;
+      const profileCompleted = user.user_metadata?.profile_completed;
+
+      if (role === "CUSTOMER") {
         setStatusText(`Welcome back, ${user.user_metadata?.name || "Customer"}! Loading Customer Services...`);
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
@@ -67,8 +107,17 @@ function AuthCallbackContent() {
         return;
       }
 
-      // If this specific Google account has NO role selected yet in Supabase:
-      // Clear any stale local cache from previous accounts on this browser
+      if (role === "WORKER" && !profileCompleted) {
+        setStatusText("Welcome! Loading Aadhaar e-KYC registration...");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("coopserve_auth", "true");
+          localStorage.setItem("coopserve_role", "WORKER");
+        }
+        router.replace("/worker/register");
+        return;
+      }
+
+      // 3. New user without role selected yet:
       if (typeof window !== "undefined") {
         localStorage.removeItem("coopserve_role");
         localStorage.removeItem("coopserve_custom_user");

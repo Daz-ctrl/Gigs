@@ -24,6 +24,7 @@ import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
 import { ShimmerButton } from "@/components/ui/ShimmerButton";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function WorkerRegisterPage() {
   const router = useRouter();
@@ -41,6 +42,36 @@ export default function WorkerRegisterPage() {
       setFullName(currentUser.name);
     }
   }, [currentUser, fullName]);
+
+  // If this worker is ALREADY verified in DB, redirect directly to dashboard!
+  useEffect(() => {
+    async function checkExistingWorker() {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        const uEmail = (authData?.user?.email || "").toLowerCase().trim();
+        const uId = (authData?.user?.id || currentUser?.id || "").trim();
+        const uShortId = uId ? uId.slice(-6) : "";
+
+        const res = await fetch("/api/workers?status=ALL");
+        if (res.ok) {
+          const workers = await res.json();
+          const matched = Array.isArray(workers) && workers.find((w: any) => {
+            const wEmail = (w.email || "").toLowerCase().trim();
+            const wId = (w.id || "").trim();
+            if (uEmail && wEmail && uEmail === wEmail) return true;
+            if (uId && (wId === uId || wId === `sb-${uShortId}` || (uShortId && wId.includes(uShortId)))) return true;
+            return false;
+          });
+
+          if (matched && matched.status === "VERIFIED") {
+            showToast(`Welcome back, ${matched.name}! Redirecting to your Worker Dashboard.`);
+            router.replace("/worker/dashboard");
+          }
+        }
+      } catch (e) {}
+    }
+    checkExistingWorker();
+  }, [currentUser?.id, router, showToast]);
 
   // Aadhaar e-KYC state
   const [aadhaarInput, setAadhaarInput] = useState("");
@@ -131,11 +162,18 @@ export default function WorkerRegisterPage() {
 
     setIsSubmitting(true);
     try {
+      let userEmail: string | undefined = undefined;
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        userEmail = authData?.user?.email;
+      } catch (e) {}
+
       const res = await fetch("/api/workers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: currentUser?.id,
+          email: userEmail,
           avatar: currentUser?.avatar,
           name: fullName,
           phone,

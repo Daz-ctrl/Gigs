@@ -88,6 +88,24 @@ export async function PATCH(
           data: { insuranceStatus: "ACTIVE" },
         });
       }
+
+      // Sync Supabase auth metadata so worker's Google account stays permanently verified
+      try {
+        const sbSuffix = id.startsWith("sb-") ? id.replace("sb-", "") : "";
+        const workerEmail = updatedWorker.email || "";
+        const cleanPhone = (updatedWorker.phone || "").replace(/[^0-9]/g, "");
+
+        await prisma.$executeRawUnsafe(`
+          UPDATE auth.users
+          SET raw_user_meta_data = raw_user_meta_data || '{"profile_completed": true, "role": "WORKER"}'::jsonb
+          WHERE ($1 != '' AND email ILIKE $1)
+             OR ($2 != '' AND id::text LIKE '%' || $2)
+             OR (raw_user_meta_data->>'name' ILIKE $3)
+             OR ($4 != '' AND (phone LIKE '%' || $4 OR raw_user_meta_data->>'phone' LIKE '%' || $4));
+        `, workerEmail, sbSuffix, updatedWorker.name, cleanPhone);
+      } catch (authSyncErr) {
+        console.warn("Non-fatal Supabase metadata sync on verify:", authSyncErr);
+      }
     }
 
     // Invalidate in-memory cache

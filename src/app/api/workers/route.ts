@@ -102,6 +102,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       id,
+      email,
       name,
       phone,
       avatar,
@@ -115,6 +116,7 @@ export async function POST(req: NextRequest) {
     } = body;
 
     const trimmedName = (name || "New Co-op Member").trim();
+    const cleanEmail = (email || "").trim().toLowerCase();
     const safePhone = (phone || `+91 ${Math.floor(6000000000 + Math.random() * 3999999999)}`).trim();
     const aadhaarMasked = `XXXX-XXXX-${aadhaarLast4 || "1029"}`;
     const digitalIdCard = `COOP-ID-${trimmedName.toUpperCase().replace(/\s+/g, "")}-${Date.now().toString().slice(-4)}-PENDING`;
@@ -125,11 +127,12 @@ export async function POST(req: NextRequest) {
       targetSocietyId = firstSoc?.id || "soc-mvp";
     }
 
-    // 1. Check for ANY existing worker with this ID, phone, or name to prevent duplicates
+    // 1. Check for ANY existing worker with this ID, email, phone, or name to prevent duplicates
     const existingWorkers = await prisma.worker.findMany({
       where: {
         OR: [
           ...(id ? [{ id }] : []),
+          ...(cleanEmail ? [{ email: cleanEmail }] : []),
           { phone: safePhone },
           { name: { equals: trimmedName, mode: "insensitive" } },
         ],
@@ -142,19 +145,22 @@ export async function POST(req: NextRequest) {
 
     if (existingWorkers.length > 0) {
       const primaryWorker = existingWorkers[0];
+      const isAlreadyVerified = primaryWorker.status === "VERIFIED";
+
       resultWorker = await prisma.worker.update({
         where: { id: primaryWorker.id },
         data: {
           name: trimmedName,
           phone: safePhone,
+          ...(cleanEmail ? { email: cleanEmail } : {}),
           aadhaarMasked,
           avatar: avatar || primaryWorker.avatar,
           skills: skills || primaryWorker.skills,
           experienceYrs: Number(experienceYrs) || primaryWorker.experienceYrs,
           hourlyRate: Number(hourlyRate) || primaryWorker.hourlyRate,
-          status: "PENDING_VERIFICATION",
-          isAvailable: false,
-          digitalIdCard,
+          status: isAlreadyVerified ? "VERIFIED" : "PENDING_VERIFICATION",
+          isAvailable: isAlreadyVerified ? primaryWorker.isAvailable : false,
+          digitalIdCard: isAlreadyVerified ? primaryWorker.digitalIdCard : digitalIdCard,
         },
         include: {
           society: true,
@@ -181,6 +187,7 @@ export async function POST(req: NextRequest) {
           societyId: targetSocietyId,
           name: trimmedName,
           phone: safePhone,
+          email: cleanEmail || null,
           aadhaarMasked,
           avatar:
             avatar ||

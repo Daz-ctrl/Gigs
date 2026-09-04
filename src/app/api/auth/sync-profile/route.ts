@@ -49,11 +49,12 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ success: true, profile: customer, role: "CUSTOMER" });
     } else if (role === "WORKER") {
-      // Look up existing worker by id or name
+      // Look up existing worker by id, email, or name
       let worker = await prisma.worker.findFirst({
         where: {
           OR: [
             { id },
+            ...(cleanEmail ? [{ email: cleanEmail }] : []),
             { name: { equals: cleanName, mode: "insensitive" } },
           ],
         },
@@ -64,6 +65,7 @@ export async function POST(req: NextRequest) {
           where: { id: worker.id },
           data: {
             name: cleanName,
+            ...(cleanEmail ? { email: cleanEmail } : {}),
             avatar: avatar || worker.avatar,
           },
         });

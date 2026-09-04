@@ -89,36 +89,68 @@ export default function SelectRolePage() {
       setAvatarUrl(avatar);
       setOriginalGoogleAvatar(avatar);
 
-      // If this specific user already chose a role AND completed profile customization:
-      const existingRole = u.user_metadata?.role;
-      const profileCompleted = u.user_metadata?.profile_completed;
+      // Check if this specific Google account already has a worker record in DB
+      fetch("/api/workers?status=ALL")
+        .then((r) => (r.ok ? r.json() : []))
+        .then((workers) => {
+          const uEmail = (u.email || "").toLowerCase().trim();
+          const uName = (name || "").toLowerCase().trim();
+          const uAvatar = (avatar || "").trim();
+          const uId = (u.id || "").trim();
+          const uShortId = uId ? uId.slice(-6) : "";
 
-      if (existingRole && profileCompleted) {
-        if (existingRole === "WORKER") {
-          fetch("/api/workers?status=ALL")
-            .then((r) => (r.ok ? r.json() : []))
-            .then((workers) => {
-              const exists =
-                Array.isArray(workers) &&
-                workers.some(
-                  (w: any) =>
-                    (name && w.name.toLowerCase() === name.toLowerCase()) ||
-                    (u.id && w.id.includes(u.id.slice(-6)))
-                );
-              if (exists) {
-                router.replace("/worker/dashboard");
-              } else {
-                router.replace("/worker/register");
-              }
-            })
-            .catch(() => {
-              router.replace("/worker/register");
-            });
-        } else if (existingRole === "CUSTOMER") {
-          router.replace("/customer/book");
-        }
-        return;
-      }
+          const matchedWorker = Array.isArray(workers) && workers.find((w: any) => {
+            const wEmail = (w.email || "").toLowerCase().trim();
+            const wName = (w.name || "").toLowerCase().trim();
+            const wId = (w.id || "").trim();
+            const wAvatar = (w.avatar || "").trim();
+
+            if (uEmail && wEmail && uEmail === wEmail) return true;
+            if (uId && (wId === uId || wId === `sb-${uShortId}` || (uShortId && wId.includes(uShortId)))) return true;
+            if (uAvatar && wAvatar && (uAvatar === wAvatar || (uAvatar.includes("googleusercontent.com") && wAvatar.includes("googleusercontent.com") && uAvatar.split("=")[0] === wAvatar.split("=")[0]))) return true;
+            if (uName && wName && uName === wName) return true;
+            return false;
+          });
+
+          if (matchedWorker) {
+            const isVerified = matchedWorker.status === "VERIFIED";
+            supabase.auth.updateUser({
+              data: {
+                role: "WORKER",
+                persona: "WORKER",
+                full_name: matchedWorker.name,
+                name: matchedWorker.name,
+                avatar_url: matchedWorker.avatar || avatar,
+                picture: matchedWorker.avatar || avatar,
+                profile_completed: true,
+              },
+            }).catch(() => {});
+
+            localStorage.setItem("coopserve_auth", "true");
+            localStorage.setItem("coopserve_role", "WORKER");
+            const customUser = {
+              role: "WORKER",
+              name: matchedWorker.name,
+              badge: isVerified ? "Verified Co-op Member" : "Applicant (Pending Verification)",
+              subtext: `${u.email} · ${isVerified ? "Verified Member" : "Status: Pending Verification"}`,
+              avatar: matchedWorker.avatar || avatar,
+              id: matchedWorker.id,
+              zone: matchedWorker.society?.zone || "MVP Colony & Beach Road, Vizag",
+            };
+            localStorage.setItem("coopserve_custom_user", JSON.stringify(customUser));
+            router.replace("/worker/dashboard");
+            return;
+          }
+
+          const existingRole = u.user_metadata?.role;
+          const profileCompleted = u.user_metadata?.profile_completed;
+
+          if (existingRole === "CUSTOMER" && profileCompleted) {
+            router.replace("/customer/book");
+            return;
+          }
+        })
+        .catch((e) => console.warn("SelectRole DB check error:", e));
     };
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -261,8 +293,42 @@ export default function SelectRolePage() {
       setRole(selectedRole);
 
       if (isWorker) {
-        showToast(`Welcome, ${trimmedName}! Please complete your free Aadhaar e-KYC.`);
-        router.push("/worker/register");
+        let alreadyHasWorker = false;
+        try {
+          const checkRes = await fetch("/api/workers?status=ALL");
+          if (checkRes.ok) {
+            const workersList = await checkRes.json();
+            const uEmail = (googleUser?.email || "").toLowerCase().trim();
+            const uId = googleUser?.id || "";
+            const uShortId = uId ? uId.slice(-6) : "";
+            const matched = Array.isArray(workersList) && workersList.find((w: any) =>
+              (uEmail && w.email && w.email.toLowerCase().trim() === uEmail) ||
+              (uId && (w.id === uId || w.id === `sb-${uShortId}` || (uShortId && w.id.includes(uShortId)))) ||
+              (trimmedName && w.name && w.name.toLowerCase().trim() === trimmedName.toLowerCase().trim())
+            );
+            if (matched) {
+              alreadyHasWorker = true;
+              const isVerified = matched.status === "VERIFIED";
+              const verifiedUser = {
+                ...appUser,
+                name: matched.name,
+                id: matched.id,
+                badge: isVerified ? "Verified Co-op Member" : "Applicant (Pending Verification)",
+                subtext: `${uEmail} · ${isVerified ? "Verified Member" : "Status: Pending Verification"}`,
+              };
+              localStorage.setItem("coopserve_custom_user", JSON.stringify(verifiedUser));
+              login(verifiedUser);
+              showToast(isVerified ? `Welcome back, ${matched.name}!` : `Welcome back! Loading your application status...`);
+              router.push("/worker/dashboard");
+              return;
+            }
+          }
+        } catch (e) {}
+
+        if (!alreadyHasWorker) {
+          showToast(`Welcome, ${trimmedName}! Please complete your free Aadhaar e-KYC.`);
+          router.push("/worker/register");
+        }
       } else {
         showToast(`Welcome, ${trimmedName}! Your customer account is ready.`);
         router.push("/customer/book");

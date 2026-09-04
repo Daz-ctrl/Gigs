@@ -42,6 +42,7 @@ model Worker {
   society        Society         @relation(fields: [societyId], references: [id], onDelete: Cascade)
   name           String
   phone          String          @unique
+  email          String?
   aadhaarMasked  String          // "XXXX-XXXX-4821"
   avatar         String?
   skills         String          // "Electrician,Solar Technician"
