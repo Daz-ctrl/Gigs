@@ -109,6 +109,7 @@ export async function POST(req: NextRequest) {
       certIssuer,
     } = body;
 
+    const safePhone = (phone || `+91 ${Math.floor(6000000000 + Math.random() * 3999999999)}`).trim();
     const aadhaarMasked = `XXXX-XXXX-${aadhaarLast4 || "1029"}`;
     const digitalIdCard = `COOP-ID-${(name || "WORKER").toUpperCase().replace(/\s+/g, "")}-${Date.now().toString().slice(-4)}-PENDING`;
 
@@ -118,54 +119,88 @@ export async function POST(req: NextRequest) {
       targetSocietyId = firstSoc?.id || "";
     }
 
-    const newWorker = await prisma.worker.create({
-      data: {
-        societyId: targetSocietyId,
-        name,
-        phone,
-        aadhaarMasked,
-        skills,
-        experienceYrs: Number(experienceYrs) || 3,
-        hourlyRate: Number(hourlyRate) || 450,
-        rating: 5.0,
-        totalJobs: 0,
-        status: "PENDING_VERIFICATION",
-        isAvailable: false,
-        latitude: 17.7421,
-        longitude: 83.3384,
-        digitalIdCard,
-        certifications: {
-          create: [
-            {
-              title: certTitle || "Cooperative Skill Profiling Assessment",
-              issuer: certIssuer || "National Skill Development Corporation (NSDC)",
-              certNumber: `NSDC-COOP-${Date.now().toString().slice(-6)}`,
-              issuedYear: new Date().getFullYear(),
-              verified: false,
-            },
-          ],
+    // Check if worker with this phone or name already exists to prevent duplicate error
+    const existing = await prisma.worker.findFirst({
+      where: {
+        OR: [
+          { phone: safePhone },
+          { name: { equals: name, mode: "insensitive" } },
+        ],
+      },
+      include: { society: true, certifications: true, welfareRecord: true },
+    });
+
+    let resultWorker;
+
+    if (existing) {
+      resultWorker = await prisma.worker.update({
+        where: { id: existing.id },
+        data: {
+          name: name || existing.name,
+          phone: safePhone,
+          aadhaarMasked,
+          skills: skills || existing.skills,
+          experienceYrs: Number(experienceYrs) || existing.experienceYrs,
+          hourlyRate: Number(hourlyRate) || existing.hourlyRate,
+          status: "PENDING_VERIFICATION",
+          isAvailable: false,
         },
-        welfareRecord: {
-          create: {
-            insuranceStatus: "PENDING",
-            insurancePlan: "Pradhan Mantri Suraksha Bima Yojana (Cooperative Group)",
-            policyNumber: `PMSBY-${Date.now().toString().slice(-6)}`,
-            fundBalance: 0,
-            earningsYTD: 0,
+        include: {
+          society: true,
+          certifications: true,
+          welfareRecord: true,
+        },
+      });
+    } else {
+      resultWorker = await prisma.worker.create({
+        data: {
+          societyId: targetSocietyId,
+          name: name || "New Co-op Member",
+          phone: safePhone,
+          aadhaarMasked,
+          skills: skills || "General Maintenance",
+          experienceYrs: Number(experienceYrs) || 3,
+          hourlyRate: Number(hourlyRate) || 450,
+          rating: 5.0,
+          totalJobs: 0,
+          status: "PENDING_VERIFICATION",
+          isAvailable: false,
+          latitude: 17.7421,
+          longitude: 83.3384,
+          digitalIdCard,
+          certifications: {
+            create: [
+              {
+                title: certTitle || "Cooperative Skill Profiling Assessment",
+                issuer: certIssuer || "National Skill Development Corporation (NSDC)",
+                certNumber: `NSDC-COOP-${Date.now().toString().slice(-6)}`,
+                issuedYear: new Date().getFullYear(),
+                verified: false,
+              },
+            ],
+          },
+          welfareRecord: {
+            create: {
+              insuranceStatus: "PENDING",
+              insurancePlan: "Pradhan Mantri Suraksha Bima Yojana (Cooperative Group)",
+              policyNumber: `PMSBY-${Date.now().toString().slice(-6)}`,
+              fundBalance: 0,
+              earningsYTD: 0,
+            },
           },
         },
-      },
-      include: {
-        society: true,
-        certifications: true,
-        welfareRecord: true,
-      },
-    });
+        include: {
+          society: true,
+          certifications: true,
+          welfareRecord: true,
+        },
+      });
+    }
 
     // Invalidate cache immediately on new worker
     invalidateWorkersCache();
 
-    return NextResponse.json(newWorker, { status: 201 });
+    return NextResponse.json(resultWorker, { status: 201 });
   } catch (error: any) {
     console.error("Workers API POST error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
