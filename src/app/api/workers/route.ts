@@ -127,19 +127,18 @@ export async function POST(req: NextRequest) {
       targetSocietyId = firstSoc?.id || "soc-mvp";
     }
 
-    // 1. Check for ANY existing worker with this ID, email, phone, or name to prevent duplicates
-    const existingWorkers = await prisma.worker.findMany({
+    // 1. Check for ANY existing worker with this exact ID or Email ONLY
+    const matchConditions: any[] = [];
+    if (id) matchConditions.push({ id });
+    if (cleanEmail) matchConditions.push({ email: cleanEmail });
+
+    const existingWorkers = matchConditions.length > 0 ? await prisma.worker.findMany({
       where: {
-        OR: [
-          ...(id ? [{ id }] : []),
-          ...(cleanEmail ? [{ email: cleanEmail }] : []),
-          { phone: safePhone },
-          { name: { equals: trimmedName, mode: "insensitive" } },
-        ],
+        OR: matchConditions,
       },
       include: { society: true, certifications: true, welfareRecord: true },
       orderBy: { createdAt: "desc" },
-    });
+    }) : [];
 
     let resultWorker;
 

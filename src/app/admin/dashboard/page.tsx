@@ -152,13 +152,10 @@ function AdminDashboardContent() {
   }, [role]);
 
   const handleVerifyWorker = async (workerId: string) => {
-    const target = workers.find((w) => w.id === workerId);
-    const targetName = target?.name?.trim().toLowerCase();
-
-    // 1. Instant Optimistic UI Update (0ms) - marks all matching instances as VERIFIED
+    // 1. Instant Optimistic UI Update (0ms) - strictly by worker ID
     setWorkers((prev) =>
       prev.map((w) =>
-        w.id === workerId || (targetName && w.name?.trim().toLowerCase() === targetName)
+        w.id === workerId
           ? { ...w, status: "VERIFIED", isAvailable: true }
           : w
       )
@@ -182,13 +179,10 @@ function AdminDashboardContent() {
   };
 
   const handleRejectWorker = async (workerId: string) => {
-    const target = workers.find((w) => w.id === workerId);
-    const targetName = target?.name?.trim().toLowerCase();
-
-    // 1. Instant Optimistic UI Update (0ms) - marks all matching instances as REJECTED
+    // 1. Instant Optimistic UI Update (0ms) - strictly by worker ID
     setWorkers((prev) =>
       prev.map((w) =>
-        w.id === workerId || (targetName && w.name?.trim().toLowerCase() === targetName)
+        w.id === workerId
           ? { ...w, status: "REJECTED", isAvailable: false }
           : w
       )
@@ -284,7 +278,7 @@ function AdminDashboardContent() {
   // Deduplicate and filter applicants awaiting verification:
   // 1. Must be PENDING_VERIFICATION or PENDING
   // 2. Must have submitted e-KYC (not an unsubmitted XXXX-XXXX-PENDING stub)
-  // 3. Deduplicate by worker name/identity to guarantee zero duplicate cards
+  // 3. Key strictly by worker ID so each applicant has an individual card
   const pendingMap = new Map<string, any>();
   workers
     .filter(
@@ -294,14 +288,9 @@ function AdminDashboardContent() {
         !w.aadhaarMasked.includes("PENDING")
     )
     .forEach((w) => {
-      const key = (w.name || "").trim().toLowerCase();
-      if (!pendingMap.has(key)) {
+      const key = (w.id || "").trim();
+      if (key && !pendingMap.has(key)) {
         pendingMap.set(key, w);
-      } else {
-        const existing = pendingMap.get(key);
-        if (!existing.avatar && w.avatar) {
-          pendingMap.set(key, w);
-        }
       }
     });
   const pendingWorkers = Array.from(pendingMap.values());
@@ -310,8 +299,8 @@ function AdminDashboardContent() {
   workers
     .filter((w) => w.status === "VERIFIED")
     .forEach((w) => {
-      const key = (w.name || "").trim().toLowerCase();
-      if (!verifiedMap.has(key)) {
+      const key = (w.id || "").trim();
+      if (key && !verifiedMap.has(key)) {
         verifiedMap.set(key, w);
       }
     });

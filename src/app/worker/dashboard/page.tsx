@@ -368,6 +368,16 @@ function WorkerDashboardContent() {
   const isPending = worker?.status === "PENDING_VERIFICATION" || worker?.status === "PENDING";
   const isLocked = isUnsubmitted || isPending;
 
+  // Individual isolated earnings calculation per worker
+  const completedBookings = bookings.filter((b) => b.status === "COMPLETED");
+  const earnedFromBookings = completedBookings.reduce((sum, b) => sum + (b.workerPayout || 0), 0);
+  const fundFromBookings = completedBookings.reduce((sum, b) => sum + (b.welfareFee || 0), 0);
+  const rawDbEarnings = worker.welfareRecord?.earningsYTD ?? 0;
+  const rawDbFund = worker.welfareRecord?.fundBalance ?? 0;
+  const effectiveEarnings = Math.max(rawDbEarnings, earnedFromBookings);
+  const effectiveFund = Math.max(rawDbFund, fundFromBookings);
+  const totalVerifiedJobs = (worker.totalJobs || 0) > 0 ? worker.totalJobs : completedBookings.length;
+
   return (
     <BackgroundGrid className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -530,8 +540,8 @@ function WorkerDashboardContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <KokonutStatCard
             title="Earnings YTD (90% Payout)"
-            value={isLocked ? "₹0 (Inactive)" : `₹${worker.welfareRecord?.earningsYTD?.toLocaleString() || "84,300"}`}
-            subtitle={isLocked ? "Inactive · Pending verification & first payout" : "+₹18,400 higher than private apps"}
+            value={isLocked ? "₹0 (Inactive)" : `₹${effectiveEarnings.toLocaleString()}`}
+            subtitle={isLocked ? "Inactive · Pending verification & first payout" : effectiveEarnings > 0 ? `${completedBookings.length} completed jobs · 90% direct payout` : "Ready for first customer dispatch"}
             delta={isLocked ? { value: "Inactive", isPositive: false } : { value: "+28% vs pvt apps", isPositive: true }}
             icon={Wallet}
             variant="emerald"
@@ -539,7 +549,7 @@ function WorkerDashboardContent() {
 
           <KokonutStatCard
             title="Co-op Welfare & Health Fund"
-            value={isLocked ? "₹0 (Inactive)" : `₹${worker.welfareRecord?.fundBalance?.toLocaleString() || "6,850"}`}
+            value={isLocked ? "₹0 (Inactive)" : `₹${effectiveFund.toLocaleString()}`}
             subtitle={isLocked ? "Inactive · 7% reserve unlocks after activation" : "Funded by automatic 7% per-job reserve"}
             delta={isLocked ? { value: "Inactive", isPositive: false } : { value: "Active Interest", isPositive: true }}
             icon={HeartHandshake}
@@ -549,7 +559,7 @@ function WorkerDashboardContent() {
           <KokonutStatCard
             title="Cooperative Star Rating"
             value={isLocked ? "N/A (Inactive)" : `★ ${worker.rating?.toFixed(1) || "5.0"} / 5.0`}
-            subtitle={isLocked ? "Inactive · Rating activates after first job" : `Across ${worker.totalJobs || 0} verified customer services`}
+            subtitle={isLocked ? "Inactive · Rating activates after first job" : `Across ${totalVerifiedJobs} verified customer services`}
             delta={isLocked ? { value: "Inactive", isPositive: false } : { value: "Top Tier", isPositive: true }}
             icon={Award}
             variant="amber"
