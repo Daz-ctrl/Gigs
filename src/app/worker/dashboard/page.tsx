@@ -232,28 +232,42 @@ function WorkerDashboardContent() {
   };
 
   const handleStartJobWithOtp = async (bookingId: string) => {
-    const enteredOtp = otpInputs[bookingId];
+    const enteredOtp = (otpInputs[bookingId] || "").trim();
     if (!enteredOtp || enteredOtp.length !== 4) {
       showToast("Please enter the 4-digit code provided by the customer.");
       return;
     }
 
     setStartingJobId(bookingId);
+
+    // 1. Instant Optimistic UI Update (0ms perceived lag)
+    const prevBookings = [...bookings];
+    setBookings((prev) =>
+      prev.map((b) => (b.id === bookingId ? { ...b, status: "IN_PROGRESS" } : b))
+    );
+    showToast("Handshake Verified! 60-Minute Service Clock Started.");
+
+    // 2. Background Sync
     try {
       const res = await fetch(`/api/bookings/${bookingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "IN_PROGRESS", startOtp: enteredOtp }),
+        body: JSON.stringify({
+          action: "start_work",
+          startWorkOtp: enteredOtp,
+          startOtp: enteredOtp,
+          status: "IN_PROGRESS",
+        }),
       });
 
       const data = await res.json();
-      if (res.ok) {
-        showToast("Handshake Verified! 60-Minute Service Clock Started.");
-        fetchWorkerData();
-      } else {
+      if (!res.ok) {
+        // Revert on error
+        setBookings(prevBookings);
         showToast(data.error || "Invalid Start-Work OTP.");
       }
     } catch (e) {
+      setBookings(prevBookings);
       showToast("Error verifying security handshake.");
     } finally {
       setStartingJobId(null);
@@ -291,19 +305,47 @@ function WorkerDashboardContent() {
   };
 
   const handleCompleteJob = async (bookingId: string) => {
+    const targetBooking = bookings.find((b) => b.id === bookingId);
+
+    // 1. Instant Optimistic UI Update (0ms)
+    setBookings((prev) =>
+      prev.map((b) => (b.id === bookingId ? { ...b, status: "COMPLETED" } : b))
+    );
+
+    // Optimistically update KPI stats
+    if (targetBooking && worker) {
+      setWorker((prev) => {
+        if (!prev) return prev;
+        const currentEarnings = prev.welfareRecord?.earningsYTD || 0;
+        const currentFund = prev.welfareRecord?.fundBalance || 0;
+        return {
+          ...prev,
+          totalJobs: (prev.totalJobs || 0) + 1,
+          welfareRecord: {
+            ...prev.welfareRecord,
+            earningsYTD: currentEarnings + (targetBooking.workerPayout || 0),
+            fundBalance: currentFund + (targetBooking.welfareFee || 0),
+          } as any,
+        };
+      });
+    }
+
+    showToast("Job Completed! 90% direct payout transferred to your account.");
+
+    // 2. Background Sync
     try {
       const res = await fetch(`/api/bookings/${bookingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "COMPLETED" }),
+        body: JSON.stringify({ action: "complete", status: "COMPLETED" }),
       });
 
-      if (res.ok) {
-        showToast("Job Completed! 90% direct payout transferred to your account.");
+      if (!res.ok) {
         fetchWorkerData();
       }
     } catch (e) {
       showToast("Error updating job status.");
+      fetchWorkerData();
     }
   };
 

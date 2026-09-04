@@ -62,7 +62,7 @@ const ZONES = [
 
 export default function CustomerBookPage() {
   const router = useRouter();
-  const { t, showToast, role, isAuthenticated } = useApp();
+  const { t, showToast, role, isAuthenticated, currentUser } = useApp();
   const [allAvailableWorkers, setAllAvailableWorkers] = useState<WorkerWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState("ALL");
@@ -193,18 +193,26 @@ export default function CustomerBookPage() {
     const price = isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate;
 
     try {
+      const customerEmail = currentUser?.subtext?.includes("@")
+        ? currentUser.subtext.split("·")[0].trim()
+        : undefined;
+
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           workerId: selectedWorker.id,
+          customerId: currentUser?.id,
+          customerName: currentUser?.name || "Resident Customer",
+          customerEmail,
+          customerAddress: currentUser?.zone || "MVP Colony, Visakhapatnam",
           serviceType: selectedWorker.skills.split(",")[0],
           description: bookingNotes || `Cooperative service booking with ${selectedWorker.name}`,
           basePrice: price,
           isEmergency,
           scheduledAt: new Date().toISOString(),
-          latitude: 28.543,
-          longitude: 77.2405,
+          latitude: 17.741,
+          longitude: 83.339,
         }),
       });
 
