@@ -62,7 +62,7 @@ export default function HomePage() {
       )}
 
       {/* HERO SECTION */}
-      <section className="pt-[97px] sm:pt-[105px] md:pt-[113px] pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center relative z-20">
+      <section className="pt-[87px] sm:pt-[95px] md:pt-[103px] pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center relative z-20">
         {/* Subtle SIH Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-5 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
