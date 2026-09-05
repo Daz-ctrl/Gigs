@@ -184,7 +184,7 @@ function AuthCallbackContent() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20 mb-4 animate-pulse">
-        SK
+        KS
       </div>
       <div className="flex items-center gap-2.5 text-emerald-400 font-bold text-sm">
         <Loader2 className="w-4 h-4 animate-spin" />

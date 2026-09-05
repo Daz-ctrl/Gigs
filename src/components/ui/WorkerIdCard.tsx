@@ -62,7 +62,7 @@ export function WorkerIdCard({
           <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3 mb-3">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 text-base shadow-lg shadow-emerald-500/30 shrink-0">
-                SK
+                KS
               </div>
               <div>
                 <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none">
