@@ -34,6 +34,8 @@ import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
 import { supabase } from "@/lib/supabaseClient";
+import { DashboardRosterSkeleton, LoadingState } from "@/components/ui/LoadingState";
+import { Loader2 } from "lucide-react";
 
 function WorkerDashboardContent() {
   const router = useRouter();
@@ -403,8 +405,12 @@ function WorkerDashboardContent() {
 
   if (loading || !worker) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="h-64 rounded-3xl bg-slate-200 dark:bg-slate-800/40 animate-pulse" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <LoadingState
+          message="Loading Worker Identity & Live Dispatch Roster..."
+          submessage="Retrieving cooperative welfare balances and assigned household jobs..."
+        />
+        <DashboardRosterSkeleton />
       </div>
     );
   }
@@ -791,9 +797,12 @@ function WorkerDashboardContent() {
                                       type="button"
                                       disabled={startingJobId === booking.id}
                                       onClick={() => handleStartJobWithOtp(booking.id)}
-                                      className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition cursor-pointer shadow-sm"
+                                      className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition cursor-pointer shadow-sm flex items-center gap-1.5 disabled:opacity-75"
                                     >
-                                      Verify
+                                      {startingJobId === booking.id && (
+                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                      )}
+                                      <span>{startingJobId === booking.id ? "Verifying..." : "Verify"}</span>
                                     </button>
                                   </div>
                                 </div>

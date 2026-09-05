@@ -32,6 +32,8 @@ import { BackgroundGrid } from "@/components/ui/BackgroundGrid";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { BorderBeam } from "@/components/ui/BorderBeam";
 import { ShimmerButton } from "@/components/ui/ShimmerButton";
+import { WorkerCardSkeleton, LoadingState } from "@/components/ui/LoadingState";
+import { Loader2 } from "lucide-react";
 
 const SERVICE_CATEGORIES = [
   { id: "ALL", name: "All Trades", icon: Wrench },
@@ -412,13 +414,12 @@ export default function CustomerBookPage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-64 rounded-3xl bg-slate-200 dark:bg-slate-800/40 animate-pulse"
-              />
-            ))}
+          <div className="space-y-4">
+            <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold w-fit mx-auto animate-pulse">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Locating verified cooperative artisans in {currentZoneObj.name.split("·")[0]}...</span>
+            </div>
+            <WorkerCardSkeleton count={6} />
           </div>
         ) : filteredWorkers.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
@@ -735,12 +736,16 @@ export default function CustomerBookPage() {
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleConfirmPayment}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-emerald-500/25 transition cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-emerald-500/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75"
                 >
-                  <CreditCard className="w-4 h-4" />
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <CreditCard className="w-4 h-4" />
+                  )}
                   <span>
                     {isSubmitting
-                      ? "Processing Simulated UPI Transfer..."
+                      ? "Securing 90% Worker Payout via UPI Sandbox..."
                       : `Pay ₹${isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate} via UPI Sandbox & Book`}
                   </span>
                 </button>

@@ -19,6 +19,7 @@ import {
   Briefcase,
   Trash2,
   X,
+  Loader2,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { VerificationPathway } from "@/types";
@@ -702,12 +703,16 @@ export default function WorkerRegisterPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/25 transition cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75"
           >
-            <CheckCircle2 className="w-5 h-5" />
+            {isSubmitting ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <CheckCircle2 className="w-5 h-5" />
+            )}
             <span>
               {isSubmitting
-                ? "Submitting Application..."
+                ? "Encrypting e-KYC & Routing to Ward Secretary Queue..."
                 : "Submit Application to Cooperative Admin"}
             </span>
           </button>
