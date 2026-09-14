@@ -10,7 +10,7 @@ interface BackgroundGridProps {
 
 export function BackgroundGrid({ children, className = "" }: BackgroundGridProps) {
   return (
-    <div className={cn("relative w-full overflow-hidden bg-[#F4ECE1]", className)}>
+    <div className={cn("relative w-full overflow-hidden bg-[#EAE0D0]", className)}>
       {/* Government Architectural Subtle Grid Overlay */}
       <div
         className="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-70 [background-image:linear-gradient(to_right,#0B254515_1px,transparent_1px),linear-gradient(to_bottom,#0B254515_1px,transparent_1px)] [background-size:36px_36px]"

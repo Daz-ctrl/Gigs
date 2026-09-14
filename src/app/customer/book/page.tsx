@@ -308,29 +308,29 @@ export default function CustomerBookPage() {
         {/* Emergency Toggle (FR8) */}
         <div
           onClick={() => setIsEmergency(!isEmergency)}
-          className={`cursor-pointer rounded-2xl p-3 border transition-all flex items-center gap-3 ${
+          className={`cursor-pointer rounded-2xl p-3 border-2 transition-all flex items-center gap-3 ${
             isEmergency
-              ? "bg-rose-500/10 border-rose-500 text-rose-600 dark:text-rose-400 shadow-md shadow-rose-500/10"
-              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+              ? "bg-rose-500/15 border-rose-600 text-rose-800 shadow-md shadow-rose-500/10"
+              : "bg-[#DFD3BD] border-[#8C755D]/30 text-[#0A1120] hover:border-[#8C755D]/50"
           }`}
         >
           <div
             className={`p-2 rounded-xl ${
-              isEmergency ? "bg-rose-500 text-white animate-pulse" : "bg-slate-100 dark:bg-slate-800"
+              isEmergency ? "bg-rose-600 text-white animate-pulse" : "bg-[#D7C9AF] text-[#0A1120]"
             }`}
           >
             <Zap className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <div className="text-xs font-black text-[#0A1120] flex items-center gap-1.5">
               <span>{t.customer.emergencyBadge}</span>
               {isEmergency && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500 text-white font-black">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-600 text-white font-black">
                   ACTIVE
                 </span>
               )}
             </div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400">
+            <div className="text-[11px] text-slate-700 font-medium">
               {t.customer.emergencySubtitle}
             </div>
           </div>
@@ -349,19 +349,19 @@ export default function CustomerBookPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedService(cat.id)}
-                className="relative px-4 py-2.5 rounded-2xl text-xs font-bold transition-colors cursor-pointer shrink-0 flex items-center gap-2"
+                className="relative px-4 py-2.5 rounded-2xl text-xs font-black transition-colors cursor-pointer shrink-0 flex items-center gap-2"
               >
                 {isSelected && (
                   <motion.div
                     layoutId="activeServiceTab"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    className="absolute inset-0 bg-[#0B2545] dark:bg-amber-600 rounded-2xl shadow-lg shadow-[#0B2545]/20"
+                    className="absolute inset-0 bg-[#0B2545] rounded-2xl shadow-lg shadow-[#0B2545]/20"
                   />
                 )}
                 {!isSelected && (
-                  <div className="absolute inset-0 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800" />
+                  <div className="absolute inset-0 rounded-2xl bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-xs" />
                 )}
-                <span className={`relative z-10 flex items-center gap-2 ${isSelected ? "text-white" : "text-slate-700 dark:text-slate-300"}`}>
+                <span className={`relative z-10 flex items-center gap-2 ${isSelected ? "text-white" : "text-slate-800"}`}>
                   <Icon className="w-3.5 h-3.5" />
                   <span>{cat.name}</span>
                 </span>
@@ -373,13 +373,13 @@ export default function CustomerBookPage() {
         {/* Locality Zone & Search */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600" />
             <input
               type="text"
               placeholder={t.customer.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
+              className="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-[#8C755D]/30 bg-[#DFD3BD] text-xs text-[#0A1120] font-medium placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40"
             />
           </div>
 
@@ -387,7 +387,7 @@ export default function CustomerBookPage() {
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 cursor-pointer"
+              className="w-full px-3.5 py-2.5 rounded-2xl border-2 border-[#8C755D]/30 bg-[#DFD3BD] text-xs font-bold text-[#0A1120] focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40 cursor-pointer"
             >
               {ZONES.map((z) => (
                 <option key={z.id} value={z.id}>
@@ -524,16 +524,16 @@ export default function CustomerBookPage() {
                   </div>
 
                   {/* Society & Skills Badges */}
-                  <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 text-xs space-y-1 mb-4">
-                    <div className="text-slate-500 dark:text-slate-400 text-[11px]">
+                  <div className="bg-[#ECE2D0] p-3 rounded-2xl border border-[#8C755D]/25 text-xs space-y-1 mb-4">
+                    <div className="text-slate-700 text-[11px] font-medium">
                       Member Unit:
                     </div>
-                    <div className="font-semibold text-slate-800 dark:text-slate-200 truncate">
+                    <div className="font-bold text-[#0A1120] truncate">
                       {worker.society?.name}
                     </div>
-                    <div className="text-[11px] text-slate-400 pt-1">
-                      Experience: <strong className="text-emerald-500">{worker.experienceYrs} yrs</strong> ·
-                      Aadhaar: <span className="font-mono text-slate-300">{worker.aadhaarMasked}</span>
+                    <div className="text-[11px] text-slate-700 pt-1">
+                      Experience: <strong className="text-emerald-800 font-bold">{worker.experienceYrs} yrs</strong> ·
+                      Aadhaar: <span className="font-mono text-[#0A1120] font-black">{worker.aadhaarMasked}</span>
                     </div>
                   </div>
                 </div>
@@ -582,14 +582,14 @@ export default function CustomerBookPage() {
       {/* CHECKOUT & FAIRNESS METER MODAL */}
       {selectedWorker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#DFD3BD] border-2 border-[#8C755D]/35 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               type="button"
               onClick={() => {
                 setSelectedWorker(null);
                 setBookingSuccess(null);
               }}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-[#D7C9AF] transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -597,55 +597,55 @@ export default function CustomerBookPage() {
             {bookingSuccess ? (
               /* SUCCESS STATE */
               <div className="text-center py-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
                   <CheckCircle className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+                <h3 className="text-2xl font-black text-[#0A1120]">
                   Booking Confirmed!
                 </h3>
-                <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                <p className="text-xs text-slate-700 font-medium mt-1 max-w-sm mx-auto">
                   {selectedWorker.name} has been notified and dispatched from {selectedWorker.society?.name}.
                 </p>
 
                 {/* Start-Work Handshake OTP Card with BorderBeam */}
-                <div className="relative overflow-hidden p-5 rounded-3xl bg-slate-900/90 border border-amber-500/40 text-center my-4 animate-in zoom-in-95 shadow-xl shadow-amber-500/10">
-                  <BorderBeam colorFrom="#f59e0b" colorTo="#10b981" duration={4} />
+                <div className="relative overflow-hidden p-5 rounded-3xl bg-[#ECE2D0] border-2 border-amber-600/40 text-center my-4 animate-in zoom-in-95 shadow-xl">
+                  <BorderBeam colorFrom="#f59e0b" colorTo="#10b981" duration={4} innerBg="bg-[#ECE2D0]" />
                   <div className="relative z-10">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center justify-center gap-1.5">
+                    <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center justify-center gap-1.5">
                       <span>🔐 Service Start Handshake OTP</span>
                     </div>
-                    <div className="text-3xl font-mono font-black text-amber-300 tracking-widest my-2">
+                    <div className="text-3xl font-mono font-black text-amber-950 tracking-widest my-2">
                       {bookingSuccess.startWorkOtp || "8341"}
                     </div>
-                    <p className="text-[11px] text-slate-300 max-w-xs mx-auto">
+                    <p className="text-[11px] text-slate-800 font-medium max-w-xs mx-auto">
                       Share this 4-digit code with {selectedWorker.name} upon arrival to verify address and start the 60-min service timer.
                     </p>
                   </div>
                 </div>
 
                 {/* Digital Receipt Summary */}
-                <div className="my-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left text-xs space-y-2">
+                <div className="my-4 p-4 rounded-2xl bg-[#ECE2D0] border border-[#8C755D]/25 text-left text-xs space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Booking Reference:</span>
-                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                    <span className="text-slate-700 font-medium">Booking Reference:</span>
+                    <span className="font-mono font-black text-[#0A1120]">
                       {bookingSuccess.id}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Base Service (First 60 mins):</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">₹{bookingSuccess.basePrice}</span>
+                    <span className="text-slate-700 font-medium">Base Service (First 60 mins):</span>
+                    <span className="font-bold text-[#0A1120]">₹{bookingSuccess.basePrice}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Worker Direct Payout (90%):</span>
-                    <span className="font-bold text-emerald-500">₹{bookingSuccess.workerPayout}</span>
+                    <span className="text-slate-700 font-medium">Worker Direct Payout (90%):</span>
+                    <span className="font-bold text-emerald-800">₹{bookingSuccess.workerPayout}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Welfare & Health Reserve (7%):</span>
-                    <span className="font-bold text-teal-500">₹{bookingSuccess.welfareFee}</span>
+                    <span className="text-slate-700 font-medium">Welfare & Health Reserve (7%):</span>
+                    <span className="font-bold text-teal-800">₹{bookingSuccess.welfareFee}</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-700 dark:text-blue-300 font-medium mb-6">
+                <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-900 font-medium mb-6">
                   {t.customer.qrVerifyPrompt}
                 </div>
 
@@ -653,7 +653,7 @@ export default function CustomerBookPage() {
                   <button
                     type="button"
                     onClick={() => router.push("/customer/bookings")}
-                    className="flex-1 py-3 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500 transition"
+                    className="flex-1 py-3 rounded-xl bg-[#0B2545] text-white font-black text-xs hover:bg-[#07182c] transition cursor-pointer shadow-md"
                   >
                     View My Bookings
                   </button>
@@ -663,7 +663,7 @@ export default function CustomerBookPage() {
                       setSelectedWorker(null);
                       setBookingSuccess(null);
                     }}
-                    className="py-3 px-5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 transition"
+                    className="py-3 px-5 rounded-xl border-2 border-[#8C755D]/30 text-[#0A1120] font-black text-xs hover:bg-[#D7C9AF] transition cursor-pointer"
                   >
                     Done
                   </button>
@@ -679,10 +679,10 @@ export default function CustomerBookPage() {
                     className="w-12 h-12 rounded-2xl border border-emerald-500 text-base"
                   />
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-lg font-black text-[#0A1120]">
                       Confirm Cooperative Booking
                     </h3>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-700 font-medium">
                       With {selectedWorker.name} · {selectedWorker.society?.name}
                     </p>
                   </div>
@@ -691,7 +691,7 @@ export default function CustomerBookPage() {
                 {/* Service Details input */}
                 <div className="space-y-4 mb-6">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-black text-[#0A1120] mb-1">
                       Service Description / Problem Details
                     </label>
                     <input
@@ -699,18 +699,18 @@ export default function CustomerBookPage() {
                       value={bookingNotes}
                       onChange={(e) => setBookingNotes(e.target.value)}
                       placeholder="e.g. Master switch trip repair, tap connector replacement..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-emerald-500/40 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-[#0A1120] text-xs font-medium focus:ring-2 focus:ring-[#0B2545]/40 outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-black text-[#0A1120] mb-1">
                       Schedule Slot
                     </label>
                     <select
                       value={bookingDate}
                       onChange={(e) => setBookingDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-emerald-500/40 outline-none font-medium"
+                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-[#0A1120] text-xs focus:ring-2 focus:ring-[#0B2545]/40 outline-none font-bold cursor-pointer"
                     >
                       <option value="Today, Immediate">Today · Immediate Dispatch (Within 45 mins)</option>
                       <option value="Today, Evening 5-7 PM">Today · Evening (05:00 PM - 07:00 PM)</option>
@@ -721,8 +721,8 @@ export default function CustomerBookPage() {
                 </div>
 
                 {/* EMBEDDED LIVE FAIRNESS BREAKDOWN */}
-                <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 mb-6">
-                  <div className="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center justify-between mb-2">
+                <div className="rounded-2xl bg-[#ECE2D0] border-2 border-emerald-700/30 p-4 mb-6">
+                  <div className="text-xs font-black text-emerald-900 flex items-center justify-between mb-2">
                     <span className="flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       Transparent Cooperative Breakdown
@@ -733,9 +733,9 @@ export default function CustomerBookPage() {
                   </div>
 
                   <div className="space-y-1.5 text-xs">
-                    <div className="flex justify-between text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between text-slate-800 font-medium">
                       <span>Worker Take-Home (90%):</span>
-                      <strong className="text-emerald-600 dark:text-emerald-400">
+                      <strong className="text-emerald-800 font-black">
                         ₹{Math.round((isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate) * 0.9)}
                       </strong>
                     </div>

@@ -97,7 +97,7 @@ export default function HomePage() {
           <Link
             href="/admin/dashboard"
             onClick={() => setRole("ADMIN")}
-            className="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-[#0A1120] border-2 border-[#0B2545]/20 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
+            className="px-5 py-3 rounded-2xl bg-[#DFD3BD] hover:bg-[#D7C9AF] text-[#0A1120] border-2 border-[#8C755D]/30 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
           >
             <Brain className="w-4 h-4 text-amber-600" />
             <span>{t.home.exploreAdmin}</span>
@@ -108,7 +108,7 @@ export default function HomePage() {
         <HeroInteractivePreview />
 
         {/* Micro-Stats Bar */}
-        <div className="mt-14 pt-8 border-t border-[#0B2545]/20 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+        <div className="mt-14 pt-8 border-t border-[#8C755D]/25 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-emerald-600/15 text-emerald-800 flex items-center justify-center font-black text-lg border border-emerald-600/30">
               90%
@@ -152,7 +152,7 @@ export default function HomePage() {
       </section>
 
       {/* INFINITE MARQUEE SOCIAL PROOF STRIP */}
-      <div className="py-5 border-y border-[#0B2545]/15 bg-[#F5F1E9] shadow-inner overflow-hidden relative z-20">
+      <div className="py-5 border-y border-[#8C755D]/25 bg-[#DFD3BD] shadow-inner overflow-hidden relative z-20">
         <Marquee pauseOnHover className="[--duration:32s]">
           {[
             { text: "Ministry of Cooperation Registered", badge: "MSCS ACT 2002", icon: "🏛️" },
@@ -166,13 +166,13 @@ export default function HomePage() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-xs mx-2 shrink-0"
+              className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#EAE0D0] border border-[#8C755D]/30 shadow-xs mx-2 shrink-0"
             >
               <span className="text-sm">{item.icon}</span>
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-xs font-black text-[#0A1120]">
                 {item.text}
               </span>
-              <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+              <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-800 border border-amber-500/30">
                 {item.badge}
               </span>
             </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
           {/* 1. Worker */}
           <SpotlightCard
             spotlightColor="rgba(230, 81, 0, 0.15)"
-            className="p-8 bg-[#FFFDF9] border-2 border-[#0B2545]/15"
+            className="p-8 bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-md"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-700 flex items-center justify-center mb-4 border border-amber-500/30">
@@ -248,7 +248,7 @@ export default function HomePage() {
             <Link
               href="/worker/dashboard"
               onClick={() => setRole("WORKER")}
-              className="mt-8 pt-4 border-t border-[#0B2545]/15 text-xs font-black text-[#E65100] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#8C755D]/25 text-xs font-black text-[#E65100] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.workerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -258,7 +258,7 @@ export default function HomePage() {
           {/* 2. Customer */}
           <SpotlightCard
             spotlightColor="rgba(11, 37, 69, 0.15)"
-            className="p-8 bg-[#FFFDF9] border-2 border-[#0B2545]/15"
+            className="p-8 bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-md"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-700 flex items-center justify-center mb-4 border border-blue-500/30">
@@ -289,7 +289,7 @@ export default function HomePage() {
             <Link
               href="/customer/book"
               onClick={() => setRole("CUSTOMER")}
-              className="mt-8 pt-4 border-t border-[#0B2545]/15 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#8C755D]/25 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.customerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -299,7 +299,7 @@ export default function HomePage() {
           {/* 3. Cooperative Admin */}
           <SpotlightCard
             spotlightColor="rgba(19, 136, 8, 0.15)"
-            className="p-8 bg-[#FFFDF9] border-2 border-[#0B2545]/15"
+            className="p-8 bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-md"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center mb-4 border border-emerald-500/30">
@@ -330,7 +330,7 @@ export default function HomePage() {
             <Link
               href="/admin/dashboard"
               onClick={() => setRole("ADMIN")}
-              className="mt-8 pt-4 border-t border-[#0B2545]/15 text-xs font-black text-emerald-800 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#8C755D]/25 text-xs font-black text-emerald-800 flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.adminCardLink}</span>
               <ArrowRight className="w-4 h-4" />

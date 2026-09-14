@@ -11,6 +11,7 @@ interface BorderBeamProps {
   colorFrom?: string;
   colorTo?: string;
   delay?: number;
+  innerBg?: string;
 }
 
 export function BorderBeam({
@@ -21,6 +22,7 @@ export function BorderBeam({
   colorFrom = "#10b981", // Emerald 500
   colorTo = "#06b6d4",   // Cyan 500
   delay = 0,
+  innerBg = "bg-[#DFD3BD]",
 }: BorderBeamProps) {
   const numericRadius = parseInt(borderRadius) || 32;
   const innerRadius = `${Math.max(numericRadius - borderWidth, 4)}px`;
@@ -70,7 +72,7 @@ export function BorderBeam({
           bottom: `${borderWidth}px`,
           borderRadius: innerRadius,
         }}
-        className="absolute bg-white/95 dark:bg-[#070c16] z-10"
+        className={cn("absolute z-10", innerBg)}
       />
     </div>
   );

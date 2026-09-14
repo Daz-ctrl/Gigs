@@ -53,7 +53,7 @@ export function SpotlightCard({
         } as React.CSSProperties
       }
       className={cn(
-        "relative overflow-hidden rounded-3xl border border-[#0B2545]/15 bg-white/95 backdrop-blur-xl shadow-md shadow-[#0B2545]/5 transition-all duration-300 hover:border-[#0B2545]/30 hover:shadow-xl",
+        "relative overflow-hidden rounded-3xl border-2 border-[#8C755D]/25 bg-[#DFD3BD] backdrop-blur-xl shadow-md shadow-[#8C755D]/10 transition-all duration-300 hover:border-[#0B2545]/35 hover:shadow-xl",
         className
       )}
       {...props}
