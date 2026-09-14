@@ -433,7 +433,7 @@ function WorkerDashboardContent() {
     <BackgroundGrid className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Top Welcome & Shift Toggle */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white/70 dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-[#081C33]/95 p-6 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl">
           <div className="flex items-center gap-4">
             <UserAvatar
               src={worker.avatar}
@@ -442,26 +442,26 @@ function WorkerDashboardContent() {
             />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                <h1 className="text-2xl font-extrabold text-white">
                   Namaste, {worker.name}
                 </h1>
                 {isUnsubmitted ? (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
                     <span>e-KYC Required</span>
                   </span>
                 ) : isPending ? (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     <span>Waiting for Admin Approval</span>
                   </span>
                 ) : (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     Verified Member
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-slate-300 mt-1">
                 {worker.society?.name} · Member ID: {worker.digitalIdCard?.slice(0, 16) || "COOP-ID-NEW"}
               </p>
             </div>
@@ -699,17 +699,17 @@ function WorkerDashboardContent() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl shadow-sm">
+              <div className="rounded-3xl border border-white/10 bg-[#081C33]/95 p-6 backdrop-blur-xl shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-lg font-bold text-white">
                       Active & Assigned Cooperative Jobs
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-slate-300">
                       Fair dispatch directly from your local cooperative society.
                     </p>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
                     {bookings.length} Assigned Jobs
                   </span>
                 </div>
@@ -827,25 +827,25 @@ function WorkerDashboardContent() {
               </div>
 
               {/* Certifications Section */}
-              <div className="rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-4">
+              <div className="rounded-3xl border border-white/10 bg-[#081C33]/95 p-6 backdrop-blur-xl shadow-2xl">
+                <h3 className="text-base font-bold text-white mb-4">
                   Verified Skill Badges & NSDC Certifications
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {worker.certifications?.map((c) => (
                     <div
                       key={c.id}
-                      className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-xs"
+                      className="p-4 rounded-2xl border border-emerald-500/20 bg-[#0B2545] text-xs"
                     >
-                      <div className="font-bold text-emerald-700 dark:text-emerald-300">
+                      <div className="font-bold text-emerald-300">
                         {c.title}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-400 mt-1">
+                      <div className="text-slate-300 mt-1">
                         {c.issuer}
                       </div>
                       <div className="flex justify-between items-center mt-3 pt-2 border-t border-emerald-500/20 text-[11px]">
                         <span className="font-mono text-slate-400">{c.certNumber}</span>
-                        <span className="font-bold text-emerald-600">VERIFIED</span>
+                        <span className="font-bold text-emerald-400">VERIFIED</span>
                       </div>
                     </div>
                   ))}
@@ -909,40 +909,40 @@ function WorkerDashboardContent() {
 
               {/* Welfare & Healthcare Details */}
               <div className="space-y-6">
-                <div className="rounded-3xl border border-teal-500/20 bg-teal-500/5 p-6 backdrop-blur-xl text-xs space-y-4">
-                  <div className="flex items-center gap-2 font-bold text-teal-700 dark:text-teal-300 text-sm">
+                <div className="rounded-3xl border border-teal-500/30 bg-[#081C33]/95 p-6 backdrop-blur-xl shadow-2xl text-xs space-y-4">
+                  <div className="flex items-center gap-2 font-bold text-teal-300 text-sm">
                     <HeartHandshake className="w-4 h-4" />
                     <span>Worker Social Security & Healthcare (FR7)</span>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-slate-300 leading-relaxed">
                     Every job automatically deposits 7% into your collective society welfare account, granting you free hospitalization and accident cover under government cooperative schemes.
                   </p>
-                  <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-teal-500/20 space-y-2">
+                  <div className="p-4 rounded-2xl bg-[#0B2545] border border-teal-500/20 space-y-2">
                     <div className="flex justify-between">
                       <span className="text-slate-400">Insurance Scheme:</span>
-                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                      <span className="font-bold text-white">
                         {worker.welfareRecord?.insurancePlan || "PM Suraksha Bima Yojana (PMSBY)"}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Policy Number:</span>
-                      <span className="font-mono text-emerald-500 font-bold">
+                      <span className="font-mono text-emerald-400 font-bold">
                         {worker.welfareRecord?.policyNumber || "PMSBY-AP-VZG-90820-2026"}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Coverage Sum:</span>
-                      <strong className="text-teal-600 dark:text-teal-400">₹2,00,000 Accident & Disability</strong>
+                      <strong className="text-teal-400">₹2,00,000 Accident & Disability</strong>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 rounded-3xl border border-slate-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl text-xs space-y-2">
-                  <span className="font-bold text-slate-900 dark:text-white block">
+                <div className="p-6 rounded-3xl border border-white/10 bg-[#081C33]/95 shadow-2xl backdrop-blur-xl text-xs space-y-2">
+                  <span className="font-bold text-white block">
                     Labour Cooperative Society Affiliation
                   </span>
-                  <p className="text-slate-400">
-                    Affiliated with <strong>{worker.society?.name || "MVP Colony Labour Co-op, Vizag"}</strong> (Zone: {worker.society?.zone || "MVP Colony & Beach Road"}) under MSCS Act Bylaws.
+                  <p className="text-slate-300">
+                    Affiliated with <strong className="text-white">{worker.society?.name || "MVP Colony Labour Co-op, Vizag"}</strong> (Zone: {worker.society?.zone || "MVP Colony & Beach Road"}) under MSCS Act Bylaws.
                   </p>
                 </div>
               </div>
@@ -951,13 +951,13 @@ function WorkerDashboardContent() {
         )}
 
         {/* Account Management & Data Rights (Danger Zone) */}
-        <div className="mt-12 p-6 rounded-3xl border border-rose-500/20 bg-rose-500/5 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="mt-12 p-6 rounded-3xl border border-rose-500/30 bg-[#081C33] shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-extrabold text-sm">
-              <Trash2 className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-rose-400 font-extrabold text-sm">
+              <Trash2 className="w-4 h-4 text-rose-400" />
               <span>Worker Account & Privacy Management</span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+            <p className="text-xs text-slate-300 mt-1 max-w-xl leading-relaxed">
               Permanently delete your worker profile, Aadhaar e-KYC documents, assigned jobs history, earnings ledger, and digital identity credentials from the cooperative database.
             </p>
           </div>
@@ -965,7 +965,7 @@ function WorkerDashboardContent() {
           <button
             type="button"
             onClick={() => setShowDeleteModal(true)}
-            className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md shadow-rose-500/20 transition cursor-pointer flex items-center gap-2 shrink-0 self-start sm:self-auto active:scale-95"
+            className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 border border-rose-400/30 transition cursor-pointer flex items-center gap-2 shrink-0 self-start sm:self-auto active:scale-95"
           >
             <Trash2 className="w-4 h-4" />
             <span>Delete Worker Account</span>
@@ -974,39 +974,39 @@ function WorkerDashboardContent() {
 
         {/* DELETE ACCOUNT CONFIRMATION MODAL */}
         {showDeleteModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
-            <div className="bg-white dark:bg-slate-900 border border-rose-500/40 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+            <div className="bg-[#081C33] border border-rose-500/40 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative text-white">
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(false)}
-                className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/25">
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/30">
                 <Trash2 className="w-7 h-7" />
               </div>
 
-              <h3 className="text-xl font-black text-center text-slate-900 dark:text-white">
+              <h3 className="text-xl font-black text-center text-white">
                 Delete Worker Account?
               </h3>
-              <p className="text-xs text-center text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                Are you sure you want to permanently delete your worker profile (<strong className="text-slate-900 dark:text-white">{worker?.name}</strong>)? This will permanently wipe all your e-KYC records, assigned jobs, earnings history, and digital ID card.
+              <p className="text-xs text-center text-slate-300 mt-2 leading-relaxed">
+                Are you sure you want to permanently delete your worker profile (<strong className="text-white">{worker?.name}</strong>)? This will permanently wipe all your e-KYC records, assigned jobs, earnings history, and digital ID card.
               </p>
 
-              <div className="p-3.5 my-4 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left text-xs space-y-1.5">
-                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="p-3.5 my-4 rounded-2xl bg-[#051424] border border-white/10 text-left text-xs space-y-1.5">
+                <div className="flex justify-between text-slate-300">
                   <span className="text-slate-400">Worker ID:</span>
-                  <span className="font-mono text-[11px] font-bold">{worker?.id || currentUser?.id}</span>
+                  <span className="font-mono text-[11px] font-bold text-white">{worker?.id || currentUser?.id}</span>
                 </div>
-                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between text-slate-300">
                   <span className="text-slate-400">Trade:</span>
-                  <span className="font-semibold">{worker?.skills}</span>
+                  <span className="font-semibold text-white">{worker?.skills}</span>
                 </div>
-                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between text-slate-300">
                   <span className="text-slate-400">Action:</span>
-                  <span className="text-rose-500 font-bold">Complete & Irreversible Purge</span>
+                  <span className="text-rose-400 font-bold">Complete & Irreversible Purge</span>
                 </div>
               </div>
 
@@ -1015,7 +1015,7 @@ function WorkerDashboardContent() {
                   type="button"
                   disabled={isDeletingAccount}
                   onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl border border-white/15 text-slate-300 font-bold text-xs hover:bg-white/10 transition cursor-pointer"
                 >
                   Cancel
                 </button>

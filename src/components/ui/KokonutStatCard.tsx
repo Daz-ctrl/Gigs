@@ -52,14 +52,14 @@ export function KokonutStatCard({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 p-6 backdrop-blur-xl shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 ${style.bg} ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-white/10 bg-[#081C33]/95 p-6 backdrop-blur-xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-0.5 ${style.bg} ${className}`}
     >
       <div
         className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${style.glow} rounded-full blur-2xl pointer-events-none`}
       />
 
       <div className="flex items-center justify-between gap-4">
-        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
           {title}
         </span>
         <div className={`p-2.5 rounded-2xl ${style.iconBg} shadow-sm`}>
@@ -68,7 +68,7 @@ export function KokonutStatCard({
       </div>
 
       <div className="mt-4 flex items-baseline gap-3">
-        <span className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <span className="text-3xl font-extrabold tracking-tight text-white">
           {value}
         </span>
         {delta && (
@@ -90,7 +90,7 @@ export function KokonutStatCard({
       </div>
 
       {subtitle && (
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+        <p className="mt-2 text-xs text-slate-300 leading-relaxed">
           {subtitle}
         </p>
       )}
