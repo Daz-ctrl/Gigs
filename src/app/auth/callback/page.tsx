@@ -168,7 +168,7 @@ function AuthCallbackContent() {
   }, [router, searchParams]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] text-slate-900 p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#07172B] text-white p-4 relative">
       {/* Top Tricolor Ribbon */}
       <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
         <div className="bg-[#FF9933]" />
@@ -179,11 +179,11 @@ function AuthCallbackContent() {
       <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-xl shadow-amber-500/20 mb-4 border border-amber-300">
         KS
       </div>
-      <div className="text-sm font-extrabold text-[#0B2545] mb-1">
+      <div className="text-sm font-extrabold text-amber-400 mb-1">
         कार्यसेतु · भारत सरकार
       </div>
-      <div className="flex items-center gap-2.5 text-amber-700 font-bold text-xs mt-1">
-        <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+      <div className="flex items-center gap-2.5 text-amber-300 font-bold text-xs mt-1">
+        <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
         <span>{statusText}</span>
       </div>
     </div>
@@ -194,8 +194,8 @@ export default function AuthCallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5] text-slate-900">
-          <Loader2 className="w-6 h-6 animate-spin text-amber-600" />
+        <div className="min-h-screen flex items-center justify-center bg-[#07172B] text-white">
+          <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
         </div>
       }
     >

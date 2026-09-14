@@ -347,7 +347,7 @@ export default function HomePage() {
             <div className="bg-[#FFFFFF]" />
             <div className="bg-[#138808]" />
           </div>
-          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} innerBg="bg-[#081C33]" />
+          <BorderBeam colorFrom="#FF9933" colorTo="#07172B" duration={8} innerBg="bg-[#081C33]" />
 
           <div className="relative z-10 max-w-2xl mx-auto">
             <span className="px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-wider inline-block mb-3.5">

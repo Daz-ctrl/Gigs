@@ -75,7 +75,7 @@ export function HeroInteractivePreview() {
           <div className="bg-[#FFFFFF]" />
           <div className="bg-[#138808]" />
         </div>
-        <BorderBeam duration={7} colorFrom="#FF9933" colorTo="#0B2545" innerBg="bg-[#081C33]" />
+        <BorderBeam duration={7} colorFrom="#FF9933" colorTo="#07172B" innerBg="bg-[#081C33]" />
 
         {/* Console Header Bar */}
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5 mb-6">
