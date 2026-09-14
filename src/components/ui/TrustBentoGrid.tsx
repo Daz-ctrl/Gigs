@@ -63,7 +63,7 @@ export function TrustBentoGrid() {
             innerBg="bg-[#CBB89D]"
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-2 border-[#7D684F]/35 rounded-[32px] bg-[#CBB89D] shadow-md"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#7D684F]/35 rounded-[32px] bg-[#CBB89D] shadow-md"
       >
 
         {/* Visual Interactive Header: The 3 Pathway Selector Stack */}

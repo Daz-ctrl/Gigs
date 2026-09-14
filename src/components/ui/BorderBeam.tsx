@@ -51,17 +51,6 @@ export function BorderBeam({
         className="absolute -inset-[150%] animate-spin will-change-transform rounded-full"
       />
 
-      {/* 2. Soft Ambient Neon Glow Trace (Active on Desktop/Tablet, off on mobile to prevent scroll lag) */}
-      <div
-        style={{
-          animationDuration: `${duration}s`,
-          animationDelay: `-${delay}s`,
-          background: `conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 15deg, ${colorFrom} 60deg, ${colorTo} 115deg, transparent 160deg, transparent 360deg)`,
-          transform: "translateZ(0)",
-          backfaceVisibility: "hidden",
-        }}
-        className="hidden sm:block absolute -inset-[150%] animate-spin will-change-transform rounded-full filter blur-[4px] opacity-60"
-      />
 
       {/* 3. SOLID INNER SHIELD */}
       <div
