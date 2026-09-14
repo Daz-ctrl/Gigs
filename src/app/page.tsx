@@ -62,22 +62,22 @@ export default function HomePage() {
       {/* HERO SECTION */}
       <section className="pt-[87px] sm:pt-[95px] md:pt-[103px] pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center relative z-20">
         {/* Official Scheme Pill / Ministry Motto */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider mb-5 shadow-xs">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-5 shadow-xs">
           <span className="text-sm">🏛️</span>
           <span>सहकारिता से समृद्धि · Ministry of Cooperation</span>
         </div>
 
         {/* Hero Title - Balanced & Proportional */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-[#0A1120] max-w-4xl mx-auto leading-[1.15]">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
           {t.home.heroTitle1}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-amber-300 to-orange-400">
             {t.home.heroTitleAccent}
           </span>
           {t.home.heroTitle2}
         </h1>
 
         {/* Hero Subtitle */}
-        <p className="mt-4 text-sm sm:text-base text-slate-800 max-w-2xl mx-auto leading-relaxed font-medium">
+        <p className="mt-4 text-sm sm:text-base text-slate-200 max-w-2xl mx-auto leading-relaxed font-medium">
           {t.home.heroSubtitle}
         </p>
 
@@ -86,20 +86,20 @@ export default function HomePage() {
           <Link href="/customer/book">
             <button
               type="button"
-              className="px-6 py-3 rounded-2xl bg-[#0B2545] hover:bg-[#07182C] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#0B2545]/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/30"
+              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-300/40"
             >
-              <Wrench className="w-4 h-4 text-amber-400" />
+              <Wrench className="w-4 h-4 text-slate-950" />
               <span>{t.home.bookWorker}</span>
-              <ArrowRight className="w-4 h-4 text-amber-400" />
+              <ArrowRight className="w-4 h-4 text-slate-950" />
             </button>
           </Link>
 
           <Link
             href="/admin/dashboard"
             onClick={() => setRole("ADMIN")}
-            className="px-5 py-3 rounded-2xl bg-[#CBB89D] hover:bg-[#BEAB8F] text-[#0A1120] border-2 border-[#7D684F]/35 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
+            className="px-5 py-3 rounded-2xl bg-[#081C33]/90 hover:bg-[#0D2E55] text-white border border-white/15 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-md backdrop-blur-xl"
           >
-            <Brain className="w-4 h-4 text-amber-600" />
+            <Brain className="w-4 h-4 text-amber-400" />
             <span>{t.home.exploreAdmin}</span>
           </Link>
         </div>
@@ -108,51 +108,51 @@ export default function HomePage() {
         <HeroInteractivePreview />
 
         {/* Micro-Stats Bar */}
-        <div className="mt-14 pt-8 border-t border-[#7D684F]/25 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+        <div className="mt-14 pt-8 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-600/15 text-emerald-800 flex items-center justify-center font-black text-lg border border-emerald-600/30">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-lg border border-emerald-500/30">
               90%
             </div>
             <div>
-              <div className="text-xs font-black text-[#0A1120]">Direct Payout</div>
-              <div className="text-[11px] text-slate-700 font-medium">Worker keeps 90% via DBT</div>
+              <div className="text-xs font-black text-white">Direct Payout</div>
+              <div className="text-[11px] text-slate-300 font-medium">Worker keeps 90% via DBT</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-amber-600/15 text-amber-800 flex items-center justify-center font-black text-lg border border-amber-600/30">
+            <div className="w-11 h-11 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-lg border border-amber-500/30">
               7%
             </div>
             <div>
-              <div className="text-xs font-black text-[#0A1120]">PMSBY Insurance</div>
-              <div className="text-[11px] text-slate-700 font-medium">Auto-credited medical & accident cover</div>
+              <div className="text-xs font-black text-white">PMSBY Insurance</div>
+              <div className="text-[11px] text-slate-300 font-medium">Auto-credited medical & accident cover</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-blue-600/15 text-blue-800 flex items-center justify-center border border-blue-600/30">
+            <div className="w-11 h-11 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
               <QrCode className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-black text-[#0A1120]">Digital QR ID</div>
-              <div className="text-[11px] text-slate-700 font-medium">Free Aadhaar e-KYC verified</div>
+              <div className="text-xs font-black text-white">Digital QR ID</div>
+              <div className="text-[11px] text-slate-300 font-medium">Free Aadhaar e-KYC verified</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-[#0B2545]/15 text-[#0B2545] flex items-center justify-center border border-[#0B2545]/30">
+            <div className="w-11 h-11 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center border border-purple-500/30">
               <Brain className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-black text-[#0A1120]">AI Demand Radar</div>
-              <div className="text-[11px] text-slate-700 font-medium">Zero surge pricing tariff</div>
+              <div className="text-xs font-black text-white">AI Demand Radar</div>
+              <div className="text-[11px] text-slate-300 font-medium">Zero surge pricing tariff</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* INFINITE MARQUEE SOCIAL PROOF STRIP */}
-      <div className="py-5 border-y border-[#7D684F]/30 bg-[#CBB89D] shadow-inner overflow-hidden relative z-20">
+      <div className="py-5 border-y border-white/10 bg-[#081C33]/90 shadow-inner overflow-hidden relative z-20">
         <Marquee pauseOnHover className="[--duration:32s]">
           {[
             { text: "Ministry of Cooperation Registered", badge: "MSCS ACT 2002", icon: "🏛️" },
@@ -166,13 +166,13 @@ export default function HomePage() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/30 shadow-xs mx-2 shrink-0"
+              className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#0B2545] border border-white/10 shadow-xs mx-2 shrink-0"
             >
               <span className="text-sm">{item.icon}</span>
-              <span className="text-xs font-black text-[#0A1120]">
+              <span className="text-xs font-black text-white">
                 {item.text}
               </span>
-              <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-800 border border-amber-500/30">
+              <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
                 {item.badge}
               </span>
             </div>
@@ -188,10 +188,10 @@ export default function HomePage() {
       {/* ACETERNITY BENTO GRID SECTION */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-xs font-black uppercase tracking-wider text-amber-800">
+          <span className="text-xs font-black uppercase tracking-wider text-amber-400">
             सहकारिता मॉडल · Cooperative Innovation Architecture
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#0A1120] mt-1">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">
             Engineered For Grassroots Trust & Scale
           </h2>
         </div>
@@ -202,13 +202,13 @@ export default function HomePage() {
       {/* 3 CLEAN PERSONA SPOTLIGHT CARDS */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-xs font-black uppercase tracking-wider text-amber-800">
+          <span className="text-xs font-black uppercase tracking-wider text-amber-400">
             {t.home.ecosystemBadge}
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#0A1120] mt-1">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">
             {t.home.ecosystemTitle}
           </h2>
-          <p className="text-sm text-slate-800 mt-2 max-w-xl mx-auto font-medium">
+          <p className="text-sm text-slate-300 mt-2 max-w-xl mx-auto font-medium">
             {t.home.ecosystemSubtitle}
           </p>
         </div>
@@ -216,30 +216,30 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. Worker */}
           <SpotlightCard
-            spotlightColor="rgba(230, 81, 0, 0.15)"
-            className="p-8 bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-md"
+            spotlightColor="rgba(245, 158, 11, 0.15)"
+            className="p-8 bg-[#081C33] border border-white/10 shadow-xl"
           >
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-700 flex items-center justify-center mb-4 border border-amber-500/30">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center mb-4 border border-amber-500/30">
                 <Wrench className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-black text-[#0A1120]">
+              <h3 className="text-xl font-black text-white">
                 {t.home.workerCardTitle}
               </h3>
-              <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed font-medium">
                 {t.home.workerCardDesc}
               </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-slate-800 font-medium">
+              <ul className="mt-5 space-y-2.5 text-xs text-slate-200 font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>{t.home.workerCardFeature1}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>{t.home.workerCardFeature2}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>{t.home.workerCardFeature3}</span>
                 </li>
               </ul>
@@ -248,7 +248,7 @@ export default function HomePage() {
             <Link
               href="/worker/dashboard"
               onClick={() => setRole("WORKER")}
-              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-amber-400 flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.workerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -257,30 +257,30 @@ export default function HomePage() {
 
           {/* 2. Customer */}
           <SpotlightCard
-            spotlightColor="rgba(11, 37, 69, 0.15)"
-            className="p-8 bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-md"
+            spotlightColor="rgba(59, 130, 246, 0.15)"
+            className="p-8 bg-[#081C33] border border-white/10 shadow-xl"
           >
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-700 flex items-center justify-center mb-4 border border-blue-500/30">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-400 flex items-center justify-center mb-4 border border-blue-500/30">
                 <Users className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-black text-[#0A1120]">
+              <h3 className="text-xl font-black text-white">
                 {t.home.customerCardTitle}
               </h3>
-              <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed font-medium">
                 {t.home.customerCardDesc}
               </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-slate-800 font-medium">
+              <ul className="mt-5 space-y-2.5 text-xs text-slate-200 font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400" />
                   <span>{t.home.customerCardFeature1}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400" />
                   <span>{t.home.customerCardFeature2}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400" />
                   <span>{t.home.customerCardFeature3}</span>
                 </li>
               </ul>
@@ -289,7 +289,7 @@ export default function HomePage() {
             <Link
               href="/customer/book"
               onClick={() => setRole("CUSTOMER")}
-              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-blue-400 flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.customerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -298,30 +298,30 @@ export default function HomePage() {
 
           {/* 3. Cooperative Admin */}
           <SpotlightCard
-            spotlightColor="rgba(19, 136, 8, 0.15)"
-            className="p-8 bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-md"
+            spotlightColor="rgba(16, 185, 129, 0.15)"
+            className="p-8 bg-[#081C33] border border-white/10 shadow-xl"
           >
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center mb-4 border border-emerald-500/30">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/30">
                 <Building2 className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-black text-[#0A1120]">
+              <h3 className="text-xl font-black text-white">
                 {t.home.adminCardTitle}
               </h3>
-              <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed font-medium">
                 {t.home.adminCardDesc}
               </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-slate-800 font-medium">
+              <ul className="mt-5 space-y-2.5 text-xs text-slate-200 font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>{t.home.adminCardFeature1}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>{t.home.adminCardFeature2}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>{t.home.adminCardFeature3}</span>
                 </li>
               </ul>
@@ -330,7 +330,7 @@ export default function HomePage() {
             <Link
               href="/admin/dashboard"
               onClick={() => setRole("ADMIN")}
-              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-emerald-800 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-emerald-400 flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.adminCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -342,43 +342,43 @@ export default function HomePage() {
       {/* FINAL HIGH-IMPACT COOPERATIVE CTA BANNER */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center relative z-20">
         <SpotlightCard
-          spotlightColor="rgba(230, 81, 0, 0.15)"
-          className="p-8 sm:p-12 relative overflow-hidden rounded-[36px] border-2 border-[#7D684F]/35 bg-[#CBB89D] text-[#0A1120] backdrop-blur-2xl shadow-2xl shadow-[#7D684F]/20"
+          spotlightColor="rgba(245, 158, 11, 0.15)"
+          className="p-8 sm:p-12 relative overflow-hidden rounded-[36px] border border-amber-400/30 bg-[#081C33] text-white backdrop-blur-2xl shadow-2xl"
         >
           {/* Top tricolor ribbon on banner */}
           <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
             <div className="bg-[#FF9933]" />
-            <div className="bg-[#D9CBB7]" />
+            <div className="bg-[#FFFFFF]" />
             <div className="bg-[#138808]" />
           </div>
-          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} innerBg="bg-[#CBB89D]" />
+          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} innerBg="bg-[#081C33]" />
 
           <div className="relative z-10 max-w-2xl mx-auto">
-            <span className="px-3.5 py-1 rounded-full bg-amber-600/15 border border-amber-600/30 text-amber-900 text-xs font-black uppercase tracking-wider inline-block mb-3.5">
+            <span className="px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-black uppercase tracking-wider inline-block mb-3.5">
               {t.home.ctaBadge}
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0A1120] tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
               {t.home.ctaTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-800 font-medium mt-3 leading-relaxed max-w-lg mx-auto">
+            <p className="text-xs sm:text-sm text-slate-300 font-medium mt-3 leading-relaxed max-w-lg mx-auto">
               {t.home.ctaSubtitle}
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3.5">
               <Link href="/customer/book">
                 <button
                   type="button"
-                  className="px-6 py-3 rounded-2xl bg-[#0B2545] hover:bg-[#07182C] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#0B2545]/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/40"
+                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-300/40"
                 >
-                  <Wrench className="w-4 h-4 text-amber-400" />
+                  <Wrench className="w-4 h-4 text-slate-950" />
                   <span>{t.home.bookWorker}</span>
-                  <ArrowRight className="w-4 h-4 text-amber-400" />
+                  <ArrowRight className="w-4 h-4 text-slate-950" />
                 </button>
               </Link>
               <Link
                 href="/worker/register"
-                className="px-5 py-3 rounded-2xl bg-[#BEAB8F] hover:bg-[#AF9C7F] border-2 border-[#7D684F]/35 text-[#0A1120] font-black text-xs sm:text-sm transition-all duration-150 flex items-center gap-2 cursor-pointer shadow-md backdrop-blur-xl active:scale-95"
+                className="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-black text-xs sm:text-sm transition-all duration-150 flex items-center gap-2 cursor-pointer shadow-md backdrop-blur-xl active:scale-95"
               >
-                <UserPlus className="w-4 h-4 text-[#0B2545]" />
+                <UserPlus className="w-4 h-4 text-amber-400" />
                 <span>{t.home.joinArtisan}</span>
               </Link>
             </div>

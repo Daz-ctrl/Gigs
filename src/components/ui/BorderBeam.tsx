@@ -22,7 +22,7 @@ export function BorderBeam({
   colorFrom = "#10b981", // Emerald 500
   colorTo = "#06b6d4",   // Cyan 500
   delay = 0,
-  innerBg = "bg-[#CBB89D]",
+  innerBg = "bg-[#081C33]",
 }: BorderBeamProps) {
   const numericRadius = parseInt(borderRadius) || 32;
   const innerRadius = `${Math.max(numericRadius - borderWidth, 4)}px`;

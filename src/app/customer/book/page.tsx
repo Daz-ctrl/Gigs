@@ -308,21 +308,21 @@ export default function CustomerBookPage() {
         {/* Emergency Toggle (FR8) */}
         <div
           onClick={() => setIsEmergency(!isEmergency)}
-          className={`cursor-pointer rounded-2xl p-3 border-2 transition-all flex items-center gap-3 ${
+          className={`cursor-pointer rounded-2xl p-3 border transition-all flex items-center gap-3 ${
             isEmergency
-              ? "bg-rose-500/15 border-rose-600 text-rose-800 shadow-md shadow-rose-500/10"
-              : "bg-[#CBB89D] border-2 border-[#7D684F]/35 text-[#0A1120] hover:border-[#7D684F]/50"
+              ? "bg-rose-500/20 border-rose-500 text-rose-300 shadow-md shadow-rose-500/10"
+              : "bg-[#081C33] border-white/10 text-white hover:border-white/20"
           }`}
         >
           <div
             className={`p-2 rounded-xl ${
-              isEmergency ? "bg-rose-600 text-white animate-pulse" : "bg-[#BEAB8F] text-[#0A1120]"
+              isEmergency ? "bg-rose-600 text-white animate-pulse" : "bg-[#0B2545] text-white"
             }`}
           >
             <Zap className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <div className="text-xs font-black text-[#0A1120] flex items-center gap-1.5">
+            <div className="text-xs font-black text-white flex items-center gap-1.5">
               <span>{t.customer.emergencyBadge}</span>
               {isEmergency && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-600 text-white font-black">
@@ -330,7 +330,7 @@ export default function CustomerBookPage() {
                 </span>
               )}
             </div>
-            <div className="text-[11px] text-slate-700 font-medium">
+            <div className="text-[11px] text-slate-300 font-medium">
               {t.customer.emergencySubtitle}
             </div>
           </div>
@@ -355,13 +355,13 @@ export default function CustomerBookPage() {
                   <motion.div
                     layoutId="activeServiceTab"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    className="absolute inset-0 bg-[#0B2545] rounded-2xl shadow-lg shadow-[#0B2545]/20"
+                    className="absolute inset-0 bg-amber-500 rounded-2xl shadow-lg shadow-amber-500/20"
                   />
                 )}
                 {!isSelected && (
-                  <div className="absolute inset-0 rounded-2xl bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-xs" />
+                  <div className="absolute inset-0 rounded-2xl bg-[#081C33] border border-white/10 shadow-xs hover:border-white/20 transition" />
                 )}
-                <span className={`relative z-10 flex items-center gap-2 ${isSelected ? "text-white" : "text-slate-800"}`}>
+                <span className={`relative z-10 flex items-center gap-2 ${isSelected ? "text-slate-950 font-black" : "text-slate-300"}`}>
                   <Icon className="w-3.5 h-3.5" />
                   <span>{cat.name}</span>
                 </span>
@@ -373,13 +373,13 @@ export default function CustomerBookPage() {
         {/* Locality Zone & Search */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder={t.customer.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-[#7D684F]/35 bg-[#CBB89D] text-xs text-[#0A1120] font-medium placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40"
+              className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-white/10 bg-[#081C33] text-xs text-white font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40"
             />
           </div>
 
@@ -387,10 +387,10 @@ export default function CustomerBookPage() {
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-2xl border-2 border-[#7D684F]/35 bg-[#CBB89D] text-xs font-bold text-[#0A1120] focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40 cursor-pointer"
+              className="w-full px-3.5 py-2.5 rounded-2xl border border-white/10 bg-[#081C33] text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-amber-400/40 cursor-pointer"
             >
               {ZONES.map((z) => (
-                <option key={z.id} value={z.id}>
+                <option key={z.id} value={z.id} className="bg-[#081C33] text-white">
                   📍 {z.name}
                 </option>
               ))}
@@ -419,7 +419,7 @@ export default function CustomerBookPage() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-          <span className="text-[11px] font-mono font-bold text-emerald-900 bg-[#AF9C7F] px-3 py-1.5 rounded-xl border border-emerald-700/30">
+          <span className="text-[11px] font-mono font-bold text-emerald-400 bg-[#0B2545] px-3 py-1.5 rounded-xl border border-emerald-500/30">
             Base ₹399 / ₹450 Locked
           </span>
         </div>
@@ -445,12 +445,12 @@ export default function CustomerBookPage() {
             <WorkerCardSkeleton count={6} />
           </div>
         ) : filteredWorkers.length === 0 ? (
-          <div className="rounded-3xl border-2 border-[#7D684F]/35 p-12 text-center bg-[#CBB89D]">
-            <AlertCircle className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <h3 className="font-bold text-[#0A1120]">
+          <div className="rounded-3xl border border-white/10 p-12 text-center bg-[#081C33] text-white">
+            <AlertCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="font-bold text-white">
               No workers found for this criteria
             </h3>
-            <p className="text-xs text-slate-700 mt-1">
+            <p className="text-xs text-slate-300 mt-1">
               Try selecting &quot;All Trades&quot; or clearing your search term.
             </p>
           </div>
@@ -524,30 +524,30 @@ export default function CustomerBookPage() {
                   </div>
 
                   {/* Society & Skills Badges */}
-                  <div className="bg-[#BEAB8F] p-3 rounded-2xl border border-[#7D684F]/25 text-xs space-y-1 mb-4">
-                    <div className="text-slate-700 text-[11px] font-medium">
+                  <div className="bg-[#0B2545] p-3 rounded-2xl border border-white/10 text-xs space-y-1 mb-4">
+                    <div className="text-slate-300 text-[11px] font-medium">
                       Member Unit:
                     </div>
-                    <div className="font-bold text-[#0A1120] truncate">
+                    <div className="font-bold text-white truncate">
                       {worker.society?.name}
                     </div>
-                    <div className="text-[11px] text-slate-700 pt-1">
-                      Experience: <strong className="text-emerald-800 font-bold">{worker.experienceYrs} yrs</strong> ·
-                      Aadhaar: <span className="font-mono text-[#0A1120] font-black">{worker.aadhaarMasked}</span>
+                    <div className="text-[11px] text-slate-300 pt-1">
+                      Experience: <strong className="text-emerald-400 font-bold">{worker.experienceYrs} yrs</strong> ·
+                      Aadhaar: <span className="font-mono text-amber-400 font-black">{worker.aadhaarMasked}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Bottom Pricing & CTA */}
-                <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between gap-2">
+                <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
                   <div>
                     <div className="text-[10px] uppercase font-bold text-slate-400">
                       Base Service (1st 60 mins)
                     </div>
-                    <div className="text-lg font-black text-slate-900 dark:text-white">
+                    <div className="text-lg font-black text-white">
                       ₹{isEmergency ? worker.hourlyRate + 150 : worker.hourlyRate}
                     </div>
-                    <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                    <div className="text-[10px] text-emerald-400 font-semibold">
                       +₹49 / 30m if work extends
                     </div>
                   </div>
@@ -557,7 +557,7 @@ export default function CustomerBookPage() {
                       <button
                         type="button"
                         onClick={() => setWorkerToDelete(worker)}
-                        className="px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-500/30 text-xs font-bold transition cursor-pointer flex items-center gap-1"
+                        className="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-bold transition cursor-pointer flex items-center gap-1"
                         title="Delete worker"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -567,7 +567,7 @@ export default function CustomerBookPage() {
                     <button
                       type="button"
                       onClick={() => handleBookClick(worker)}
-                      className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#0B2545] hover:bg-[#07182C] text-white text-xs font-bold shadow-md shadow-[#0B2545]/20 hover:shadow-[#0B2545]/30 border border-amber-400/20 transition cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95"
+                      className="px-4 sm:px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95"
                     >
                       <span>{role === "ADMIN" ? "Test Book" : "Book Now"}</span>
                     </button>
@@ -581,15 +581,15 @@ export default function CustomerBookPage() {
 
       {/* CHECKOUT & FAIRNESS METER MODAL */}
       {selectedWorker && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
-          <div className="bg-[#CBB89D] border-2 border-[#7D684F]/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#081C33] border border-white/20 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto text-white">
             <button
               type="button"
               onClick={() => {
                 setSelectedWorker(null);
                 setBookingSuccess(null);
               }}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-[#BEAB8F] transition cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -597,55 +597,55 @@ export default function CustomerBookPage() {
             {bookingSuccess ? (
               /* SUCCESS STATE */
               <div className="text-center py-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
                   <CheckCircle className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-black text-[#0A1120]">
+                <h3 className="text-2xl font-black text-white">
                   Booking Confirmed!
                 </h3>
-                <p className="text-xs text-slate-700 font-medium mt-1 max-w-sm mx-auto">
+                <p className="text-xs text-slate-300 font-medium mt-1 max-w-sm mx-auto">
                   {selectedWorker.name} has been notified and dispatched from {selectedWorker.society?.name}.
                 </p>
 
                 {/* Start-Work Handshake OTP Card with BorderBeam */}
-                <div className="relative overflow-hidden p-5 rounded-3xl bg-[#BEAB8F] border-2 border-amber-600/40 text-center my-4 animate-in zoom-in-95 shadow-xl">
-                  <BorderBeam colorFrom="#f59e0b" colorTo="#10b981" duration={4} innerBg="bg-[#BEAB8F]" />
+                <div className="relative overflow-hidden p-5 rounded-3xl bg-[#0B2545] border border-amber-500/40 text-center my-4 animate-in zoom-in-95 shadow-xl">
+                  <BorderBeam colorFrom="#f59e0b" colorTo="#10b981" duration={4} innerBg="bg-[#0B2545]" />
                   <div className="relative z-10">
-                    <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center justify-center gap-1.5">
+                    <div className="text-[11px] font-black uppercase tracking-wider text-amber-300 flex items-center justify-center gap-1.5">
                       <span>🔐 Service Start Handshake OTP</span>
                     </div>
-                    <div className="text-3xl font-mono font-black text-amber-950 tracking-widest my-2">
+                    <div className="text-3xl font-mono font-black text-amber-400 tracking-widest my-2">
                       {bookingSuccess.startWorkOtp || "8341"}
                     </div>
-                    <p className="text-[11px] text-slate-800 font-medium max-w-xs mx-auto">
+                    <p className="text-[11px] text-slate-300 font-medium max-w-xs mx-auto">
                       Share this 4-digit code with {selectedWorker.name} upon arrival to verify address and start the 60-min service timer.
                     </p>
                   </div>
                 </div>
 
                 {/* Digital Receipt Summary */}
-                <div className="my-4 p-4 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/25 text-left text-xs space-y-2">
+                <div className="my-4 p-4 rounded-2xl bg-[#051424] border border-white/10 text-left text-xs space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-slate-700 font-medium">Booking Reference:</span>
-                    <span className="font-mono font-black text-[#0A1120]">
+                    <span className="text-slate-400 font-medium">Booking Reference:</span>
+                    <span className="font-mono font-black text-white">
                       {bookingSuccess.id}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-700 font-medium">Base Service (First 60 mins):</span>
-                    <span className="font-bold text-[#0A1120]">₹{bookingSuccess.basePrice}</span>
+                    <span className="text-slate-400 font-medium">Base Service (First 60 mins):</span>
+                    <span className="font-bold text-white">₹{bookingSuccess.basePrice}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-700 font-medium">Worker Direct Payout (90%):</span>
-                    <span className="font-bold text-emerald-800">₹{bookingSuccess.workerPayout}</span>
+                    <span className="text-slate-400 font-medium">Worker Direct Payout (90%):</span>
+                    <span className="font-bold text-emerald-400">₹{bookingSuccess.workerPayout}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-700 font-medium">Welfare & Health Reserve (7%):</span>
-                    <span className="font-bold text-teal-800">₹{bookingSuccess.welfareFee}</span>
+                    <span className="text-slate-400 font-medium">Welfare & Health Reserve (7%):</span>
+                    <span className="font-bold text-teal-400">₹{bookingSuccess.welfareFee}</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-900 font-medium mb-6">
+                <div className="p-3 rounded-2xl bg-blue-500/15 border border-blue-500/30 text-xs text-blue-300 font-medium mb-6">
                   {t.customer.qrVerifyPrompt}
                 </div>
 
@@ -653,7 +653,7 @@ export default function CustomerBookPage() {
                   <button
                     type="button"
                     onClick={() => router.push("/customer/bookings")}
-                    className="flex-1 py-3 rounded-xl bg-[#0B2545] text-white font-black text-xs hover:bg-[#07182c] transition cursor-pointer shadow-md"
+                    className="flex-1 py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-xs hover:bg-amber-400 transition cursor-pointer shadow-md"
                   >
                     View My Bookings
                   </button>
@@ -663,7 +663,7 @@ export default function CustomerBookPage() {
                       setSelectedWorker(null);
                       setBookingSuccess(null);
                     }}
-                    className="py-3 px-5 rounded-xl border-2 border-[#7D684F]/35 text-[#0A1120] font-black text-xs hover:bg-[#BEAB8F] transition cursor-pointer"
+                    className="py-3 px-5 rounded-xl border border-white/20 text-white font-bold text-xs hover:bg-white/10 transition cursor-pointer"
                   >
                     Done
                   </button>
@@ -679,10 +679,10 @@ export default function CustomerBookPage() {
                     className="w-12 h-12 rounded-2xl border border-emerald-500 text-base"
                   />
                   <div>
-                    <h3 className="text-lg font-black text-[#0A1120]">
+                    <h3 className="text-lg font-black text-white">
                       Confirm Cooperative Booking
                     </h3>
-                    <p className="text-xs text-slate-700 font-medium">
+                    <p className="text-xs text-slate-300 font-medium">
                       With {selectedWorker.name} · {selectedWorker.society?.name}
                     </p>
                   </div>
@@ -691,7 +691,7 @@ export default function CustomerBookPage() {
                 {/* Service Details input */}
                 <div className="space-y-4 mb-6">
                   <div>
-                    <label className="block text-xs font-black text-[#0A1120] mb-1">
+                    <label className="block text-xs font-black text-white mb-1">
                       Service Description / Problem Details
                     </label>
                     <input
@@ -699,55 +699,55 @@ export default function CustomerBookPage() {
                       value={bookingNotes}
                       onChange={(e) => setBookingNotes(e.target.value)}
                       placeholder="e.g. Master switch trip repair, tap connector replacement..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs font-medium focus:ring-2 focus:ring-[#0B2545]/40 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 bg-[#0B2545] text-white text-xs font-medium focus:ring-2 focus:ring-amber-400/40 outline-none placeholder:text-slate-400"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-[#0A1120] mb-1">
+                    <label className="block text-xs font-black text-white mb-1">
                       Schedule Slot
                     </label>
                     <select
                       value={bookingDate}
                       onChange={(e) => setBookingDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs focus:ring-2 focus:ring-[#0B2545]/40 outline-none font-bold cursor-pointer"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-white/15 bg-[#0B2545] text-white text-xs focus:ring-2 focus:ring-amber-400/40 outline-none font-bold cursor-pointer"
                     >
-                      <option value="Today, Immediate">Today · Immediate Dispatch (Within 45 mins)</option>
-                      <option value="Today, Evening 5-7 PM">Today · Evening (05:00 PM - 07:00 PM)</option>
-                      <option value="Tomorrow, Morning 9-11 AM">Tomorrow · Morning (09:00 AM - 11:00 AM)</option>
-                      <option value="Tomorrow, Afternoon 2-4 PM">Tomorrow · Afternoon (02:00 PM - 04:00 PM)</option>
+                      <option value="Today, Immediate" className="bg-[#0B2545]">Today · Immediate Dispatch (Within 45 mins)</option>
+                      <option value="Today, Evening 5-7 PM" className="bg-[#0B2545]">Today · Evening (05:00 PM - 07:00 PM)</option>
+                      <option value="Tomorrow, Morning 9-11 AM" className="bg-[#0B2545]">Tomorrow · Morning (09:00 AM - 11:00 AM)</option>
+                      <option value="Tomorrow, Afternoon 2-4 PM" className="bg-[#0B2545]">Tomorrow · Afternoon (02:00 PM - 04:00 PM)</option>
                     </select>
                   </div>
                 </div>
 
                 {/* EMBEDDED LIVE FAIRNESS BREAKDOWN */}
-                <div className="rounded-2xl bg-[#BEAB8F] border-2 border-emerald-700/30 p-4 mb-6">
-                  <div className="text-xs font-black text-emerald-900 flex items-center justify-between mb-2">
+                <div className="rounded-2xl bg-[#051424] border border-emerald-500/30 p-4 mb-6">
+                  <div className="text-xs font-black text-emerald-400 flex items-center justify-between mb-2">
                     <span className="flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       Transparent Cooperative Breakdown
                     </span>
-                    <span className="text-sm font-black">
+                    <span className="text-sm font-black text-white">
                       Total: ₹{isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate}
                     </span>
                   </div>
 
                   <div className="space-y-1.5 text-xs">
-                    <div className="flex justify-between text-slate-800 font-medium">
+                    <div className="flex justify-between text-slate-300 font-medium">
                       <span>Worker Take-Home (90%):</span>
-                      <strong className="text-emerald-800 font-black">
+                      <strong className="text-emerald-400 font-black">
                         ₹{Math.round((isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate) * 0.9)}
                       </strong>
                     </div>
-                    <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between text-slate-400">
                       <span>Member Health & Insurance Fund (7%):</span>
-                      <strong className="text-teal-600 dark:text-teal-400">
+                      <strong className="text-teal-400">
                         ₹{Math.round((isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate) * 0.07)}
                       </strong>
                     </div>
-                    <div className="flex justify-between text-slate-500">
+                    <div className="flex justify-between text-slate-400">
                       <span>Co-op Operations & Tech (3%):</span>
-                      <span>
+                      <span className="text-amber-400 font-bold">
                         ₹{Math.round((isEmergency ? selectedWorker.hourlyRate + 150 : selectedWorker.hourlyRate) * 0.03)}
                       </span>
                     </div>
@@ -759,12 +759,12 @@ export default function CustomerBookPage() {
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleConfirmPayment}
-                  className="w-full py-3.5 rounded-2xl bg-[#0B2545] hover:bg-[#07182C] text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#0B2545]/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75 border border-amber-400/30 active:scale-[0.99]"
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-amber-500/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75 border border-amber-300/40 active:scale-[0.99]"
                 >
                   {isSubmitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
                   ) : (
-                    <CreditCard className="w-4 h-4" />
+                    <CreditCard className="w-4 h-4 text-slate-950" />
                   )}
                   <span>
                     {isSubmitting
@@ -783,30 +783,30 @@ export default function CustomerBookPage() {
 
       {/* ADMIN DELETE CONFIRMATION MODAL */}
       {workerToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
-          <div className="bg-[#CBB89D] border-2 border-[#7D684F]/40 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-[#0A1120]">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-700 flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-[#081C33] border border-white/20 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-white">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/30">
               <Trash2 className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold text-center text-[#0A1120]">
+            <h3 className="text-xl font-bold text-center text-white">
               Delete Worker from Registry?
             </h3>
-            <p className="text-xs text-center text-slate-700 mt-2">
-              Are you sure you want to permanently delete <strong className="text-[#0A1120]">{workerToDelete.name}</strong> ({workerToDelete.skills.split(",")[0]}) from the cooperative directory?
+            <p className="text-xs text-center text-slate-300 mt-2">
+              Are you sure you want to permanently delete <strong className="text-white">{workerToDelete.name}</strong> ({workerToDelete.skills.split(",")[0]}) from the cooperative directory?
             </p>
 
-            <div className="p-3.5 my-4 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/25 text-left text-xs space-y-1.5">
-              <div className="flex justify-between text-slate-700">
-                <span className="text-slate-600">Worker ID:</span>
-                <span className="font-mono text-[11px] font-bold text-[#0A1120]">{workerToDelete.id}</span>
+            <div className="p-3.5 my-4 rounded-2xl bg-[#0B2545] border border-white/10 text-left text-xs space-y-1.5">
+              <div className="flex justify-between text-slate-400">
+                <span>Worker ID:</span>
+                <span className="font-mono text-[11px] font-bold text-white">{workerToDelete.id}</span>
               </div>
-              <div className="flex justify-between text-slate-700">
-                <span className="text-slate-600">Co-op Unit:</span>
-                <span className="font-semibold truncate max-w-[200px] text-[#0A1120]">{workerToDelete.society?.name}</span>
+              <div className="flex justify-between text-slate-400">
+                <span>Co-op Unit:</span>
+                <span className="font-semibold truncate max-w-[200px] text-white">{workerToDelete.society?.name}</span>
               </div>
-              <div className="flex justify-between text-slate-700">
-                <span className="text-slate-600">Contact:</span>
-                <span className="font-mono text-[#0A1120]">{workerToDelete.phone}</span>
+              <div className="flex justify-between text-slate-400">
+                <span>Contact:</span>
+                <span className="font-mono text-white">{workerToDelete.phone}</span>
               </div>
             </div>
 
@@ -815,7 +815,7 @@ export default function CustomerBookPage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={() => setWorkerToDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border-2 border-[#7D684F]/35 text-[#0A1120] font-bold text-xs hover:bg-[#BEAB8F] transition cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border border-white/20 text-white font-bold text-xs hover:bg-white/10 transition cursor-pointer"
               >
                 Cancel
               </button>

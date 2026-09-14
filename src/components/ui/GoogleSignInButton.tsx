@@ -51,7 +51,7 @@ export function GoogleSignInButton({
       type="button"
       onClick={handleSignIn}
       disabled={isLoading}
-      className={`w-full py-3 px-4 rounded-2xl bg-[#BEAB8F] hover:bg-[#AF9C7F] border-2 border-[#7D684F]/35 text-[#0A1120] font-black text-xs sm:text-sm shadow-md transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer active:scale-[0.99] disabled:opacity-60 ${className}`}
+      className={`w-full py-3 px-4 rounded-2xl bg-[#0B2545] hover:bg-[#0D2E55] border border-white/20 text-white font-black text-xs sm:text-sm shadow-md transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer active:scale-[0.99] disabled:opacity-60 ${className}`}
     >
       {isLoading ? (
         <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
