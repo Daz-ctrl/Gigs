@@ -86,11 +86,11 @@ export default function HomePage() {
           <Link href="/customer/book">
             <button
               type="button"
-              className="px-6 py-3 rounded-2xl bg-[#E65100] hover:bg-[#D84315] text-white font-bold text-xs sm:text-sm shadow-lg shadow-orange-600/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-300/30"
+              className="px-6 py-3 rounded-2xl bg-[#0B2545] hover:bg-[#07182C] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#0B2545]/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/30"
             >
-              <Wrench className="w-4 h-4" />
+              <Wrench className="w-4 h-4 text-amber-400" />
               <span>{t.home.bookWorker}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-amber-400" />
             </button>
           </Link>
 
@@ -248,7 +248,7 @@ export default function HomePage() {
             <Link
               href="/worker/dashboard"
               onClick={() => setRole("WORKER")}
-              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-[#E65100] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.workerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -367,11 +367,11 @@ export default function HomePage() {
               <Link href="/customer/book">
                 <button
                   type="button"
-                  className="px-6 py-3 rounded-2xl bg-[#E65100] hover:bg-[#D84315] text-white font-bold text-xs sm:text-sm shadow-lg shadow-orange-950/20 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/40"
+                  className="px-6 py-3 rounded-2xl bg-[#0B2545] hover:bg-[#07182C] text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#0B2545]/25 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/40"
                 >
-                  <Wrench className="w-4 h-4" />
+                  <Wrench className="w-4 h-4 text-amber-400" />
                   <span>{t.home.bookWorker}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-amber-400" />
                 </button>
               </Link>
               <Link

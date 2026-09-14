@@ -567,7 +567,7 @@ export default function CustomerBookPage() {
                     <button
                       type="button"
                       onClick={() => handleBookClick(worker)}
-                      className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#E65100] hover:bg-[#D84315] text-white text-xs font-bold shadow-md shadow-orange-500/20 hover:shadow-orange-500/30 transition cursor-pointer flex items-center gap-1.5 shrink-0"
+                      className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#0B2545] hover:bg-[#07182C] text-white text-xs font-bold shadow-md shadow-[#0B2545]/20 hover:shadow-[#0B2545]/30 border border-amber-400/20 transition cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95"
                     >
                       <span>{role === "ADMIN" ? "Test Book" : "Book Now"}</span>
                     </button>
@@ -759,7 +759,7 @@ export default function CustomerBookPage() {
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleConfirmPayment}
-                  className="w-full py-3.5 rounded-2xl bg-[#E65100] hover:bg-[#D84315] text-white font-bold text-xs sm:text-sm shadow-xl shadow-orange-500/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75 border border-amber-300/30"
+                  className="w-full py-3.5 rounded-2xl bg-[#0B2545] hover:bg-[#07182C] text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#0B2545]/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75 border border-amber-400/30 active:scale-[0.99]"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
