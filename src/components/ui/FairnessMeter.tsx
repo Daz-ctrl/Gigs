@@ -31,7 +31,7 @@ export function FairnessMeter({
 
   return (
     <div
-      className={`rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-white to-slate-50/70 dark:from-slate-900/90 dark:to-slate-950 p-6 md:p-8 shadow-xl shadow-emerald-500/5 backdrop-blur-xl ${className}`}
+      className={`rounded-3xl border border-[#0B2545]/15 bg-white/95 p-6 md:p-8 shadow-xl shadow-[#0B2545]/5 backdrop-blur-xl ${className}`}
     >
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">

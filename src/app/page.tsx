@@ -43,8 +43,6 @@ export default function HomePage() {
 
   return (
     <BackgroundGrid className="min-h-screen relative overflow-hidden">
-      <Meteors number={25} />
-
       {oauthError && (
         <div className="fixed top-20 inset-x-4 z-50 max-w-lg mx-auto p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs shadow-xl backdrop-blur-xl flex items-center justify-between">
           <div>
@@ -154,7 +152,7 @@ export default function HomePage() {
       </section>
 
       {/* INFINITE MARQUEE SOCIAL PROOF STRIP */}
-      <div className="py-5 border-y border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-[#07172B]/60 backdrop-blur-xl overflow-hidden relative z-20">
+      <div className="py-5 border-y border-[#0B2545]/15 bg-[#F5F1E9] shadow-inner overflow-hidden relative z-20">
         <Marquee pauseOnHover className="[--duration:32s]">
           {[
             { text: "Ministry of Cooperation Registered", badge: "MSCS ACT 2002", icon: "🏛️" },

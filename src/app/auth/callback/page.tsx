@@ -19,59 +19,78 @@ function AuthCallbackContent() {
       const userEmail = (user.email || "").toLowerCase().trim();
       const userName = (user.user_metadata?.name || user.user_metadata?.full_name || "").toLowerCase().trim();
       const userAvatar = (user.user_metadata?.avatar_url || user.user_metadata?.picture || "").trim();
+      const userRole = user.user_metadata?.role;
+
+      // 1. FAST PATH (0ms): If user metadata already has a role, route IMMEDIATELY without DB fetch delay
+      if (userRole === "CUSTOMER") {
+        setStatusText("Welcome! Redirecting to Citizen Services...");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("coopserve_auth", "true");
+          localStorage.setItem("coopserve_role", "CUSTOMER");
+          const customUser = {
+            role: "CUSTOMER",
+            name: user.user_metadata?.name || user.user_metadata?.full_name || "Resident Citizen",
+            badge: "Verified Resident Customer",
+            subtext: `${user.email} · MVP Colony, Vizag`,
+            avatar: userAvatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+            id: user.id ? `cust-${user.id.slice(-6)}` : "cust-resident",
+            zone: "Zone 1 - MVP Colony & Beach Road, Vizag",
+          };
+          localStorage.setItem("coopserve_custom_user", JSON.stringify(customUser));
+        }
+        router.replace("/customer/book");
+        return;
+      }
+
+      if (userRole === "WORKER") {
+        setStatusText("Welcome! Redirecting to Worker Dashboard...");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("coopserve_auth", "true");
+          localStorage.setItem("coopserve_role", "WORKER");
+        }
+        router.replace("/worker/dashboard");
+        return;
+      }
+
+      // 2. Fast check against system worker database (capped at 400ms)
       const userId = (user.id || "").trim();
       const userShortId = userId ? userId.slice(-6) : "";
-
-      // 1. Query the Worker registry in the database to see if this user has an existing worker profile
       let matchedWorker: any = null;
+
       try {
-        const res = await fetch("/api/workers?status=ALL");
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 450);
+        const res = await fetch("/api/workers?status=ALL", {
+          signal: controller.signal,
+          cache: "default",
+        });
+        clearTimeout(timeoutId);
+
         if (res.ok) {
           const workers = await res.json();
           if (Array.isArray(workers)) {
             matchedWorker = workers.find((w: any) => {
               const wEmail = (w.email || "").toLowerCase().trim();
-              const wName = (w.name || "").toLowerCase().trim();
               const wId = (w.id || "").trim();
-              const wAvatar = (w.avatar || "").trim();
-
-              // Exact email match
-              if (userEmail && wEmail && userEmail === wEmail) return true;
-              // ID match
-              if (userId && (wId === userId || wId === `sb-${userShortId}` || (userShortId && wId.includes(userShortId)))) return true;
-              // Avatar match (Google profile pictures share root identity URL)
-              if (userAvatar && wAvatar && (userAvatar === wAvatar || (userAvatar.includes("googleusercontent.com") && wAvatar.includes("googleusercontent.com") && userAvatar.split("=")[0] === wAvatar.split("=")[0]))) return true;
-              // Name match
-              if (userName && wName && userName === wName) return true;
-              return false;
+              const wName = (w.name || "").toLowerCase().trim();
+              return (
+                (userEmail && wEmail && userEmail === wEmail) ||
+                (userId && (wId === userId || wId === `sb-${userShortId}` || (userShortId && wId.includes(userShortId)))) ||
+                (userName && wName && userName === wName)
+              );
             });
           }
         }
       } catch (dbCheckErr) {
-        console.warn("DB check fallback:", dbCheckErr);
+        // Continue without blocking
       }
 
-      // If this user is an existing worker in the cooperative database:
+      // If matched worker found
       if (matchedWorker) {
         const isVerified = matchedWorker.status === "VERIFIED";
-
-        // Keep Supabase user metadata permanently in sync
-        await supabase.auth.updateUser({
-          data: {
-            role: "WORKER",
-            persona: "WORKER",
-            full_name: matchedWorker.name,
-            name: matchedWorker.name,
-            avatar_url: matchedWorker.avatar || userAvatar,
-            picture: matchedWorker.avatar || userAvatar,
-            profile_completed: true,
-          },
-        }).catch(() => {});
-
         if (typeof window !== "undefined") {
           localStorage.setItem("coopserve_auth", "true");
           localStorage.setItem("coopserve_role", "WORKER");
-
           const customUser = {
             role: "WORKER",
             name: matchedWorker.name,
@@ -83,46 +102,15 @@ function AuthCallbackContent() {
           };
           localStorage.setItem("coopserve_custom_user", JSON.stringify(customUser));
         }
-
-        setStatusText(
-          isVerified
-            ? `Welcome back, ${matchedWorker.name}! Loading Worker Dashboard...`
-            : `Welcome back, ${matchedWorker.name}! Loading application status...`
-        );
         router.replace("/worker/dashboard");
         return;
       }
 
-      // 2. Check Supabase role metadata for customers or workers without DB entry yet
-      const role = user.user_metadata?.role;
-      const profileCompleted = user.user_metadata?.profile_completed;
-
-      if (role === "CUSTOMER") {
-        setStatusText(`Welcome back, ${user.user_metadata?.name || "Customer"}! Loading Customer Services...`);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("coopserve_auth", "true");
-          localStorage.setItem("coopserve_role", "CUSTOMER");
-        }
-        router.replace("/customer/book");
-        return;
-      }
-
-      if (role === "WORKER") {
-        setStatusText("Welcome back! Loading Worker Dashboard...");
-        if (typeof window !== "undefined") {
-          localStorage.setItem("coopserve_auth", "true");
-          localStorage.setItem("coopserve_role", "WORKER");
-        }
-        router.replace("/worker/dashboard");
-        return;
-      }
-
-      // 3. New user without role selected yet:
+      // 3. New user without a role selected
       if (typeof window !== "undefined") {
         localStorage.removeItem("coopserve_role");
         localStorage.removeItem("coopserve_custom_user");
       }
-
       setStatusText("Welcome! Please choose how you want to use the platform...");
       router.replace("/auth/select-role");
     }
@@ -131,11 +119,10 @@ function AuthCallbackContent() {
       try {
         const code = searchParams.get("code");
 
-        // 1. Check if session already exists
+        // Fast session check
         const { data: sessionData } = await supabase.auth.getSession();
         let user = sessionData?.session?.user;
 
-        // 2. If no session yet and code present, exchange code
         if (!user && code) {
           try {
             const { data, error } = await supabase.auth.exchangeCodeForSession(code);
@@ -152,7 +139,7 @@ function AuthCallbackContent() {
           return;
         }
 
-        // 3. Fallback: Listen for auth change
+        // Fast listener with 300ms safety timeout
         const { data: authListener } = supabase.auth.onAuthStateChange(
           async (event, session) => {
             if (session?.user && isMounted) {
@@ -162,12 +149,11 @@ function AuthCallbackContent() {
           }
         );
 
-        // Safety timeout
         setTimeout(() => {
           if (isMounted) {
             router.replace("/auth/select-role");
           }
-        }, 3000);
+        }, 400);
       } catch (e) {
         console.error("Auth callback error:", e);
         router.replace("/auth/select-role");
@@ -182,12 +168,22 @@ function AuthCallbackContent() {
   }, [router, searchParams]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white p-4">
-      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20 mb-4 animate-pulse">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] text-slate-900 p-4 relative">
+      {/* Top Tricolor Ribbon */}
+      <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
+        <div className="bg-[#FF9933]" />
+        <div className="bg-[#FFFFFF]" />
+        <div className="bg-[#138808]" />
+      </div>
+
+      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-xl shadow-amber-500/20 mb-4 border border-amber-300">
         KS
       </div>
-      <div className="flex items-center gap-2.5 text-emerald-400 font-bold text-sm">
-        <Loader2 className="w-4 h-4 animate-spin" />
+      <div className="text-sm font-extrabold text-[#0B2545] mb-1">
+        कार्यसेतु · भारत सरकार
+      </div>
+      <div className="flex items-center gap-2.5 text-amber-700 font-bold text-xs mt-1">
+        <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
         <span>{statusText}</span>
       </div>
     </div>
@@ -198,8 +194,8 @@ export default function AuthCallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-          <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
+        <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5] text-slate-900">
+          <Loader2 className="w-6 h-6 animate-spin text-amber-600" />
         </div>
       }
     >
