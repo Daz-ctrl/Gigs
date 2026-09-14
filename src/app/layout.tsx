@@ -34,11 +34,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
       style={{ colorScheme: "dark" }}
     >
-      <body className="min-h-full flex flex-col bg-[#0B2545] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
+      <body className="min-h-full flex flex-col bg-[#07172B] text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
         <AppProvider>
           <GovtTopBar />
           <Navbar />
-          <main id="main-content" className="flex-1 flex flex-col bg-[#0B2545]">
+          <main id="main-content" className="flex-1 flex flex-col bg-[#07172B]">
             {children}
           </main>
           <GovtFooter />
