@@ -97,7 +97,7 @@ export default function HomePage() {
           <Link
             href="/admin/dashboard"
             onClick={() => setRole("ADMIN")}
-            className="px-5 py-3 rounded-2xl bg-[#DFD3BD] hover:bg-[#D7C9AF] text-[#0A1120] border-2 border-[#8C755D]/30 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
+            className="px-5 py-3 rounded-2xl bg-[#CBB89D] hover:bg-[#BEAB8F] text-[#0A1120] border-2 border-[#7D684F]/35 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
           >
             <Brain className="w-4 h-4 text-amber-600" />
             <span>{t.home.exploreAdmin}</span>
@@ -108,7 +108,7 @@ export default function HomePage() {
         <HeroInteractivePreview />
 
         {/* Micro-Stats Bar */}
-        <div className="mt-14 pt-8 border-t border-[#8C755D]/25 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+        <div className="mt-14 pt-8 border-t border-[#7D684F]/25 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-emerald-600/15 text-emerald-800 flex items-center justify-center font-black text-lg border border-emerald-600/30">
               90%
@@ -152,7 +152,7 @@ export default function HomePage() {
       </section>
 
       {/* INFINITE MARQUEE SOCIAL PROOF STRIP */}
-      <div className="py-5 border-y border-[#8C755D]/25 bg-[#DFD3BD] shadow-inner overflow-hidden relative z-20">
+      <div className="py-5 border-y border-[#7D684F]/30 bg-[#CBB89D] shadow-inner overflow-hidden relative z-20">
         <Marquee pauseOnHover className="[--duration:32s]">
           {[
             { text: "Ministry of Cooperation Registered", badge: "MSCS ACT 2002", icon: "🏛️" },
@@ -166,7 +166,7 @@ export default function HomePage() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#EAE0D0] border border-[#8C755D]/30 shadow-xs mx-2 shrink-0"
+              className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/30 shadow-xs mx-2 shrink-0"
             >
               <span className="text-sm">{item.icon}</span>
               <span className="text-xs font-black text-[#0A1120]">
@@ -217,7 +217,7 @@ export default function HomePage() {
           {/* 1. Worker */}
           <SpotlightCard
             spotlightColor="rgba(230, 81, 0, 0.15)"
-            className="p-8 bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-md"
+            className="p-8 bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-md"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-700 flex items-center justify-center mb-4 border border-amber-500/30">
@@ -248,7 +248,7 @@ export default function HomePage() {
             <Link
               href="/worker/dashboard"
               onClick={() => setRole("WORKER")}
-              className="mt-8 pt-4 border-t border-[#8C755D]/25 text-xs font-black text-[#E65100] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-[#E65100] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.workerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -258,7 +258,7 @@ export default function HomePage() {
           {/* 2. Customer */}
           <SpotlightCard
             spotlightColor="rgba(11, 37, 69, 0.15)"
-            className="p-8 bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-md"
+            className="p-8 bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-md"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-700 flex items-center justify-center mb-4 border border-blue-500/30">
@@ -289,7 +289,7 @@ export default function HomePage() {
             <Link
               href="/customer/book"
               onClick={() => setRole("CUSTOMER")}
-              className="mt-8 pt-4 border-t border-[#8C755D]/25 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.customerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -299,7 +299,7 @@ export default function HomePage() {
           {/* 3. Cooperative Admin */}
           <SpotlightCard
             spotlightColor="rgba(19, 136, 8, 0.15)"
-            className="p-8 bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-md"
+            className="p-8 bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-md"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center mb-4 border border-emerald-500/30">
@@ -330,7 +330,7 @@ export default function HomePage() {
             <Link
               href="/admin/dashboard"
               onClick={() => setRole("ADMIN")}
-              className="mt-8 pt-4 border-t border-[#8C755D]/25 text-xs font-black text-emerald-800 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#7D684F]/25 text-xs font-black text-emerald-800 flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.adminCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -351,7 +351,7 @@ export default function HomePage() {
             <div className="bg-[#FFFFFF]" />
             <div className="bg-[#138808]" />
           </div>
-          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} />
+          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} innerBg="bg-[#0B2545]" />
 
           <div className="relative z-10 max-w-2xl mx-auto">
             <span className="px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider inline-block mb-3.5">

@@ -311,12 +311,12 @@ export default function CustomerBookPage() {
           className={`cursor-pointer rounded-2xl p-3 border-2 transition-all flex items-center gap-3 ${
             isEmergency
               ? "bg-rose-500/15 border-rose-600 text-rose-800 shadow-md shadow-rose-500/10"
-              : "bg-[#DFD3BD] border-[#8C755D]/30 text-[#0A1120] hover:border-[#8C755D]/50"
+              : "bg-[#CBB89D] border-2 border-[#7D684F]/35 text-[#0A1120] hover:border-[#7D684F]/50"
           }`}
         >
           <div
             className={`p-2 rounded-xl ${
-              isEmergency ? "bg-rose-600 text-white animate-pulse" : "bg-[#D7C9AF] text-[#0A1120]"
+              isEmergency ? "bg-rose-600 text-white animate-pulse" : "bg-[#BEAB8F] text-[#0A1120]"
             }`}
           >
             <Zap className="w-4 h-4" />
@@ -359,7 +359,7 @@ export default function CustomerBookPage() {
                   />
                 )}
                 {!isSelected && (
-                  <div className="absolute inset-0 rounded-2xl bg-[#DFD3BD] border-2 border-[#8C755D]/30 shadow-xs" />
+                  <div className="absolute inset-0 rounded-2xl bg-[#CBB89D] border-2 border-[#7D684F]/35 shadow-xs" />
                 )}
                 <span className={`relative z-10 flex items-center gap-2 ${isSelected ? "text-white" : "text-slate-800"}`}>
                   <Icon className="w-3.5 h-3.5" />
@@ -379,7 +379,7 @@ export default function CustomerBookPage() {
               placeholder={t.customer.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-[#8C755D]/30 bg-[#DFD3BD] text-xs text-[#0A1120] font-medium placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40"
+              className="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-[#7D684F]/35 bg-[#CBB89D] text-xs text-[#0A1120] font-medium placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40"
             />
           </div>
 
@@ -387,7 +387,7 @@ export default function CustomerBookPage() {
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-2xl border-2 border-[#8C755D]/30 bg-[#DFD3BD] text-xs font-bold text-[#0A1120] focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40 cursor-pointer"
+              className="w-full px-3.5 py-2.5 rounded-2xl border-2 border-[#7D684F]/35 bg-[#CBB89D] text-xs font-bold text-[#0A1120] focus:outline-none focus:ring-2 focus:ring-[#0B2545]/40 cursor-pointer"
             >
               {ZONES.map((z) => (
                 <option key={z.id} value={z.id}>
@@ -524,7 +524,7 @@ export default function CustomerBookPage() {
                   </div>
 
                   {/* Society & Skills Badges */}
-                  <div className="bg-[#ECE2D0] p-3 rounded-2xl border border-[#8C755D]/25 text-xs space-y-1 mb-4">
+                  <div className="bg-[#BEAB8F] p-3 rounded-2xl border border-[#7D684F]/25 text-xs space-y-1 mb-4">
                     <div className="text-slate-700 text-[11px] font-medium">
                       Member Unit:
                     </div>
@@ -582,14 +582,14 @@ export default function CustomerBookPage() {
       {/* CHECKOUT & FAIRNESS METER MODAL */}
       {selectedWorker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
-          <div className="bg-[#DFD3BD] border-2 border-[#8C755D]/35 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#CBB89D] border-2 border-[#7D684F]/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               type="button"
               onClick={() => {
                 setSelectedWorker(null);
                 setBookingSuccess(null);
               }}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-[#D7C9AF] transition cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-[#BEAB8F] transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -608,8 +608,8 @@ export default function CustomerBookPage() {
                 </p>
 
                 {/* Start-Work Handshake OTP Card with BorderBeam */}
-                <div className="relative overflow-hidden p-5 rounded-3xl bg-[#ECE2D0] border-2 border-amber-600/40 text-center my-4 animate-in zoom-in-95 shadow-xl">
-                  <BorderBeam colorFrom="#f59e0b" colorTo="#10b981" duration={4} innerBg="bg-[#ECE2D0]" />
+                <div className="relative overflow-hidden p-5 rounded-3xl bg-[#BEAB8F] border-2 border-amber-600/40 text-center my-4 animate-in zoom-in-95 shadow-xl">
+                  <BorderBeam colorFrom="#f59e0b" colorTo="#10b981" duration={4} innerBg="bg-[#BEAB8F]" />
                   <div className="relative z-10">
                     <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center justify-center gap-1.5">
                       <span>🔐 Service Start Handshake OTP</span>
@@ -624,7 +624,7 @@ export default function CustomerBookPage() {
                 </div>
 
                 {/* Digital Receipt Summary */}
-                <div className="my-4 p-4 rounded-2xl bg-[#ECE2D0] border border-[#8C755D]/25 text-left text-xs space-y-2">
+                <div className="my-4 p-4 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/25 text-left text-xs space-y-2">
                   <div className="flex justify-between">
                     <span className="text-slate-700 font-medium">Booking Reference:</span>
                     <span className="font-mono font-black text-[#0A1120]">
@@ -663,7 +663,7 @@ export default function CustomerBookPage() {
                       setSelectedWorker(null);
                       setBookingSuccess(null);
                     }}
-                    className="py-3 px-5 rounded-xl border-2 border-[#8C755D]/30 text-[#0A1120] font-black text-xs hover:bg-[#D7C9AF] transition cursor-pointer"
+                    className="py-3 px-5 rounded-xl border-2 border-[#7D684F]/35 text-[#0A1120] font-black text-xs hover:bg-[#BEAB8F] transition cursor-pointer"
                   >
                     Done
                   </button>
@@ -699,7 +699,7 @@ export default function CustomerBookPage() {
                       value={bookingNotes}
                       onChange={(e) => setBookingNotes(e.target.value)}
                       placeholder="e.g. Master switch trip repair, tap connector replacement..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-[#0A1120] text-xs font-medium focus:ring-2 focus:ring-[#0B2545]/40 outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs font-medium focus:ring-2 focus:ring-[#0B2545]/40 outline-none"
                     />
                   </div>
 
@@ -710,7 +710,7 @@ export default function CustomerBookPage() {
                     <select
                       value={bookingDate}
                       onChange={(e) => setBookingDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-[#0A1120] text-xs focus:ring-2 focus:ring-[#0B2545]/40 outline-none font-bold cursor-pointer"
+                      className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs focus:ring-2 focus:ring-[#0B2545]/40 outline-none font-bold cursor-pointer"
                     >
                       <option value="Today, Immediate">Today · Immediate Dispatch (Within 45 mins)</option>
                       <option value="Today, Evening 5-7 PM">Today · Evening (05:00 PM - 07:00 PM)</option>
@@ -721,7 +721,7 @@ export default function CustomerBookPage() {
                 </div>
 
                 {/* EMBEDDED LIVE FAIRNESS BREAKDOWN */}
-                <div className="rounded-2xl bg-[#ECE2D0] border-2 border-emerald-700/30 p-4 mb-6">
+                <div className="rounded-2xl bg-[#BEAB8F] border-2 border-emerald-700/30 p-4 mb-6">
                   <div className="text-xs font-black text-emerald-900 flex items-center justify-between mb-2">
                     <span className="flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />

@@ -60,10 +60,10 @@ export function TrustBentoGrid() {
             colorTo="#0B2545"
             borderRadius="32px"
             borderWidth={2.5}
-            innerBg="bg-[#DFD3BD]"
+            innerBg="bg-[#CBB89D]"
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-2 border-[#8C755D]/30 rounded-[32px] bg-[#DFD3BD] shadow-md"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-2 border-[#7D684F]/35 rounded-[32px] bg-[#CBB89D] shadow-md"
       >
 
         {/* Visual Interactive Header: The 3 Pathway Selector Stack */}
@@ -83,7 +83,7 @@ export function TrustBentoGrid() {
           </div>
 
           {/* Interactive 3-Pill Switcher with Rounded Corners */}
-          <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#D7C9AF] border border-[#8C755D]/30 mb-4">
+          <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/35 mb-4">
             {pathways.map((p, idx) => (
               <button
                 key={idx}
@@ -92,7 +92,7 @@ export function TrustBentoGrid() {
                 className={`py-2 px-2 sm:px-3 rounded-xl text-[11px] font-bold transition-all cursor-pointer truncate ${
                   activePathway === idx
                     ? "bg-[#0B2545] text-white shadow-md shadow-[#0B2545]/20 font-black"
-                    : "text-slate-800 hover:text-[#0A1120] hover:bg-[#ECE2D0]"
+                    : "text-slate-800 hover:text-[#0A1120] hover:bg-[#AF9C7F]"
                 }`}
               >
                 {p.title.split(":")[1]}
@@ -101,7 +101,7 @@ export function TrustBentoGrid() {
           </div>
 
           {/* Dynamic Interactive Pathway Preview Showcase with Soft Rounded Edges */}
-          <div className="p-5 rounded-3xl bg-[#ECE2D0] border-2 border-emerald-700/30 shadow-sm">
+          <div className="p-5 rounded-3xl bg-[#BEAB8F] border-2 border-emerald-700/30 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -125,7 +125,7 @@ export function TrustBentoGrid() {
               </div>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-[#8C755D]/25 flex items-center justify-between text-[11px] text-slate-700 font-medium">
+            <div className="mt-3 pt-3 border-t border-[#7D684F]/25 flex items-center justify-between text-[11px] text-slate-700 font-medium">
               <span>Peer Committee: <strong className="text-[#0A1120] font-black">MVP Colony Labour Co-op, Vizag</strong></span>
               <span className="text-emerald-800 font-bold">100% Eligible For Instant Verification</span>
             </div>
@@ -146,7 +146,7 @@ export function TrustBentoGrid() {
       {/* CARD 2: FREE AADHAAR e-KYC (Col-span 5 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(59, 130, 246, 0.18)"
-        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#8C755D]/30 rounded-[32px] bg-[#DFD3BD] shadow-md"
+        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#7D684F]/35 rounded-[32px] bg-[#CBB89D] shadow-md"
       >
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
@@ -164,7 +164,7 @@ export function TrustBentoGrid() {
           </div>
 
           {/* Visual Aadhaar Card Chip Mockup with Soft Rounded Edges */}
-          <div className="p-5 rounded-3xl bg-[#ECE2D0] border-2 border-blue-700/30 shadow-sm relative overflow-hidden">
+          <div className="p-5 rounded-3xl bg-[#BEAB8F] border-2 border-blue-700/30 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-black text-[#0A1120] tracking-wide">UIDAI Aadhaar Sandbox</span>
@@ -179,7 +179,7 @@ export function TrustBentoGrid() {
               XXXX-XXXX-8921
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-800 font-medium mt-3 pt-2 border-t border-[#8C755D]/25">
+            <div className="flex items-center justify-between text-[11px] text-slate-800 font-medium mt-3 pt-2 border-t border-[#7D684F]/25">
               <span>Linked Mobile: <strong className="text-[#0A1120] font-black">+91 98XXX-XX210</strong></span>
               <span className="text-amber-800 font-mono font-black">Demo OTP: 482109</span>
             </div>
@@ -199,7 +199,7 @@ export function TrustBentoGrid() {
       {/* CARD 3: START-WORK SECURITY HANDSHAKE OTP (Col-span 5 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(245, 158, 11, 0.18)"
-        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#8C755D]/30 rounded-[32px] bg-[#DFD3BD] shadow-md"
+        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#7D684F]/35 rounded-[32px] bg-[#CBB89D] shadow-md"
       >
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
@@ -217,7 +217,7 @@ export function TrustBentoGrid() {
           </div>
 
           {/* 4-Digit Security PIN Showcase with Soft Rounded Corners */}
-          <div className="p-5 rounded-3xl bg-[#ECE2D0] border-2 border-amber-700/30 text-center relative overflow-hidden shadow-sm">
+          <div className="p-5 rounded-3xl bg-[#BEAB8F] border-2 border-amber-700/30 text-center relative overflow-hidden shadow-sm">
             <div className="text-[11px] font-black uppercase tracking-wider text-amber-900 mb-2">
               Customer Handshake Code
             </div>
@@ -225,13 +225,13 @@ export function TrustBentoGrid() {
               {["8", "5", "3", "0"].map((digit, i) => (
                 <div
                   key={i}
-                  className="w-11 h-12 rounded-2xl bg-[#D7C9AF] border-2 border-amber-700/40 text-amber-950 font-mono font-black text-xl flex items-center justify-center shadow-sm"
+                  className="w-11 h-12 rounded-2xl bg-[#AF9C7F] border-2 border-amber-800/40 text-amber-950 font-mono font-black text-xl flex items-center justify-center shadow-sm"
                 >
                   {digit}
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-center gap-2 text-[11px] text-slate-800 font-medium mt-3 pt-2 border-t border-[#8C755D]/25">
+            <div className="flex items-center justify-center gap-2 text-[11px] text-slate-800 font-medium mt-3 pt-2 border-t border-[#7D684F]/25">
               <Clock className="w-3.5 h-3.5 text-emerald-700 font-bold" />
               <span>Starts 60-min service timer on physical arrival</span>
             </div>
@@ -258,10 +258,10 @@ export function TrustBentoGrid() {
             colorTo="#FF9933"
             borderRadius="32px"
             borderWidth={2.5}
-            innerBg="bg-[#DFD3BD]"
+            innerBg="bg-[#CBB89D]"
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#8C755D]/30 rounded-[32px] bg-[#DFD3BD] shadow-md"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-2 border-[#7D684F]/35 rounded-[32px] bg-[#CBB89D] shadow-md"
       >
 
         <div className="relative z-10 mb-6">
@@ -280,7 +280,7 @@ export function TrustBentoGrid() {
           </div>
 
           {/* Visual AI Zone Deficit Simulation Console with Soft Rounded Edges */}
-          <div className="p-5 rounded-3xl bg-[#ECE2D0] border-2 border-purple-700/30 shadow-sm">
+          <div className="p-5 rounded-3xl bg-[#BEAB8F] border-2 border-purple-700/30 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
               <div className="flex items-center gap-2">
                 <span className="p-1.5 rounded-xl bg-blue-100 text-blue-800 font-bold">
@@ -303,13 +303,13 @@ export function TrustBentoGrid() {
                 <span>Predicted Demand: 18 bookings</span>
                 <span className="text-emerald-800 font-black">Supply: 6 on-duty</span>
               </div>
-              <div className="w-full bg-[#C9B99E] h-2 rounded-full overflow-hidden flex">
+              <div className="w-full bg-[#AF9C7F] h-2 rounded-full overflow-hidden flex">
                 <div className="bg-rose-500 h-full w-[67%]" />
                 <div className="bg-emerald-600 h-full w-[33%]" />
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[#8C755D]/25 flex items-center justify-between text-[11px]">
+            <div className="pt-3 border-t border-[#7D684F]/25 flex items-center justify-between text-[11px]">
               <span className="text-slate-800 font-medium">Rebalance Recommendation:</span>
               <span className="text-purple-800 font-black flex items-center gap-1">
                 <Zap className="w-3.5 h-3.5" />

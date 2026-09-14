@@ -49,9 +49,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-2xl mx-auto my-10">
         <SpotlightCard
           spotlightColor="rgba(11, 37, 69, 0.12)"
-          className="p-6 sm:p-10 relative overflow-hidden rounded-[32px] border-2 border-[#8C755D]/30 bg-[#DFD3BD] shadow-xl"
+          className="p-6 sm:p-10 relative overflow-hidden rounded-[32px] border-2 border-[#7D684F]/35 bg-[#CBB89D] shadow-xl"
         >
-          <BorderBeam duration={7} colorFrom="#FF9933" colorTo="#0B2545" innerBg="bg-[#DFD3BD]" />
+          <BorderBeam duration={7} colorFrom="#FF9933" colorTo="#0B2545" innerBg="bg-[#CBB89D]" />
 
           {/* Header */}
           <div className="text-center mb-8 relative z-10">
@@ -68,7 +68,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Alternative Worker Choice Card */}
-          <div className="mb-6 p-4 rounded-2xl bg-[#ECE2D0] border border-[#8C755D]/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs relative z-10">
+          <div className="mb-6 p-4 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs relative z-10">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center shrink-0 font-black">
                 <ShieldCheck className="w-4 h-4" />
@@ -95,10 +95,10 @@ export default function RegisterPage() {
             <GoogleSignInButton text="Sign up with Google (Instant)" />
             <div className="relative my-5 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#8C755D]/25" />
+                <div className="w-full border-t border-[#7D684F]/25" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
-                <span className="bg-[#DFD3BD] px-3 text-slate-700 font-bold">
+                <span className="bg-[#CBB89D] px-3 text-slate-700 font-bold">
                   Or register manually
                 </span>
               </div>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
                   placeholder="e.g. Vikramaditya Singh"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-xs text-[#0A1120] font-medium outline-none focus:ring-2 focus:ring-[#0B2545]/40"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-xs text-[#0A1120] font-medium outline-none focus:ring-2 focus:ring-[#0B2545]/40"
                 />
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function RegisterPage() {
                   placeholder="+91 98100 12345"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-xs text-[#0A1120] font-medium outline-none focus:ring-2 focus:ring-[#0B2545]/40"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-xs text-[#0A1120] font-medium outline-none focus:ring-2 focus:ring-[#0B2545]/40"
                 />
               </div>
             </div>
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                 <select
                   value={zone}
                   onChange={(e) => setZone(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-xs text-[#0A1120] font-bold outline-none focus:ring-2 focus:ring-[#0B2545]/40 cursor-pointer"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-xs text-[#0A1120] font-bold outline-none focus:ring-2 focus:ring-[#0B2545]/40 cursor-pointer"
                 >
                   <option value="Zone 1 - MVP Colony & Beach Road">Zone 1 - MVP Colony & Beach Road (MVP, Waltair, Pandurangapuram)</option>
                   <option value="Zone 2 - Gajuwaka & Steel Plant">Zone 2 - Gajuwaka & Steel Plant (Kurmannapalem, Sheela Nagar)</option>
@@ -171,7 +171,7 @@ export default function RegisterPage() {
                   placeholder="Flat 402, Block B, Silver Palms..."
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-xs text-[#0A1120] font-medium outline-none focus:ring-2 focus:ring-[#0B2545]/40"
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-xs text-[#0A1120] font-medium outline-none focus:ring-2 focus:ring-[#0B2545]/40"
                 />
               </div>
             </div>

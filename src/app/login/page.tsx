@@ -108,9 +108,9 @@ export default function LoginPage() {
       <div className="w-full max-w-[430px] mx-auto">
         <SpotlightCard
           spotlightColor="rgba(11, 37, 69, 0.12)"
-          className="p-6 sm:p-8 relative overflow-hidden rounded-[28px] border-2 border-[#8C755D]/30 bg-[#DFD3BD] shadow-xl"
+          className="p-6 sm:p-8 relative overflow-hidden rounded-[28px] border-2 border-[#7D684F]/35 bg-[#CBB89D] shadow-xl"
         >
-          <BorderBeam duration={8} colorFrom="#FF9933" colorTo="#0B2545" innerBg="bg-[#DFD3BD]" />
+          <BorderBeam duration={8} colorFrom="#FF9933" colorTo="#0B2545" innerBg="bg-[#CBB89D]" />
 
           {/* Platform Header */}
           <div className="text-center mb-6 relative z-10">
@@ -136,10 +136,10 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="relative my-6 text-center z-10">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#8C755D]/25" />
+              <div className="w-full border-t border-[#7D684F]/25" />
             </div>
             <div className="relative flex justify-center text-[10px] uppercase tracking-wider font-extrabold">
-              <span className="bg-[#DFD3BD] px-3 text-slate-700 font-bold">
+              <span className="bg-[#CBB89D] px-3 text-slate-700 font-bold">
                 Official Government Access
               </span>
             </div>
@@ -147,7 +147,7 @@ export default function LoginPage() {
 
           {/* SECTION 2: Ward Administrator Login Form */}
           <div className="relative z-10">
-            <div className="mb-4 p-3 rounded-2xl bg-[#ECE2D0] border border-[#8C755D]/25">
+            <div className="mb-4 p-3 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/25">
               <div className="flex items-center gap-2 mb-1">
                 <Building2 className="w-4 h-4 text-[#0B2545]" />
                 <span className="text-xs font-black text-[#0A1120]">
@@ -180,7 +180,7 @@ export default function LoginPage() {
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
                     placeholder="Admin@gmail.com"
-                    className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-[#0A1120] text-xs sm:text-sm focus:outline-none focus:border-[#0B2545] transition font-medium"
+                    className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs sm:text-sm focus:outline-none focus:border-[#0B2545] transition font-medium"
                   />
                   <Mail className="absolute right-3.5 top-3 w-4 h-4 text-slate-500 pointer-events-none" />
                 </div>
@@ -207,7 +207,7 @@ export default function LoginPage() {
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
                     placeholder="••••"
-                    className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#8C755D]/30 bg-[#ECE2D0] text-[#0A1120] text-xs sm:text-sm focus:outline-none focus:border-[#0B2545] transition font-medium"
+                    className="w-full px-3.5 py-2.5 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs sm:text-sm focus:outline-none focus:border-[#0B2545] transition font-medium"
                   />
                   <Lock className="absolute right-3.5 top-3 w-4 h-4 text-slate-500 pointer-events-none" />
                 </div>
@@ -227,7 +227,7 @@ export default function LoginPage() {
           </div>
 
           {/* Footer Navigation */}
-          <div className="mt-6 pt-4 border-t border-[#0B2545]/10 flex items-center justify-between text-[11px] text-slate-700 font-medium relative z-10">
+          <div className="mt-6 pt-4 border-t border-[#7D684F]/25 flex items-center justify-between text-[11px] text-slate-700 font-medium relative z-10">
             <Link
               href="/worker/register"
               className="text-[#0B2545] font-black hover:underline flex items-center gap-1"
