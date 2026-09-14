@@ -321,19 +321,20 @@ function AdminDashboardContent() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 font-bold text-xs uppercase tracking-wider">
-                Ward Sachivalayam #18 · Control Center
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1">
+                <span>🏛️</span>
+                <span>सहकारिता मंत्रालय · Ward Sachivalayam #18</span>
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-500 dark:text-slate-400">
                 Ward Welfare & Development Secretary · GVMC Visakhapatnam
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1.5">
               Ward Sachivalayam & Cooperative Governance Hub
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
-              Overseeing Ward 18 (MVP Colony & Beach Road) · Affiliated with Andhra Pradesh Labour Cooperative Federation (APLCF)
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Overseeing Ward 18 (MVP Colony & Beach Road) · Affiliated with Andhra Pradesh Labour Cooperative Federation (APLCF) under MSCS Act, 2002
             </p>
           </div>
         </div>

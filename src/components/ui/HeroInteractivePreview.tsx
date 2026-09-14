@@ -68,18 +68,28 @@ export function HeroInteractivePreview() {
       </motion.div>
 
       {/* Main Glass Console Card */}
-      <div className="relative overflow-hidden rounded-[32px] border border-slate-200/80 dark:border-white/[0.1] bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl shadow-emerald-500/5 text-left">
-        <BorderBeam duration={7} colorFrom="#10b981" colorTo="#06b6d4" />
+      <div className="relative overflow-hidden rounded-[32px] border-2 border-[#0B2545]/20 dark:border-amber-500/20 bg-white/95 dark:bg-[#07172B]/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl shadow-[#0B2545]/10 text-left">
+        {/* Tricolor top indicator */}
+        <div className="absolute top-0 inset-x-0 h-1 grid grid-cols-3">
+          <div className="bg-[#FF9933]" />
+          <div className="bg-[#FFFFFF]" />
+          <div className="bg-[#138808]" />
+        </div>
+        <BorderBeam duration={7} colorFrom="#FF9933" colorTo="#0B2545" />
 
         {/* Console Header Bar */}
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-5 mb-6">
           <div className="flex items-center gap-3">
             <div className="flex space-x-1.5">
-              <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-              <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-              <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+              <div className="w-3 h-3 rounded-full bg-[#FF9933]" />
+              <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-600" />
+              <div className="w-3 h-3 rounded-full bg-[#138808]" />
             </div>
-            <span className="text-xs font-mono text-slate-400">karyasetu.gov.in · live mission control</span>
+            <span className="text-xs font-mono font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+              <span className="text-amber-500 font-bold">🏛️ karyasetu.gov.in</span>
+              <span>·</span>
+              <span>सहकारिता डिजिटल नियंत्रण कक्ष</span>
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -87,60 +97,60 @@ export function HeroInteractivePreview() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            <span className="text-xs font-mono font-bold text-emerald-500">
-              {liveWorkers} Workers On-Duty
+            <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+              {liveWorkers} On-Duty Artisans
             </span>
           </div>
         </div>
 
         {/* Interactive Live Telemetry Grid */}
         <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Card 1: 90% Worker Payout */}
-          <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 text-left">
-            <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+          {/* Card 1: 90% Worker Direct Payout */}
+          <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/25 text-left">
+            <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1 flex items-center justify-between">
               <span>Fairness Meter</span>
-              <span className="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded-full font-bold">Active</span>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">DBT Direct</span>
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">90% Payout</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              ₹720 out of ₹800 direct to verified worker
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              ₹720 out of ₹800 direct to artisan bank account
             </div>
             <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full mt-3 overflow-hidden flex">
-              <div className="bg-emerald-500 h-full w-[90%]" />
-              <div className="bg-teal-500 h-full w-[7%]" />
-              <div className="bg-slate-400 h-full w-[3%]" />
+              <div className="bg-[#138808] h-full w-[90%]" />
+              <div className="bg-[#FF9933] h-full w-[7%]" />
+              <div className="bg-[#0B2545] h-full w-[3%]" />
             </div>
           </div>
 
-          {/* Card 2: AI Weather Forecast Radar */}
-          <div className="p-4 rounded-2xl bg-purple-500/5 border border-purple-500/20 text-left">
-            <div className="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+          {/* Card 2: AI Weather & Demand Radar */}
+          <div className="p-4 rounded-2xl bg-[#0B2545]/5 dark:bg-[#0B2545]/30 border border-[#0B2545]/20 dark:border-blue-500/20 text-left">
+            <div className="text-[11px] font-bold text-[#0B2545] dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center justify-between">
               <span>AI Demand Radar</span>
-              <span className="text-[10px] bg-purple-500/20 px-2 py-0.5 rounded-full font-bold">Live ML</span>
+              <span className="text-[10px] bg-blue-500/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full font-bold">Zero Surge</span>
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">Zone 2 Deficit</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Monsoon Waterlogging: 12 Plumbers needed
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              Monsoon Waterlogging: 12 Plumbers mobilized
             </div>
-            <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-purple-600 dark:text-purple-300 bg-purple-500/10 px-2.5 py-1 rounded-xl border border-purple-500/20">
+            <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#0B2545] dark:text-blue-300 bg-blue-500/10 px-2.5 py-1 rounded-xl border border-blue-500/20">
               <Zap className="w-3.5 h-3.5" />
-              <span>1-Click Rebalance Ready</span>
+              <span>Co-op Rebalance Active</span>
             </div>
           </div>
 
           {/* Card 3: Free Healthcare & PMSBY */}
-          <div className="p-4 rounded-2xl bg-teal-500/5 border border-teal-500/20 text-left">
-            <div className="text-[11px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-              <span>Welfare Reserve</span>
-              <span className="text-[10px] bg-teal-500/20 px-2 py-0.5 rounded-full font-bold">7% Auto</span>
+          <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/25 text-left">
+            <div className="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+              <span>Social Security</span>
+              <span className="text-[10px] bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full font-bold">PMSBY</span>
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">₹3,24,000</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              100% Active PMSBY Insurance Cover
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              ₹5 Lakh accidental & health cover per artisan
             </div>
-            <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-teal-500 bg-teal-500/10 px-2.5 py-1 rounded-xl">
+            <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-xl">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Zero Deductions from Worker</span>
+              <span>Govt. Subsidized Welfare</span>
             </div>
           </div>
         </div>

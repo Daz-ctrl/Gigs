@@ -52,20 +52,27 @@ export function WorkerIdCard({
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
           }}
-          className="w-full h-full rounded-3xl p-6 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950 text-white shadow-2xl border border-emerald-500/30 overflow-hidden absolute inset-0 flex flex-col justify-between"
+          className="w-full h-full rounded-3xl p-6 bg-gradient-to-br from-[#07172B] via-slate-900 to-[#0B2545] text-white shadow-2xl border border-amber-500/30 overflow-hidden absolute inset-0 flex flex-col justify-between"
         >
+          {/* Top Indian Tricolor Stripe */}
+          <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
+            <div className="bg-[#FF9933]" />
+            <div className="bg-[#FFFFFF]" />
+            <div className="bg-[#138808]" />
+          </div>
+
           {/* Subtle Guilloche / Hologram overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/15 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
           {/* Card Top: Federation Seal & Name */}
-          <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3 mb-3">
+          <div className="flex items-center justify-between border-b border-amber-500/20 pb-3 mb-3 mt-1">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 text-base shadow-lg shadow-emerald-500/30 shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 flex items-center justify-center font-black text-slate-950 text-base shadow-lg shadow-amber-500/30 shrink-0">
                 KS
               </div>
               <div>
-                <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none">
+                <div className="text-[10px] font-bold text-amber-400 uppercase tracking-widest leading-none">
                   Govt. of India · Ministry of Cooperation
                 </div>
                 <div className="text-xs font-black text-slate-100 tracking-tight mt-0.5">
@@ -204,13 +211,20 @@ export function WorkerIdCard({
             WebkitBackfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
           }}
-          className="w-full h-full rounded-3xl p-6 bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-900 text-white shadow-2xl border border-emerald-500/30 overflow-hidden absolute inset-0 flex flex-col justify-between"
+          className="w-full h-full rounded-3xl p-6 bg-gradient-to-br from-[#07172B] via-slate-900 to-[#0B2545] text-white shadow-2xl border border-amber-500/30 overflow-hidden absolute inset-0 flex flex-col justify-between"
         >
+          {/* Top Indian Tricolor Stripe */}
+          <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
+            <div className="bg-[#FF9933]" />
+            <div className="bg-[#FFFFFF]" />
+            <div className="bg-[#138808]" />
+          </div>
+
           {/* Top Header */}
-          <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3 mb-3">
+          <div className="flex items-center justify-between border-b border-amber-500/20 pb-3 mb-3 mt-1">
             <div className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
+              <Award className="w-4 h-4 text-amber-400" />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-amber-300">
                 Social Security & Skill Credentials
               </span>
             </div>

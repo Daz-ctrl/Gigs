@@ -52,17 +52,17 @@ export function TrustBentoGrid() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
       {/* CARD 1: INCLUSIVE 3-PATHWAY VERIFICATION (Col-span 7 on Desktop) */}
       <SpotlightCard
-        spotlightColor="rgba(16, 185, 129, 0.18)"
+        spotlightColor="rgba(230, 81, 0, 0.15)"
         borderBeam={
           <BorderBeam
             duration={8}
-            colorFrom="#10b981"
-            colorTo="#14b8a6"
+            colorFrom="#FF9933"
+            colorTo="#0B2545"
             borderRadius="32px"
             borderWidth={2.5}
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-emerald-500/20 rounded-[32px]"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-amber-500/20 rounded-[32px]"
       >
 
         {/* Visual Interactive Header: The 3 Pathway Selector Stack */}
@@ -249,17 +249,17 @@ export function TrustBentoGrid() {
 
       {/* CARD 4: AI DEMAND RADAR & 1-CLICK REBALANCE (Col-span 7 on Desktop) */}
       <SpotlightCard
-        spotlightColor="rgba(168, 85, 247, 0.18)"
+        spotlightColor="rgba(11, 37, 69, 0.18)"
         borderBeam={
           <BorderBeam
             duration={8}
-            colorFrom="#a855f7"
-            colorTo="#ec4899"
+            colorFrom="#0B2545"
+            colorTo="#FF9933"
             borderRadius="32px"
             borderWidth={2.5}
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-purple-500/20 rounded-[32px]"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-[#0B2545]/20 dark:border-blue-500/20 rounded-[32px]"
       >
 
         <div className="relative z-10 mb-6">

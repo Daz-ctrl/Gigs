@@ -332,7 +332,7 @@ export default function CustomerBookPage() {
                   <motion.div
                     layoutId="activeServiceTab"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl shadow-lg shadow-emerald-500/25"
+                    className="absolute inset-0 bg-[#0B2545] dark:bg-amber-600 rounded-2xl shadow-lg shadow-[#0B2545]/20"
                   />
                 )}
                 {!isSelected && (
@@ -544,7 +544,7 @@ export default function CustomerBookPage() {
                     <button
                       type="button"
                       onClick={() => handleBookClick(worker)}
-                      className="px-4 sm:px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/30 transition cursor-pointer flex items-center gap-1.5 shrink-0"
+                      className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#E65100] hover:bg-[#D84315] text-white text-xs font-bold shadow-md shadow-orange-500/20 hover:shadow-orange-500/30 transition cursor-pointer flex items-center gap-1.5 shrink-0"
                     >
                       <span>{role === "ADMIN" ? "Test Book" : "Book Now"}</span>
                     </button>
@@ -736,7 +736,7 @@ export default function CustomerBookPage() {
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleConfirmPayment}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-emerald-500/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75"
+                  className="w-full py-3.5 rounded-2xl bg-[#E65100] hover:bg-[#D84315] text-white font-bold text-xs sm:text-sm shadow-xl shadow-orange-500/25 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75 border border-amber-300/30"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

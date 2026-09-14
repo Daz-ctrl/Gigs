@@ -103,27 +103,33 @@ function NavbarContent() {
       )}
 
       {/* TOP DESKTOP & MOBILE NAVBAR */}
-      <header className="sticky top-3 z-50 w-full px-3 sm:px-6 max-w-5xl mx-auto">
-        <div className="rounded-full border border-slate-200/90 dark:border-white/[0.12] bg-white/95 dark:bg-[#070c16]/95 backdrop-blur-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between shadow-xl shadow-black/5 dark:shadow-black/50 transition-all">
+      <header className="sticky top-2 z-50 w-full px-3 sm:px-6 max-w-6xl mx-auto">
+        <div className="rounded-2xl border-2 border-amber-500/30 dark:border-amber-500/20 bg-[#0b2545]/95 dark:bg-[#08172c]/95 text-white backdrop-blur-2xl px-3 sm:px-5 py-2 flex items-center justify-between shadow-2xl shadow-black/20 transition-all">
           {/* Brand Logo */}
           <NextLink
             href="/"
             onClick={() => handleNavClick("/")}
-            className="flex items-center gap-2.5 group shrink-0 pl-1 cursor-pointer"
+            className="flex items-center gap-2.5 group shrink-0 cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 flex items-center justify-center text-slate-950 font-black text-xs shadow-md shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-md shadow-amber-500/30 group-hover:scale-105 transition-transform border border-amber-300/40">
               KS
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
-                KaryaSetu
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="font-black text-sm sm:text-base tracking-tight text-white flex items-center gap-1">
+                  <span>कार्यसेतु</span>
+                  <span className="text-amber-400 text-xs font-bold font-sans">(KaryaSetu)</span>
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+              <span className="text-[10px] text-slate-300 font-medium tracking-wide">
+                सहकारिता मंत्रालय · Govt of India
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
           </NextLink>
 
           {/* Desktop Navigation Links (Strictly Role-Based) */}
-          <nav className="hidden md:flex items-center p-1 rounded-full bg-slate-100/80 dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/[0.08]">
+          <nav className="hidden md:flex items-center p-1 rounded-xl bg-black/25 border border-white/10">
             {navLinks.map((item) => {
               const Icon = item.icon;
               const isActive = isLinkActive(item.href);
@@ -132,13 +138,13 @@ function NavbarContent() {
                   key={item.href}
                   href={item.href}
                   onClick={() => handleNavClick(item.href)}
-                  className={`relative px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                  className={`relative px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
                     isActive
-                      ? "bg-white dark:bg-emerald-500/25 text-emerald-600 dark:text-emerald-300 font-bold shadow-xs border border-slate-200/60 dark:border-emerald-500/40"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                      ? "bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/20"
+                      : "text-slate-200 hover:text-white hover:bg-white/10"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-emerald-500" : "text-slate-400"}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? "text-slate-950" : "text-amber-400"}`} />
                   <span>{item.label}</span>
                 </NextLink>
               );
@@ -290,9 +296,9 @@ function NavbarContent() {
               <NextLink
                 href="/login"
                 onClick={() => setUserMenuOpen(false)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 transition shadow-md shadow-emerald-500/20 active:scale-95 cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-black text-slate-950 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 transition shadow-md shadow-amber-500/20 active:scale-95 cursor-pointer border border-amber-300/40"
               >
-                <LogIn className="w-3.5 h-3.5" />
+                <LogIn className="w-3.5 h-3.5 text-slate-950 font-black" />
                 <span>{t.nav.signIn}</span>
               </NextLink>
             )}
