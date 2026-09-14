@@ -419,7 +419,7 @@ export default function CustomerBookPage() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-          <span className="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-white/80 dark:bg-slate-900/80 px-3 py-1.5 rounded-xl border border-emerald-500/30">
+          <span className="text-[11px] font-mono font-bold text-emerald-900 bg-[#AF9C7F] px-3 py-1.5 rounded-xl border border-emerald-700/30">
             Base ₹399 / ₹450 Locked
           </span>
         </div>
@@ -428,29 +428,29 @@ export default function CustomerBookPage() {
       {/* Workers Grid */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-bold text-[#0A1120]">
             {t.customer.nearestWorker} ({filteredWorkers.length})
           </h2>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-700 font-medium">
             Ranked by Geo-Proximity & NSDC Tier
           </span>
         </div>
 
         {loading ? (
           <div className="space-y-4">
-            <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold w-fit mx-auto animate-pulse">
+            <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 text-xs font-bold w-fit mx-auto animate-pulse">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span>Locating verified cooperative artisans in {currentZoneObj.name.split("·")[0]}...</span>
             </div>
             <WorkerCardSkeleton count={6} />
           </div>
         ) : filteredWorkers.length === 0 ? (
-          <div className="rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
-            <AlertCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="font-bold text-slate-800 dark:text-slate-200">
+          <div className="rounded-3xl border-2 border-[#7D684F]/35 p-12 text-center bg-[#CBB89D]">
+            <AlertCircle className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+            <h3 className="font-bold text-[#0A1120]">
               No workers found for this criteria
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-700 mt-1">
               Try selecting &quot;All Trades&quot; or clearing your search term.
             </p>
           </div>
@@ -784,29 +784,29 @@ export default function CustomerBookPage() {
       {/* ADMIN DELETE CONFIRMATION MODAL */}
       {workerToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 border border-rose-500/30 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
+          <div className="bg-[#CBB89D] border-2 border-[#7D684F]/40 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative text-[#0A1120]">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-700 flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
               <Trash2 className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold text-center text-slate-900 dark:text-white">
+            <h3 className="text-xl font-bold text-center text-[#0A1120]">
               Delete Worker from Registry?
             </h3>
-            <p className="text-xs text-center text-slate-500 dark:text-slate-400 mt-2">
-              Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-white">{workerToDelete.name}</strong> ({workerToDelete.skills.split(",")[0]}) from the cooperative directory?
+            <p className="text-xs text-center text-slate-700 mt-2">
+              Are you sure you want to permanently delete <strong className="text-[#0A1120]">{workerToDelete.name}</strong> ({workerToDelete.skills.split(",")[0]}) from the cooperative directory?
             </p>
 
-            <div className="p-3.5 my-4 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left text-xs space-y-1.5">
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span className="text-slate-400">Worker ID:</span>
-                <span className="font-mono text-[11px] font-bold">{workerToDelete.id}</span>
+            <div className="p-3.5 my-4 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/25 text-left text-xs space-y-1.5">
+              <div className="flex justify-between text-slate-700">
+                <span className="text-slate-600">Worker ID:</span>
+                <span className="font-mono text-[11px] font-bold text-[#0A1120]">{workerToDelete.id}</span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span className="text-slate-400">Co-op Unit:</span>
-                <span className="font-semibold truncate max-w-[200px]">{workerToDelete.society?.name}</span>
+              <div className="flex justify-between text-slate-700">
+                <span className="text-slate-600">Co-op Unit:</span>
+                <span className="font-semibold truncate max-w-[200px] text-[#0A1120]">{workerToDelete.society?.name}</span>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span className="text-slate-400">Contact:</span>
-                <span className="font-mono">{workerToDelete.phone}</span>
+              <div className="flex justify-between text-slate-700">
+                <span className="text-slate-600">Contact:</span>
+                <span className="font-mono text-[#0A1120]">{workerToDelete.phone}</span>
               </div>
             </div>
 
@@ -815,7 +815,7 @@ export default function CustomerBookPage() {
                 type="button"
                 disabled={isDeleting}
                 onClick={() => setWorkerToDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border-2 border-[#7D684F]/35 text-[#0A1120] font-bold text-xs hover:bg-[#BEAB8F] transition cursor-pointer"
               >
                 Cancel
               </button>

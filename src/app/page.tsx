@@ -343,31 +343,31 @@ export default function HomePage() {
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center relative z-20">
         <SpotlightCard
           spotlightColor="rgba(230, 81, 0, 0.15)"
-          className="p-8 sm:p-12 relative overflow-hidden rounded-[36px] border-2 border-[#0B2545]/20 dark:border-amber-500/20 bg-[#0B2545]/95 dark:bg-[#07172B]/95 text-white backdrop-blur-2xl shadow-2xl"
+          className="p-8 sm:p-12 relative overflow-hidden rounded-[36px] border-2 border-[#7D684F]/35 bg-[#CBB89D] text-[#0A1120] backdrop-blur-2xl shadow-2xl shadow-[#7D684F]/20"
         >
           {/* Top tricolor ribbon on banner */}
           <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
             <div className="bg-[#FF9933]" />
-            <div className="bg-[#FFFFFF]" />
+            <div className="bg-[#D9CBB7]" />
             <div className="bg-[#138808]" />
           </div>
-          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} innerBg="bg-[#0B2545]" />
+          <BorderBeam colorFrom="#FF9933" colorTo="#0B2545" duration={8} innerBg="bg-[#CBB89D]" />
 
           <div className="relative z-10 max-w-2xl mx-auto">
-            <span className="px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider inline-block mb-3.5">
+            <span className="px-3.5 py-1 rounded-full bg-amber-600/15 border border-amber-600/30 text-amber-900 text-xs font-black uppercase tracking-wider inline-block mb-3.5">
               {t.home.ctaBadge}
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0A1120] tracking-tight leading-tight">
               {t.home.ctaTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-3 leading-relaxed max-w-lg mx-auto">
+            <p className="text-xs sm:text-sm text-slate-800 font-medium mt-3 leading-relaxed max-w-lg mx-auto">
               {t.home.ctaSubtitle}
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3.5">
               <Link href="/customer/book">
                 <button
                   type="button"
-                  className="px-6 py-3 rounded-2xl bg-[#E65100] hover:bg-[#D84315] text-white font-bold text-xs sm:text-sm shadow-lg shadow-orange-950/40 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/40"
+                  className="px-6 py-3 rounded-2xl bg-[#E65100] hover:bg-[#D84315] text-white font-bold text-xs sm:text-sm shadow-lg shadow-orange-950/20 transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer border border-amber-400/40"
                 >
                   <Wrench className="w-4 h-4" />
                   <span>{t.home.bookWorker}</span>
@@ -376,9 +376,9 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/worker/register"
-                className="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs sm:text-sm transition-all duration-150 flex items-center gap-2 cursor-pointer shadow-lg backdrop-blur-xl active:scale-95"
+                className="px-5 py-3 rounded-2xl bg-[#BEAB8F] hover:bg-[#AF9C7F] border-2 border-[#7D684F]/35 text-[#0A1120] font-black text-xs sm:text-sm transition-all duration-150 flex items-center gap-2 cursor-pointer shadow-md backdrop-blur-xl active:scale-95"
               >
-                <UserPlus className="w-4 h-4 text-amber-400" />
+                <UserPlus className="w-4 h-4 text-[#0B2545]" />
                 <span>{t.home.joinArtisan}</span>
               </Link>
             </div>

@@ -120,10 +120,10 @@ export default function CustomerBookingsPage() {
             ))}
           </div>
         ) : bookings.length === 0 ? (
-          <div className="rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
-            <CalendarCheck className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-            <h3 className="font-bold text-slate-900 dark:text-white">No bookings recorded yet</h3>
-            <p className="text-xs text-slate-500 mt-1">
+          <div className="rounded-3xl border-2 border-[#7D684F]/35 p-12 text-center bg-[#CBB89D]">
+            <CalendarCheck className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+            <h3 className="font-bold text-[#0A1120]">No bookings recorded yet</h3>
+            <p className="text-xs text-slate-700 mt-1">
               Explore verified artisans in your locality to book your first cooperative service.
             </p>
           </div>
@@ -136,67 +136,65 @@ export default function CustomerBookingsPage() {
                 <SpotlightCard
                   key={booking.id}
                   spotlightColor={isCompleted ? "rgba(16, 185, 129, 0.15)" : "rgba(59, 130, 246, 0.18)"}
-                  className="p-6"
+                  className="p-6 bg-[#CBB89D] border-2 border-[#7D684F]/35"
                 >
                 {/* Left details */}
                 <div className="flex items-start gap-4">
                   <div
                     className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-base shrink-0 ${
                       isCompleted
-                        ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                        : isInProgress
-                        ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 animate-pulse"
-                        : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                        ? "bg-emerald-500/15 text-emerald-800 border border-emerald-500/30"
+                        : "bg-blue-500/15 text-blue-800 border border-blue-500/30"
                     }`}
                   >
                     {booking.serviceType.slice(0, 2).toUpperCase()}
                   </div>
 
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                        {booking.serviceType} Service
-                      </h3>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="font-black text-[#0A1120] text-sm sm:text-base truncate">
+                        {booking.worker?.name || "Verified Cooperative Artisan"}
+                      </span>
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#BEAB8F] text-[#0A1120] border border-[#7D684F]/30">
+                        {booking.serviceType}
+                      </span>
                       <span
-                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                        className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${
                           isCompleted
-                            ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                            ? "bg-emerald-500/15 text-emerald-800 border-emerald-500/30"
                             : isInProgress
-                            ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                            : "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                            ? "bg-blue-500/15 text-blue-800 border-blue-500/30 animate-pulse"
+                            : "bg-amber-500/15 text-amber-800 border-amber-500/30"
                         }`}
                       >
-                        {booking.status}
+                        {booking.status.replace("_", " ")}
                       </span>
-                      {booking.isEmergency && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white">
-                          EMERGENCY
-                        </span>
-                      )}
                     </div>
 
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                      {booking.description}
-                    </p>
+                    <div className="text-xs text-slate-700 font-medium">
+                      {booking.description || "Standard multi-point residential diagnostic and repair"}
+                    </div>
 
-                    <div className="flex flex-wrap items-center gap-4 text-[11px] text-slate-400 mt-2">
-                      <span>Worker: <strong className="text-slate-300">{booking.worker?.name || "Assigned Worker"}</strong></span>
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-600 mt-2">
+                      <span>Worker: <strong className="text-[#0A1120]">{booking.worker?.name || "Assigned Worker"}</strong></span>
+                      <span>·</span>
                       <span>Scheduled: {new Date(booking.scheduledAt).toLocaleDateString()}</span>
+                      <span>·</span>
                       <span className="font-mono">Ref: {booking.id.slice(0, 10)}</span>
                     </div>
 
-                    {/* Start-Work Handshake OTP (for ACCEPTED bookings) */}
-                    {!isCompleted && !isInProgress && (
-                      <div className="mt-3 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-wrap items-center justify-between gap-3">
+                    {/* Start-Work OTP Handshake Box */}
+                    {booking.status === "PENDING" && (
+                      <div className="mt-3 p-3 rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/30 flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-amber-600 dark:text-amber-400">
+                          <span className="text-xs font-bold text-amber-900">
                             🔐 Start-Work OTP:
                           </span>
-                          <span className="text-sm font-mono font-black text-slate-900 dark:text-white tracking-widest px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-900 border border-amber-500/30">
+                          <span className="text-sm font-mono font-black text-[#0A1120] tracking-widest px-2.5 py-0.5 rounded-lg bg-[#AF9C7F] border border-amber-800/40">
                             {booking.startWorkOtp || "8341"}
                           </span>
                         </div>
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                        <span className="text-[11px] text-slate-700">
                           Share this with {booking.worker?.name || "the worker"} upon arrival to initiate work
                         </span>
                       </div>
@@ -204,7 +202,7 @@ export default function CustomerBookingsPage() {
 
                     {/* Timer active when IN_PROGRESS */}
                     {isInProgress && (
-                      <div className="mt-3 p-2.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2 animate-pulse">
+                      <div className="mt-3 p-2.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-800 flex items-center gap-2 animate-pulse">
                         <Clock className="w-4 h-4" />
                         <span>Service Clock Active · Standard 60-min window (+₹49/30m extension if needed)</span>
                       </div>
@@ -213,13 +211,13 @@ export default function CustomerBookingsPage() {
                 </div>
 
                 {/* Right Actions & Fairness Tag */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-slate-200 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-[#7D684F]/25">
                   <div className="text-left sm:text-right">
-                    <div className="text-xs text-slate-400">Total Paid</div>
-                    <div className="text-lg font-black text-slate-900 dark:text-white">
+                    <div className="text-xs text-slate-600 font-medium">Total Paid</div>
+                    <div className="text-lg font-black text-[#0A1120]">
                       ₹{booking.basePrice}
                     </div>
-                    <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                    <div className="text-[11px] text-emerald-800 font-bold">
                       ₹{booking.workerPayout} (90%) directly to worker
                     </div>
                   </div>
@@ -228,9 +226,9 @@ export default function CustomerBookingsPage() {
                     <button
                       type="button"
                       onClick={() => setInvoiceBooking(booking)}
-                      className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-2 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] hover:bg-[#AF9C7F] text-[#0A1120] text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
                     >
-                      <FileText className="w-3.5 h-3.5 text-blue-500" />
+                      <FileText className="w-3.5 h-3.5 text-blue-700" />
                       <span>Invoice</span>
                     </button>
 
@@ -265,23 +263,23 @@ export default function CustomerBookingsPage() {
       {/* RATING MODAL (FR6) */}
       {ratingBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+          <div className="bg-[#CBB89D] border-2 border-[#7D684F]/40 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative text-[#0A1120]">
             <button
               type="button"
               onClick={() => setRatingBooking(null)}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 transition"
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-[#BEAB8F] transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-800 flex items-center justify-center mx-auto mb-3 border border-amber-500/30">
                 <Star className="w-6 h-6 fill-current" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xl font-bold text-[#0A1120]">
                 {t.customer.rateWorkerTitle}
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-700 mt-1">
                 Your feedback directly impacts the cooperative rating and incentive bonus of {ratingBooking.worker?.name}.
               </p>
             </div>
@@ -298,8 +296,8 @@ export default function CustomerBookingsPage() {
                   <Star
                     className={`w-8 h-8 ${
                       star <= selectedScore
-                        ? "text-amber-400 fill-amber-400"
-                        : "text-slate-300 dark:text-slate-700"
+                        ? "text-amber-500 fill-amber-500"
+                        : "text-slate-400"
                     }`}
                   />
                 </button>
@@ -308,7 +306,7 @@ export default function CustomerBookingsPage() {
 
             {/* Low Rating Warning */}
             {selectedScore <= 2 && (
-              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-600 dark:text-rose-400 flex items-start gap-2 mb-4">
+              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-800 flex items-start gap-2 mb-4">
                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>
                   Ratings of 2 stars or below trigger an automatic audit investigation by the Society Admin.
@@ -318,7 +316,7 @@ export default function CustomerBookingsPage() {
 
             {/* Tag Pills */}
             <div className="mb-4">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-xs font-bold text-[#0A1120] mb-2">
                 What went well?
               </label>
               <div className="flex flex-wrap gap-2">
@@ -327,10 +325,10 @@ export default function CustomerBookingsPage() {
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`px-3 py-1 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
                       selectedTags.includes(tag)
-                        ? "bg-emerald-600 text-white"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                        ? "bg-[#0B2545] text-white"
+                        : "bg-[#BEAB8F] text-[#0A1120] border border-[#7D684F]/30"
                     }`}
                   >
                     {tag}
@@ -340,7 +338,7 @@ export default function CustomerBookingsPage() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-[#0A1120] mb-1">
                 Written Review / Notes
               </label>
               <textarea
@@ -348,14 +346,14 @@ export default function CustomerBookingsPage() {
                 onChange={(e) => setFeedbackText(e.target.value)}
                 placeholder="Share your experience..."
                 rows={3}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs focus:ring-2 focus:ring-emerald-500/40 outline-none"
+                className="w-full px-3.5 py-2 rounded-xl border-2 border-[#7D684F]/35 bg-[#BEAB8F] text-[#0A1120] text-xs focus:ring-2 focus:ring-[#0B2545]/40 outline-none"
               />
             </div>
 
             <button
               type="button"
               onClick={handleRatingSubmit}
-              className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 transition cursor-pointer"
+              className="w-full py-3 rounded-xl bg-[#0B2545] hover:bg-[#07182c] text-white font-bold text-xs shadow-lg shadow-[#0B2545]/20 transition cursor-pointer"
             >
               Submit Cooperative Rating
             </button>
@@ -366,89 +364,89 @@ export default function CustomerBookingsPage() {
       {/* DIGITAL INVOICE MODAL (FR5) */}
       {invoiceBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto text-slate-900 dark:text-slate-100">
+          <div className="bg-[#CBB89D] border-2 border-[#7D684F]/40 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto text-[#0A1120]">
             <button
               type="button"
               onClick={() => setInvoiceBooking(null)}
-              className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 transition"
+              className="absolute top-5 right-5 p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-[#BEAB8F] transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Invoice Header */}
-            <div className="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
+            <div className="border-b border-[#7D684F]/25 pb-4 mb-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-sm">
-                    CS
+                  <div className="w-8 h-8 rounded-xl bg-[#0B2545] text-amber-400 font-black flex items-center justify-center text-sm shadow-md">
+                    KS
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-base tracking-tight">CoopServe</h3>
-                    <p className="text-[10px] text-slate-400">Labour Co-op Federation of India</p>
+                    <h3 className="font-extrabold text-base tracking-tight text-[#0A1120]">KaryaSetu</h3>
+                    <p className="text-[10px] text-slate-700 font-bold">Labour Co-op Federation of India</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400">PAID INVOICE</div>
-                  <div className="text-[10px] font-mono text-slate-400">{invoiceBooking.id.slice(0, 14)}</div>
+                  <div className="text-xs font-bold text-emerald-800">PAID INVOICE</div>
+                  <div className="text-[10px] font-mono text-slate-700">{invoiceBooking.id.slice(0, 14)}</div>
                 </div>
               </div>
             </div>
 
             {/* Meta */}
-            <div className="grid grid-cols-2 gap-4 text-xs mb-6 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl">
+            <div className="grid grid-cols-2 gap-4 text-xs mb-6 bg-[#BEAB8F] border border-[#7D684F]/25 p-4 rounded-2xl">
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-bold">Billed To</span>
-                <strong className="text-slate-800 dark:text-slate-200">
+                <span className="text-slate-700 block text-[10px] uppercase font-bold">Billed To</span>
+                <strong className="text-[#0A1120]">
                   {invoiceBooking.customer?.name || currentUser.name || "Resident Customer"}
                 </strong>
-                <p className="text-[11px] text-slate-500">{invoiceBooking.customer?.address || "MVP Colony, Visakhapatnam"}</p>
+                <p className="text-[11px] text-slate-700">{invoiceBooking.customer?.address || "MVP Colony, Visakhapatnam"}</p>
               </div>
               <div className="text-right">
-                <span className="text-slate-400 block text-[10px] uppercase font-bold">Service Provider</span>
-                <strong className="text-slate-800 dark:text-slate-200">
+                <span className="text-slate-700 block text-[10px] uppercase font-bold">Service Provider</span>
+                <strong className="text-[#0A1120]">
                   {invoiceBooking.worker?.name || "Sunil Kumar"}
                 </strong>
-                <p className="text-[11px] text-emerald-500 font-medium">Verified Co-op Member</p>
+                <p className="text-[11px] text-emerald-800 font-bold">Verified Co-op Member</p>
               </div>
             </div>
 
             {/* Line items */}
-            <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden mb-6 text-xs">
-              <div className="bg-slate-100 dark:bg-slate-800 p-3 font-bold flex justify-between">
+            <div className="border border-[#7D684F]/25 rounded-2xl overflow-hidden mb-6 text-xs">
+              <div className="bg-[#BEAB8F] p-3 font-bold flex justify-between text-[#0A1120]">
                 <span>Description</span>
                 <span>Amount</span>
               </div>
-              <div className="p-3 border-b border-slate-200 dark:border-slate-800 flex justify-between">
+              <div className="p-3 border-b border-[#7D684F]/25 flex justify-between bg-[#CBB89D]">
                 <div>
-                  <div className="font-semibold">{invoiceBooking.serviceType} Certified Labour</div>
-                  <div className="text-[11px] text-slate-400">{invoiceBooking.description}</div>
+                  <div className="font-bold text-[#0A1120]">{invoiceBooking.serviceType} Certified Labour</div>
+                  <div className="text-[11px] text-slate-700">{invoiceBooking.description}</div>
                 </div>
-                <div className="font-bold">₹{invoiceBooking.basePrice}</div>
+                <div className="font-bold text-[#0A1120]">₹{invoiceBooking.basePrice}</div>
               </div>
-              <div className="p-3 bg-slate-50/50 dark:bg-slate-800/20 flex justify-between font-extrabold text-sm">
+              <div className="p-3 bg-[#BEAB8F] flex justify-between font-extrabold text-sm text-[#0A1120]">
                 <span>Total Paid</span>
-                <span className="text-emerald-500">₹{invoiceBooking.basePrice}</span>
+                <span className="text-emerald-800">₹{invoiceBooking.basePrice}</span>
               </div>
             </div>
 
             {/* THE SIGNATURE FAIRNESS METER ON INVOICE */}
-            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 text-xs mb-6">
-              <div className="font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
+            <div className="rounded-2xl bg-[#BEAB8F] border border-[#7D684F]/30 p-4 text-xs mb-6">
+              <div className="font-bold text-emerald-900 flex items-center gap-1.5 mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                 Fairness Meter Transparency Audit
               </div>
-              <div className="space-y-1.5 text-slate-600 dark:text-slate-300">
+              <div className="space-y-1.5 text-slate-800">
                 <div className="flex justify-between">
                   <span>Direct Worker Share (90%):</span>
-                  <strong className="text-emerald-500">₹{invoiceBooking.workerPayout}</strong>
+                  <strong className="text-emerald-800 font-black">₹{invoiceBooking.workerPayout}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>Member Welfare & Insurance Fund (7%):</span>
-                  <strong className="text-teal-500">₹{invoiceBooking.welfareFee}</strong>
+                  <strong className="text-teal-800 font-black">₹{invoiceBooking.welfareFee}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>Federation Platform Operations (3%):</span>
-                  <span>₹{invoiceBooking.platformFee}</span>
+                  <span className="font-bold">₹{invoiceBooking.platformFee}</span>
                 </div>
               </div>
             </div>
@@ -457,7 +455,7 @@ export default function CustomerBookingsPage() {
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 transition flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border-2 border-[#7D684F]/35 text-[#0A1120] font-bold text-xs bg-[#BEAB8F] hover:bg-[#AF9C7F] transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
                 <span>Print / Download PDF</span>
@@ -465,7 +463,7 @@ export default function CustomerBookingsPage() {
               <button
                 type="button"
                 onClick={() => setInvoiceBooking(null)}
-                className="py-2.5 px-6 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs transition cursor-pointer"
+                className="py-2.5 px-6 rounded-xl bg-[#0B2545] hover:bg-[#07182c] text-white font-bold text-xs transition cursor-pointer"
               >
                 Close
               </button>

@@ -35,14 +35,14 @@ export function HeroInteractivePreview() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.6, duration: 0.5 }}
-        className="hidden md:flex absolute -top-5 -left-6 z-30 items-center gap-2 px-4 py-2 rounded-2xl bg-[#FFFDF9] border-2 border-emerald-600/30 backdrop-blur-xl shadow-xl shadow-emerald-600/10"
+        className="hidden md:flex absolute -top-5 -left-6 z-30 items-center gap-2 px-4 py-2 rounded-2xl bg-[#CBB89D] border-2 border-[#7D684F]/35 backdrop-blur-xl shadow-xl shadow-[#7D684F]/15"
       >
         <div className="w-7 h-7 rounded-xl bg-emerald-600/20 text-emerald-800 flex items-center justify-center">
           <ShieldCheck className="w-4 h-4" />
         </div>
         <div className="text-left text-xs">
           <div className="font-black text-[#0A1120]">UIDAI e-KYC</div>
-          <div className="text-[10px] text-emerald-700 font-bold">100% Free · Verified</div>
+          <div className="text-[10px] text-emerald-900 font-extrabold">100% Free · Verified</div>
         </div>
       </motion.div>
 
