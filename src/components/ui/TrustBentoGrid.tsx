@@ -28,7 +28,7 @@ export function TrustBentoGrid() {
       desc: "3+ years practical hands-on work endorsed by a senior co-op worker.",
       icon: Users,
       stamp: "Co-op Verified Worker",
-      stampColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
+      stampColor: "text-emerald-800 bg-emerald-100 border-emerald-300 font-bold",
     },
     {
       title: "Pathway 2: RPL (Skill India)",
@@ -36,7 +36,7 @@ export function TrustBentoGrid() {
       desc: "Free NSDC practical skill test converting informal skill into Level 4 badge.",
       icon: Sparkles,
       stamp: "NSDC Level 4 Certified",
-      stampColor: "text-blue-400 bg-blue-500/10 border-blue-500/30",
+      stampColor: "text-blue-800 bg-blue-100 border-blue-300 font-bold",
     },
     {
       title: "Pathway 3: ITI / Vocational",
@@ -44,7 +44,7 @@ export function TrustBentoGrid() {
       desc: "Formal ITI or Solar PV diploma for high-voltage industrial jobs.",
       icon: Award,
       stamp: "Master Craft Specialist",
-      stampColor: "text-purple-400 bg-purple-500/10 border-purple-500/30",
+      stampColor: "text-purple-800 bg-purple-100 border-purple-300 font-bold",
     },
   ];
 
@@ -62,27 +62,27 @@ export function TrustBentoGrid() {
             borderWidth={2.5}
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-amber-500/20 rounded-[32px]"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group border-[#0B2545]/15 rounded-[32px] bg-[#FFFDF9]"
       >
 
         {/* Visual Interactive Header: The 3 Pathway Selector Stack */}
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-2xl bg-emerald-600/15 text-emerald-800 flex items-center justify-center font-bold">
                 <Award className="w-4 h-4" />
               </div>
-              <span className="text-xs font-mono uppercase tracking-wider text-emerald-500 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-emerald-800 font-black">
                 Grassroots Inclusion Model
               </span>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
               Zero Degree Barrier
             </span>
           </div>
 
           {/* Interactive 3-Pill Switcher with Rounded Corners */}
-          <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 mb-4">
+          <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#F4ECE1] border border-[#0B2545]/15 mb-4">
             {pathways.map((p, idx) => (
               <button
                 key={idx}
@@ -90,8 +90,8 @@ export function TrustBentoGrid() {
                 onClick={() => setActivePathway(idx as any)}
                 className={`py-2 px-2 sm:px-3 rounded-xl text-[11px] font-bold transition-all cursor-pointer truncate ${
                   activePathway === idx
-                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/30"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                    ? "bg-[#0B2545] text-white shadow-md shadow-[#0B2545]/20 font-black"
+                    : "text-slate-700 hover:text-[#0A1120] hover:bg-white/80"
                 }`}
               >
                 {p.title.split(":")[1]}
@@ -100,18 +100,18 @@ export function TrustBentoGrid() {
           </div>
 
           {/* Dynamic Interactive Pathway Preview Showcase with Soft Rounded Edges */}
-          <div className="p-5 rounded-3xl bg-slate-900/50 border border-emerald-500/25 backdrop-blur-xl">
+          <div className="p-5 rounded-3xl bg-[#FFFDF9] border-2 border-emerald-600/25 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-extrabold text-white">
+                  <span className="text-sm font-black text-[#0A1120]">
                     {pathways[activePathway].title}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-300">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0B2545]/10 text-[#0B2545]">
                     {pathways[activePathway].badge}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed max-w-md">
+                <p className="text-xs text-slate-700 font-medium leading-relaxed max-w-md">
                   {pathways[activePathway].desc}
                 </p>
               </div>
@@ -124,19 +124,19 @@ export function TrustBentoGrid() {
               </div>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
-              <span>Peer Committee: <strong className="text-slate-300">MVP Colony Labour Co-op, Vizag</strong></span>
-              <span className="text-emerald-400 font-semibold">100% Eligible For Instant Verification</span>
+            <div className="mt-3 pt-3 border-t border-[#0B2545]/10 flex items-center justify-between text-[11px] text-slate-600">
+              <span>Peer Committee: <strong className="text-[#0A1120] font-bold">MVP Colony Labour Co-op, Vizag</strong></span>
+              <span className="text-emerald-800 font-bold">100% Eligible For Instant Verification</span>
             </div>
           </div>
         </div>
 
         {/* Text Footer */}
         <div className="relative z-10">
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h3 className="text-lg sm:text-xl font-black text-[#0A1120] tracking-tight">
             Inclusive 3-Pathway Verification: No Papers Needed
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+          <p className="text-xs text-slate-700 font-medium mt-1.5 leading-relaxed">
             Real craftsmen learn on the field, not in college classrooms. Any artisan with 3+ years hands-on experience can get peer-vouched by their local cooperative society and begin working immediately.
           </p>
         </div>
@@ -145,51 +145,51 @@ export function TrustBentoGrid() {
       {/* CARD 2: FREE AADHAAR e-KYC (Col-span 5 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(59, 130, 246, 0.18)"
-        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-blue-500/20 rounded-[32px]"
+        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-[#0B2545]/15 rounded-[32px] bg-[#FFFDF9]"
       >
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-2xl bg-blue-600/15 text-blue-800 flex items-center justify-center font-bold">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <span className="text-xs font-mono uppercase tracking-wider text-blue-500 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-blue-800 font-black">
                 Identity Security
               </span>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-300">
               100% Free For Worker
             </span>
           </div>
 
           {/* Visual Aadhaar Card Chip Mockup with Soft Rounded Edges */}
-          <div className="p-5 rounded-3xl bg-slate-900/50 border border-blue-500/30 backdrop-blur-xl relative overflow-hidden">
+          <div className="p-5 rounded-3xl bg-[#FFFDF9] border-2 border-blue-600/25 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-white tracking-wide">UIDAI Aadhaar Sandbox</span>
+                <span className="text-xs font-black text-[#0A1120] tracking-wide">UIDAI Aadhaar Sandbox</span>
               </div>
-              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
+              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
                 <CheckCircle2 className="w-3 h-3" />
                 VERIFIED
               </span>
             </div>
 
-            <div className="font-mono text-xl font-black text-blue-400 tracking-widest my-2">
+            <div className="font-mono text-xl font-black text-[#0B2545] tracking-widest my-2">
               XXXX-XXXX-8921
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800">
-              <span>Linked Mobile: <strong className="text-slate-300">+91 98XXX-XX210</strong></span>
-              <span className="text-amber-400 font-mono font-bold">Demo OTP: 482109</span>
+            <div className="flex items-center justify-between text-[11px] text-slate-700 font-medium mt-3 pt-2 border-t border-[#0B2545]/10">
+              <span>Linked Mobile: <strong className="text-[#0A1120] font-bold">+91 98XXX-XX210</strong></span>
+              <span className="text-amber-800 font-mono font-black">Demo OTP: 482109</span>
             </div>
           </div>
         </div>
 
         <div className="relative z-10">
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h3 className="text-lg sm:text-xl font-black text-[#0A1120] tracking-tight">
             Free Aadhaar e-KYC via OTP Handshake
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+          <p className="text-xs text-slate-700 font-medium mt-1.5 leading-relaxed">
             Instant 12-digit identity validation. Masks citizen privacy under the Aadhaar Act, 2016 while eliminating duplicate or fraudulent gig profiles.
           </p>
         </div>
@@ -198,50 +198,50 @@ export function TrustBentoGrid() {
       {/* CARD 3: START-WORK SECURITY HANDSHAKE OTP (Col-span 5 on Desktop) */}
       <SpotlightCard
         spotlightColor="rgba(245, 158, 11, 0.18)"
-        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-amber-500/20 rounded-[32px]"
+        className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-[#0B2545]/15 rounded-[32px] bg-[#FFFDF9]"
       >
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-2xl bg-amber-600/15 text-amber-800 flex items-center justify-center font-bold">
                 <Lock className="w-4 h-4" />
               </div>
-              <span className="text-xs font-mono uppercase tracking-wider text-amber-500 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-amber-800 font-black">
                 Anti-Fraud Protocol
               </span>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
               Handshake Active
             </span>
           </div>
 
           {/* 4-Digit Security PIN Showcase with Soft Rounded Corners */}
-          <div className="p-5 rounded-3xl bg-slate-900/50 border border-amber-500/30 text-center relative overflow-hidden backdrop-blur-xl">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-amber-400 mb-2">
+          <div className="p-5 rounded-3xl bg-[#FFFDF9] border-2 border-amber-600/25 text-center relative overflow-hidden shadow-sm">
+            <div className="text-[11px] font-black uppercase tracking-wider text-amber-800 mb-2">
               Customer Handshake Code
             </div>
             <div className="flex justify-center gap-2.5 my-2">
               {["8", "5", "3", "0"].map((digit, i) => (
                 <div
                   key={i}
-                  className="w-11 h-12 rounded-2xl bg-slate-900 border border-amber-500/40 text-amber-300 font-mono font-black text-xl flex items-center justify-center shadow-md shadow-amber-500/10"
+                  className="w-11 h-12 rounded-2xl bg-white border-2 border-amber-600/30 text-amber-950 font-mono font-black text-xl flex items-center justify-center shadow-sm"
                 >
                   {digit}
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800">
-              <Clock className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="flex items-center justify-center gap-2 text-[11px] text-slate-700 font-medium mt-3 pt-2 border-t border-amber-600/20">
+              <Clock className="w-3.5 h-3.5 text-emerald-700 font-bold" />
               <span>Starts 60-min service timer on physical arrival</span>
             </div>
           </div>
         </div>
 
         <div className="relative z-10">
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h3 className="text-lg sm:text-xl font-black text-[#0A1120] tracking-tight">
             Start-Work Security Handshake OTP
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+          <p className="text-xs text-slate-700 font-medium mt-1.5 leading-relaxed">
             Eliminates ghost bookings and false completions. The worker must physically obtain this 4-digit code from the homeowner to start the job clock.
           </p>
         </div>
@@ -259,57 +259,57 @@ export function TrustBentoGrid() {
             borderWidth={2.5}
           />
         }
-        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-[#0B2545]/20 dark:border-blue-500/20 rounded-[32px]"
+        className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border-[#0B2545]/15 rounded-[32px] bg-[#FFFDF9]"
       >
 
         <div className="relative z-10 mb-6">
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-2xl bg-purple-600/15 text-purple-800 flex items-center justify-center font-bold">
                 <Brain className="w-4 h-4" />
               </div>
-              <span className="text-xs font-mono uppercase tracking-wider text-purple-400 font-bold">
+              <span className="text-xs font-mono uppercase tracking-wider text-purple-800 font-black">
                 FastAPI Predictive Copilot (FR11)
               </span>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300">
               R² = 0.97 Precision
             </span>
           </div>
 
           {/* Visual AI Zone Deficit Simulation Console with Soft Rounded Edges */}
-          <div className="p-5 rounded-3xl bg-slate-900/50 border border-purple-500/30 backdrop-blur-xl">
+          <div className="p-5 rounded-3xl bg-[#FFFDF9] border-2 border-purple-600/25 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-xl bg-blue-500/20 text-blue-400">
+                <span className="p-1.5 rounded-xl bg-blue-100 text-blue-800 font-bold">
                   <CloudRain className="w-4 h-4" />
                 </span>
                 <div>
-                  <span className="text-xs font-bold text-white block">Zone 2 (Gajuwaka Industrial Belt, Vizag)</span>
-                  <span className="text-[11px] text-slate-400">Coastal Rain & Drainage Spike</span>
+                  <span className="text-xs font-black text-[#0A1120] block">Zone 2 (Gajuwaka Industrial Belt, Vizag)</span>
+                  <span className="text-[11px] text-slate-700 font-medium">Coastal Rain & Drainage Spike</span>
                 </div>
               </div>
 
-              <div className="px-3 py-1 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-bold self-start sm:self-auto">
+              <div className="px-3 py-1 rounded-xl bg-rose-100 border border-rose-300 text-rose-800 text-xs font-black self-start sm:self-auto">
                 Shortage: -12 Plumbers
               </div>
             </div>
 
             {/* Demand vs Supply Visual Bar with Soft Rounded Edges */}
             <div className="space-y-1.5 my-3">
-              <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
+              <div className="flex justify-between text-[11px] text-slate-700 font-bold">
                 <span>Predicted Demand: 18 bookings</span>
-                <span className="text-emerald-400">Supply: 6 on-duty</span>
+                <span className="text-emerald-800">Supply: 6 on-duty</span>
               </div>
-              <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden flex">
+              <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex">
                 <div className="bg-rose-500 h-full w-[67%]" />
-                <div className="bg-emerald-500 h-full w-[33%]" />
+                <div className="bg-emerald-600 h-full w-[33%]" />
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-              <span className="text-slate-400">Rebalance Recommendation:</span>
-              <span className="text-purple-400 font-bold flex items-center gap-1">
+            <div className="pt-3 border-t border-[#0B2545]/10 flex items-center justify-between text-[11px]">
+              <span className="text-slate-700 font-medium">Rebalance Recommendation:</span>
+              <span className="text-purple-800 font-black flex items-center gap-1">
                 <Zap className="w-3.5 h-3.5" />
                 Broadcast +₹120/hr Surge Shift
               </span>
@@ -318,10 +318,10 @@ export function TrustBentoGrid() {
         </div>
 
         <div className="relative z-10">
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <h3 className="text-lg sm:text-xl font-black text-[#0A1120] tracking-tight">
             AI Demand Radar & 1-Click Rebalance Copilot
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+          <p className="text-xs text-slate-700 font-medium mt-1.5 leading-relaxed">
             Correlates seasonal urban booking patterns with weather triggers (Monsoon rain, heatwaves) and festival calendars, allowing cooperative admins to mobilize artisan squads before citizen backlogs occur.
           </p>
         </div>

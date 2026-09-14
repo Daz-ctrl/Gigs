@@ -31,13 +31,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased light`}
+      style={{ colorScheme: "light" }}
     >
-      <body className="min-h-full flex flex-col bg-[#f8fafc] dark:bg-[#070f1e] text-slate-900 dark:text-slate-100 selection:bg-amber-500/20 selection:text-amber-600">
+      <body className="min-h-full flex flex-col bg-[#F4ECE1] text-[#0A1120] selection:bg-amber-500/25 selection:text-amber-900">
         <AppProvider>
           <GovtTopBar />
           <Navbar />
-          <main id="main-content" className="flex-1 flex flex-col">
+          <main id="main-content" className="flex-1 flex flex-col bg-[#F4ECE1]">
             {children}
           </main>
           <GovtFooter />

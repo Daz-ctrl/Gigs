@@ -68,16 +68,16 @@ export default function HomePage() {
         </div>
 
         {/* Hero Title - Balanced & Proportional */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-[1.15]">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-[#0A1120] max-w-4xl mx-auto leading-[1.15]">
           {t.home.heroTitle1}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 via-orange-500 to-amber-500 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600">
             {t.home.heroTitleAccent}
           </span>
           {t.home.heroTitle2}
         </h1>
 
         {/* Hero Subtitle */}
-        <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-sm sm:text-base text-slate-800 max-w-2xl mx-auto leading-relaxed font-medium">
           {t.home.heroSubtitle}
         </p>
 
@@ -97,9 +97,9 @@ export default function HomePage() {
           <Link
             href="/admin/dashboard"
             onClick={() => setRole("ADMIN")}
-            className="px-5 py-3 rounded-2xl bg-white/90 dark:bg-[#07172B]/90 hover:bg-slate-100 dark:hover:bg-[#0B2545] text-slate-900 dark:text-slate-100 border border-[#0B2545]/20 dark:border-amber-500/30 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
+            className="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-[#0A1120] border-2 border-[#0B2545]/20 font-bold text-xs sm:text-sm transition-all duration-150 active:scale-95 flex items-center gap-2 cursor-pointer shadow-sm backdrop-blur-xl"
           >
-            <Brain className="w-4 h-4 text-amber-500" />
+            <Brain className="w-4 h-4 text-amber-600" />
             <span>{t.home.exploreAdmin}</span>
           </Link>
         </div>
@@ -108,44 +108,44 @@ export default function HomePage() {
         <HeroInteractivePreview />
 
         {/* Micro-Stats Bar */}
-        <div className="mt-14 pt-8 border-t border-slate-200/80 dark:border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+        <div className="mt-14 pt-8 border-t border-[#0B2545]/20 grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-lg border border-emerald-500/25">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-600/15 text-emerald-800 flex items-center justify-center font-black text-lg border border-emerald-600/30">
               90%
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white">Direct Payout</div>
-              <div className="text-[11px] text-slate-500">Worker keeps 90% via DBT</div>
+              <div className="text-xs font-black text-[#0A1120]">Direct Payout</div>
+              <div className="text-[11px] text-slate-700 font-medium">Worker keeps 90% via DBT</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-black text-lg border border-amber-500/25">
+            <div className="w-11 h-11 rounded-2xl bg-amber-600/15 text-amber-800 flex items-center justify-center font-black text-lg border border-amber-600/30">
               7%
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white">PMSBY Insurance</div>
-              <div className="text-[11px] text-slate-500">Auto-credited medical & accident cover</div>
+              <div className="text-xs font-black text-[#0A1120]">PMSBY Insurance</div>
+              <div className="text-[11px] text-slate-700 font-medium">Auto-credited medical & accident cover</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-500/25">
+            <div className="w-11 h-11 rounded-2xl bg-blue-600/15 text-blue-800 flex items-center justify-center border border-blue-600/30">
               <QrCode className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white">Digital QR ID</div>
-              <div className="text-[11px] text-slate-500">Free Aadhaar e-KYC verified</div>
+              <div className="text-xs font-black text-[#0A1120]">Digital QR ID</div>
+              <div className="text-[11px] text-slate-700 font-medium">Free Aadhaar e-KYC verified</div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-[#0B2545]/15 dark:bg-amber-500/15 text-[#0B2545] dark:text-amber-400 flex items-center justify-center border border-[#0B2545]/20 dark:border-amber-500/25">
+            <div className="w-11 h-11 rounded-2xl bg-[#0B2545]/15 text-[#0B2545] flex items-center justify-center border border-[#0B2545]/30">
               <Brain className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white">AI Demand Radar</div>
-              <div className="text-[11px] text-slate-500">Zero surge pricing tariff</div>
+              <div className="text-xs font-black text-[#0A1120]">AI Demand Radar</div>
+              <div className="text-[11px] text-slate-700 font-medium">Zero surge pricing tariff</div>
             </div>
           </div>
         </div>
@@ -188,10 +188,10 @@ export default function HomePage() {
       {/* ACETERNITY BENTO GRID SECTION */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+          <span className="text-xs font-black uppercase tracking-wider text-amber-800">
             सहकारिता मॉडल · Cooperative Innovation Architecture
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#0A1120] mt-1">
             Engineered For Grassroots Trust & Scale
           </h2>
         </div>
@@ -202,13 +202,13 @@ export default function HomePage() {
       {/* 3 CLEAN PERSONA SPOTLIGHT CARDS */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+          <span className="text-xs font-black uppercase tracking-wider text-amber-800">
             {t.home.ecosystemBadge}
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#0A1120] mt-1">
             {t.home.ecosystemTitle}
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-xl mx-auto">
+          <p className="text-sm text-slate-800 mt-2 max-w-xl mx-auto font-medium">
             {t.home.ecosystemSubtitle}
           </p>
         </div>
@@ -217,29 +217,29 @@ export default function HomePage() {
           {/* 1. Worker */}
           <SpotlightCard
             spotlightColor="rgba(230, 81, 0, 0.15)"
-            className="p-8"
+            className="p-8 bg-[#FFFDF9] border-2 border-[#0B2545]/15"
           >
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 border border-amber-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-700 flex items-center justify-center mb-4 border border-amber-500/30">
                 <Wrench className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xl font-black text-[#0A1120]">
                 {t.home.workerCardTitle}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
                 {t.home.workerCardDesc}
               </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+              <ul className="mt-5 space-y-2.5 text-xs text-slate-800 font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{t.home.workerCardFeature1}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{t.home.workerCardFeature2}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{t.home.workerCardFeature3}</span>
                 </li>
               </ul>
@@ -248,7 +248,7 @@ export default function HomePage() {
             <Link
               href="/worker/dashboard"
               onClick={() => setRole("WORKER")}
-              className="mt-8 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#0B2545]/15 text-xs font-black text-[#E65100] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.workerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -258,29 +258,29 @@ export default function HomePage() {
           {/* 2. Customer */}
           <SpotlightCard
             spotlightColor="rgba(11, 37, 69, 0.15)"
-            className="p-8"
+            className="p-8 bg-[#FFFDF9] border-2 border-[#0B2545]/15"
           >
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 border border-blue-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-700 flex items-center justify-center mb-4 border border-blue-500/30">
                 <Users className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xl font-black text-[#0A1120]">
                 {t.home.customerCardTitle}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
                 {t.home.customerCardDesc}
               </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+              <ul className="mt-5 space-y-2.5 text-xs text-slate-800 font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
                   <span>{t.home.customerCardFeature1}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
                   <span>{t.home.customerCardFeature2}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
                   <span>{t.home.customerCardFeature3}</span>
                 </li>
               </ul>
@@ -289,7 +289,7 @@ export default function HomePage() {
             <Link
               href="/customer/book"
               onClick={() => setRole("CUSTOMER")}
-              className="mt-8 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#0B2545]/15 text-xs font-black text-[#0B2545] flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.customerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -299,29 +299,29 @@ export default function HomePage() {
           {/* 3. Cooperative Admin */}
           <SpotlightCard
             spotlightColor="rgba(19, 136, 8, 0.15)"
-            className="p-8"
+            className="p-8 bg-[#FFFDF9] border-2 border-[#0B2545]/15"
           >
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center mb-4 border border-emerald-500/30">
                 <Building2 className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="text-xl font-black text-[#0A1120]">
                 {t.home.adminCardTitle}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              <p className="text-xs text-slate-700 mt-2 leading-relaxed font-medium">
                 {t.home.adminCardDesc}
               </p>
-              <ul className="mt-5 space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+              <ul className="mt-5 space-y-2.5 text-xs text-slate-800 font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{t.home.adminCardFeature1}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{t.home.adminCardFeature2}</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>{t.home.adminCardFeature3}</span>
                 </li>
               </ul>
@@ -330,7 +330,7 @@ export default function HomePage() {
             <Link
               href="/admin/dashboard"
               onClick={() => setRole("ADMIN")}
-              className="mt-8 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-[#0B2545]/15 text-xs font-black text-emerald-800 flex items-center justify-between group-hover:translate-x-1 transition"
             >
               <span>{t.home.adminCardLink}</span>
               <ArrowRight className="w-4 h-4" />
