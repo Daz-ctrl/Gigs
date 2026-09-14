@@ -216,7 +216,6 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. Worker */}
           <SpotlightCard
-            spotlightColor="rgba(245, 158, 11, 0.15)"
             className="p-8 bg-[#081C33] border border-white/10 shadow-xl"
           >
             <div>
@@ -248,7 +247,7 @@ export default function HomePage() {
             <Link
               href="/worker/dashboard"
               onClick={() => setRole("WORKER")}
-              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-amber-400 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-amber-400 flex items-center justify-between"
             >
               <span>{t.home.workerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -257,7 +256,6 @@ export default function HomePage() {
 
           {/* 2. Customer */}
           <SpotlightCard
-            spotlightColor="rgba(59, 130, 246, 0.15)"
             className="p-8 bg-[#081C33] border border-white/10 shadow-xl"
           >
             <div>
@@ -289,7 +287,7 @@ export default function HomePage() {
             <Link
               href="/customer/book"
               onClick={() => setRole("CUSTOMER")}
-              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-blue-400 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-blue-400 flex items-center justify-between"
             >
               <span>{t.home.customerCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -298,7 +296,6 @@ export default function HomePage() {
 
           {/* 3. Cooperative Admin */}
           <SpotlightCard
-            spotlightColor="rgba(16, 185, 129, 0.15)"
             className="p-8 bg-[#081C33] border border-white/10 shadow-xl"
           >
             <div>
@@ -330,7 +327,7 @@ export default function HomePage() {
             <Link
               href="/admin/dashboard"
               onClick={() => setRole("ADMIN")}
-              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-emerald-400 flex items-center justify-between group-hover:translate-x-1 transition"
+              className="mt-8 pt-4 border-t border-white/10 text-xs font-black text-emerald-400 flex items-center justify-between"
             >
               <span>{t.home.adminCardLink}</span>
               <ArrowRight className="w-4 h-4" />
@@ -342,8 +339,7 @@ export default function HomePage() {
       {/* FINAL HIGH-IMPACT COOPERATIVE CTA BANNER */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center relative z-20">
         <SpotlightCard
-          spotlightColor="rgba(245, 158, 11, 0.15)"
-          className="p-8 sm:p-12 relative overflow-hidden rounded-[36px] border border-amber-400/30 bg-[#081C33] text-white backdrop-blur-2xl shadow-2xl"
+          className="p-8 sm:p-12 relative overflow-hidden rounded-[36px] border border-amber-400/30 bg-[#081C33] text-white shadow-2xl"
         >
           {/* Top tricolor ribbon on banner */}
           <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">

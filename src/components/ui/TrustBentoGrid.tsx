@@ -15,7 +15,6 @@ import {
   Clock,
   Check,
 } from "lucide-react";
-import { BorderBeam } from "./BorderBeam";
 import { SpotlightCard } from "./SpotlightCard";
 
 export function TrustBentoGrid() {
@@ -52,17 +51,6 @@ export function TrustBentoGrid() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
       {/* CARD 1: INCLUSIVE 3-PATHWAY VERIFICATION (Col-span 7 on Desktop) */}
       <SpotlightCard
-        spotlightColor="rgba(245, 158, 11, 0.15)"
-        borderBeam={
-          <BorderBeam
-            duration={8}
-            colorFrom="#FF9933"
-            colorTo="#0B2545"
-            borderRadius="32px"
-            borderWidth={2.5}
-            innerBg="bg-[#081C33]"
-          />
-        }
         className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border border-white/10 rounded-[32px] bg-[#081C33] shadow-xl"
       >
 
@@ -145,7 +133,6 @@ export function TrustBentoGrid() {
 
       {/* CARD 2: FREE AADHAAR e-KYC (Col-span 5 on Desktop) */}
       <SpotlightCard
-        spotlightColor="rgba(59, 130, 246, 0.18)"
         className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border border-white/10 rounded-[32px] bg-[#081C33] shadow-xl"
       >
         <div className="relative z-10 mb-6">
@@ -198,7 +185,6 @@ export function TrustBentoGrid() {
 
       {/* CARD 3: START-WORK SECURITY HANDSHAKE OTP (Col-span 5 on Desktop) */}
       <SpotlightCard
-        spotlightColor="rgba(245, 158, 11, 0.18)"
         className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border border-white/10 rounded-[32px] bg-[#081C33] shadow-xl"
       >
         <div className="relative z-10 mb-6">
@@ -250,17 +236,6 @@ export function TrustBentoGrid() {
 
       {/* CARD 4: AI DEMAND RADAR & 1-CLICK REBALANCE (Col-span 7 on Desktop) */}
       <SpotlightCard
-        spotlightColor="rgba(59, 130, 246, 0.18)"
-        borderBeam={
-          <BorderBeam
-            duration={8}
-            colorFrom="#0B2545"
-            colorTo="#FF9933"
-            borderRadius="32px"
-            borderWidth={2.5}
-            innerBg="bg-[#081C33]"
-          />
-        }
         className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden border border-white/10 rounded-[32px] bg-[#081C33] shadow-xl"
       >
 

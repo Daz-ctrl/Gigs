@@ -35,7 +35,7 @@ export function HeroInteractivePreview() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.6, duration: 0.5 }}
-        className="hidden md:flex absolute -top-5 -left-6 z-30 items-center gap-2 px-4 py-2 rounded-2xl bg-[#081C33] border border-white/15 backdrop-blur-xl shadow-xl"
+        className="hidden md:flex absolute -top-5 -left-6 z-30 items-center gap-2 px-4 py-2 rounded-2xl bg-[#081C33] border border-white/15 shadow-xl"
       >
         <div className="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
           <ShieldCheck className="w-4 h-4" />
@@ -52,7 +52,7 @@ export function HeroInteractivePreview() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.8, duration: 0.5 }}
         onClick={() => setHandshakeVerified(!handshakeVerified)}
-        className="hidden md:flex absolute -bottom-5 -right-6 z-30 items-center gap-2 px-4 py-2 rounded-2xl bg-[#081C33] border border-amber-500/40 backdrop-blur-xl shadow-xl cursor-pointer hover:scale-105 transition-transform"
+        className="hidden md:flex absolute -bottom-5 -right-6 z-30 items-center gap-2 px-4 py-2 rounded-2xl bg-[#081C33] border border-amber-500/40 shadow-xl cursor-pointer hover:scale-105 transition-transform"
       >
         <div className="w-7 h-7 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-mono font-black text-xs">
           {handshakeVerified ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Lock className="w-4 h-4" />}
@@ -68,7 +68,7 @@ export function HeroInteractivePreview() {
       </motion.div>
 
       {/* Main Glass Console Card */}
-      <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-[#081C33]/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl text-left">
+      <div className="relative overflow-hidden rounded-[32px] border border-white/15 bg-[#081C33] p-6 sm:p-8 shadow-2xl text-left">
         {/* Tricolor top indicator */}
         <div className="absolute top-0 inset-x-0 h-1.5 grid grid-cols-3">
           <div className="bg-[#FF9933]" />
